@@ -4,6 +4,7 @@
 (() => {
   const STORAGE_KEY = 'cs2-crosshair-state';
   const URL_PARAM = 's';
+  const PERSIST_DEBOUNCE_MS = 250;
 
   let crosshairState = createDefaultCrosshairState();
   let previewBackground = 'dark';
@@ -12,6 +13,8 @@
   let customPresets = [];
   let colorTheme = 'system';
   let suppressPersist = false;
+  let persistTimer = null;
+  let deletedPresetUndo = null;
 
   const els = {
     settingsContainer: document.getElementById('settings-container'),
@@ -22,12 +25,16 @@
     zoomLabel: document.getElementById('zoom-label'),
     commandOutput: document.getElementById('command-output'),
     copyBtn: document.getElementById('copy-btn'),
+    copyMinimalBtn: document.getElementById('copy-minimal-btn'),
+    applyImportBtn: document.getElementById('apply-import-btn'),
     resetBtn: document.getElementById('reset-btn'),
     shareBtn: document.getElementById('share-btn'),
     toast: document.getElementById('toast'),
     colorSwatch: document.getElementById('color-swatch'),
+    colorSwatchLabel: document.getElementById('color-swatch-label'),
     styleNote: document.getElementById('style-note'),
     lineupNote: document.getElementById('lineup-note'),
+    sniperNote: document.getElementById('sniper-note'),
     previewModeRoot: document.querySelector('.preview-mode'),
     bgToggleRoot: document.getElementById('bg-toggle-root'),
     presetsGrid: document.getElementById('presets-grid'),
@@ -37,14 +44,25 @@
     savePresetForm: document.getElementById('save-preset-form'),
     savePresetName: document.getElementById('save-preset-name'),
     savePresetCancel: document.getElementById('save-preset-cancel'),
+    exportPresetsBtn: document.getElementById('export-presets-btn'),
+    importPresetsBtn: document.getElementById('import-presets-btn'),
+    importPresetsInput: document.getElementById('import-presets-input'),
     themeToggle: document.getElementById('theme-toggle'),
   };
 
-  function showToast(message) {
+  function showToast(message, duration = 2000) {
     els.toast.textContent = message;
     els.toast.classList.add('visible');
     clearTimeout(showToast._timer);
-    showToast._timer = setTimeout(() => els.toast.classList.remove('visible'), 2000);
+    showToast._timer = setTimeout(() => els.toast.classList.remove('visible'), duration);
+  }
+
+  function setTogglePressed(container, selector, activeValue, attr = 'data-theme') {
+    container?.querySelectorAll(selector).forEach((btn) => {
+      const isActive = btn.getAttribute(attr) === activeValue;
+      btn.classList.toggle('active', isActive);
+      btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+    });
   }
 
   function getPreviewRenderOptions() {
@@ -53,26 +71,54 @@
 
   function updateStyleNote() {
     const isLineup = previewMode === PreviewMode.MODES.LINEUP;
-    const isDynamic = !isLineup && CrosshairRenderer.isDynamicStyle(crosshairState.cl_crosshairstyle);
+    const isSniper = previewMode === PreviewMode.MODES.SNIPER;
+    const isDynamic = !isLineup && !isSniper
+      && CrosshairRenderer.isDynamicStyle(crosshairState.cl_crosshairstyle);
     els.styleNote.hidden = !isDynamic;
     els.lineupNote.hidden = !isLineup;
+    els.sniperNote.hidden = !isSniper;
+  }
+
+  function formatColorLabel(color) {
+    const hex = [color.r, color.g, color.b]
+      .map((v) => v.toString(16).padStart(2, '0'))
+      .join('');
+    return `Crosshair color RGB ${color.r}, ${color.g}, ${color.b} (#${hex})`;
   }
 
   function updateColorSwatch() {
     const color = CrosshairRenderer.resolveColor(crosshairState);
     els.colorSwatch.style.background = `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`;
+    if (els.colorSwatchLabel) {
+      els.colorSwatchLabel.textContent = formatColorLabel(color);
+    }
   }
 
   function updatePreview() {
     updateColorSwatch();
     updateStyleNote();
+    updateLineupModeButton();
     managePreviewAnimation();
+  }
+
+  function updateLineupModeButton() {
+    const lineupBtn = els.previewModeRoot?.querySelector('[data-mode="lineup"]');
+    if (!lineupBtn) return;
+
+    const enabled = PreviewMode.isLineupEnabled(crosshairState);
+    lineupBtn.disabled = !enabled;
+    lineupBtn.title = enabled ? '' : 'Enable a grenade lineup reticle in settings first';
+    lineupBtn.classList.toggle('mode-btn-disabled', !enabled);
+
+    if (!enabled && previewMode === PreviewMode.MODES.LINEUP) {
+      setPreviewMode(PreviewMode.MODES.NORMAL);
+    }
   }
 
   function managePreviewAnimation() {
     const options = getPreviewRenderOptions();
 
-    if (previewMode === PreviewMode.MODES.LINEUP) {
+    if (previewMode !== PreviewMode.MODES.NORMAL) {
       CrosshairRenderer.stopAnimation();
       CrosshairRenderer.render(els.previewCanvas, crosshairState, previewBackground, 0, options);
       return;
@@ -110,13 +156,14 @@
     els.resetBtn.disabled = isAtFullDefault();
   }
 
-  function refresh() {
+  function refresh(options = {}) {
     updatePreview();
-    updateCommands();
+    if (!options.skipCommands) updateCommands();
     updateControlStates();
     updateColorPresetButtons();
+    updatePresetActiveStates();
     updateResetAllButton();
-    if (!suppressPersist) persistState();
+    if (!suppressPersist) schedulePersist();
   }
 
   function setState(key, rawValue) {
@@ -163,6 +210,7 @@
     range.max = meta.max;
     range.step = meta.step;
     range.value = crosshairState[key];
+    range.setAttribute('aria-describedby', `desc-${key}`);
 
     const number = document.createElement('input');
     number.type = 'number';
@@ -172,22 +220,31 @@
     number.step = meta.step;
     number.value = crosshairState[key];
     number.setAttribute('aria-label', `${meta.label} value`);
+    number.setAttribute('aria-describedby', `desc-${key}`);
 
-    const sync = (val) => {
+    const sync = (val, fromInput = false) => {
       const clamped = clampSettingValue(key, val);
       range.value = clamped;
       number.value = clamped;
+      if (fromInput) {
+        crosshairState[key] = clamped;
+        refresh({ skipCommands: true });
+        schedulePersist();
+        updateCommands();
+        return;
+      }
       setState(key, clamped);
     };
 
     range.addEventListener('input', () => sync(range.value));
+    number.addEventListener('input', () => sync(number.value, true));
     number.addEventListener('change', () => sync(number.value));
 
     wrap.append(range, number);
     return wrap;
   }
 
-  function createToggleControl(key) {
+  function createToggleControl(key, meta) {
     const label = document.createElement('label');
     label.className = 'toggle';
 
@@ -195,6 +252,8 @@
     input.type = 'checkbox';
     input.id = `input-${key}`;
     input.checked = crosshairState[key] === 1;
+    input.setAttribute('aria-label', meta?.label ?? CROSSHAIR_SETTINGS[key].label);
+    input.setAttribute('aria-describedby', `desc-${key}`);
 
     input.addEventListener('change', () => setState(key, input.checked ? 1 : 0));
 
@@ -220,7 +279,9 @@
     const selected = crosshairState.cl_crosshaircolor;
     wrap.querySelectorAll('[data-color-value]').forEach((btn) => {
       const value = Number(btn.dataset.colorValue);
-      btn.classList.toggle('active', value === selected);
+      const isActive = value === selected;
+      btn.classList.toggle('active', isActive);
+      btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
 
       if (value === 5) {
         btn.querySelector('.color-swatch-dot')?.style.setProperty(
@@ -243,7 +304,9 @@
       btn.type = 'button';
       btn.className = 'color-preset-btn';
       btn.dataset.colorValue = opt.value;
-      btn.classList.toggle('active', opt.value === crosshairState[key]);
+      const isActive = opt.value === crosshairState[key];
+      btn.classList.toggle('active', isActive);
+      btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
 
       const swatchColor = opt.value === 5
         ? getCrosshairSwatchColor(crosshairState)
@@ -259,6 +322,7 @@
   function createSelectControl(key, meta) {
     const select = document.createElement('select');
     select.id = `input-${key}`;
+    select.setAttribute('aria-describedby', `desc-${key}`);
 
     for (const opt of meta.options) {
       const option = document.createElement('option');
@@ -315,8 +379,17 @@
     labelText.textContent = meta.label;
     label.append(labelText);
 
+    if (meta.previewOnly) {
+      const badge = document.createElement('span');
+      badge.className = 'preview-only-badge';
+      badge.textContent = 'Export only';
+      badge.title = 'This setting is exported to console but not fully simulated in preview';
+      label.append(badge);
+    }
+
     const desc = document.createElement('span');
     desc.className = 'setting-desc';
+    desc.id = `desc-${key}`;
     desc.textContent = meta.description;
     desc.title = meta.description;
 
@@ -326,7 +399,7 @@
     if (meta.type === 'range') {
       control = createRangeControl(key, meta);
     } else if (meta.type === 'toggle') {
-      control = createToggleControl(key);
+      control = createToggleControl(key, meta);
     } else if (meta.type === 'select') {
       control = key === 'cl_crosshaircolor'
         ? createColorPresetControl(key, meta)
@@ -351,12 +424,23 @@
     showToast(`Loaded ${preset.label}`);
   }
 
+  function createPresetMiniCanvas(state) {
+    const canvas = document.createElement('canvas');
+    canvas.className = 'preset-mini-canvas';
+    canvas.setAttribute('aria-hidden', 'true');
+    CrosshairRenderer.renderMini(canvas, state, 36);
+    return canvas;
+  }
+
   function createPresetLoadButton(preset, subtitle) {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'preset-btn';
     btn.setAttribute('role', 'listitem');
     btn.setAttribute('aria-label', `Load ${preset.label} crosshair`);
+    btn.dataset.presetId = preset.id ?? preset.label;
+
+    btn.append(createPresetMiniCanvas(preset.state));
 
     const name = document.createElement('span');
     name.className = 'preset-name';
@@ -375,6 +459,22 @@
     return btn;
   }
 
+  function updatePresetActiveStates() {
+    document.querySelectorAll('.preset-btn').forEach((btn) => {
+      const presetId = btn.dataset.presetId;
+      let presetState = null;
+
+      const proPreset = CrosshairPresets.PRESETS.find((p) => p.id === presetId);
+      if (proPreset) presetState = proPreset.state;
+
+      const customPreset = customPresets.find((p) => p.id === presetId);
+      if (customPreset) presetState = customPreset.state;
+
+      const isActive = presetState ? crosshairStatesMatch(crosshairState, presetState) : false;
+      btn.classList.toggle('active', isActive);
+    });
+  }
+
   function buildProPresetsUI() {
     els.presetsGrid.replaceChildren();
 
@@ -387,6 +487,7 @@
     const hasPresets = customPresets.length > 0;
     els.customPresetsEmpty.hidden = hasPresets;
     els.customPresetsGrid.hidden = !hasPresets;
+    if (els.exportPresetsBtn) els.exportPresetsBtn.hidden = !hasPresets;
     els.customPresetsGrid.replaceChildren();
 
     for (const preset of customPresets) {
@@ -402,12 +503,14 @@
       deleteBtn.textContent = '×';
       deleteBtn.addEventListener('click', (event) => {
         event.stopPropagation();
-        deleteCustomPreset(preset.id);
+        confirmDeleteCustomPreset(preset.id);
       });
 
       card.append(loadBtn, deleteBtn);
       els.customPresetsGrid.append(card);
     }
+
+    updatePresetActiveStates();
   }
 
   function buildPresetsUI() {
@@ -443,6 +546,10 @@
     }
 
     const existing = CustomPresets.findByLabel(customPresets, label);
+    if (existing && !window.confirm(`Overwrite preset "${label}"?`)) {
+      return;
+    }
+
     const nextPresets = CustomPresets.upsertPreset(customPresets, label, crosshairState);
 
     if (!nextPresets) {
@@ -457,14 +564,67 @@
     showToast(existing ? `Updated ${label}` : `Saved ${label}`);
   }
 
-  function deleteCustomPreset(id) {
+  function confirmDeleteCustomPreset(id) {
     const preset = customPresets.find((item) => item.id === id);
     if (!preset) return;
 
+    if (!window.confirm(`Delete preset "${preset.label}"?`)) return;
+
+    deletedPresetUndo = { preset, index: customPresets.findIndex((p) => p.id === id) };
     customPresets = CustomPresets.removePreset(customPresets, id);
     buildCustomPresetsUI();
     if (!suppressPersist) persistState();
-    showToast(`Deleted ${preset.label}`);
+
+    showToast(`Deleted ${preset.label}`, 4000);
+    clearTimeout(confirmDeleteCustomPreset._undoTimer);
+    confirmDeleteCustomPreset._undoTimer = setTimeout(() => {
+      deletedPresetUndo = null;
+    }, 4000);
+  }
+
+  function undoDeletePreset() {
+    if (!deletedPresetUndo) return;
+
+    const { preset, index } = deletedPresetUndo;
+    const next = [...customPresets];
+    next.splice(Math.min(index, next.length), 0, preset);
+    customPresets = next.slice(0, CustomPresets.MAX_PRESETS);
+    deletedPresetUndo = null;
+    buildCustomPresetsUI();
+    if (!suppressPersist) persistState();
+    showToast(`Restored ${preset.label}`);
+  }
+
+  function exportCustomPresets() {
+    const blob = new Blob([JSON.stringify(customPresets, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'cs2-crosshair-presets.json';
+    link.click();
+    URL.revokeObjectURL(url);
+    showToast('Presets exported');
+  }
+
+  function importCustomPresets(file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const parsed = JSON.parse(reader.result);
+        const imported = CustomPresets.parseList(parsed);
+        if (imported.length === 0) {
+          showToast('No valid presets found');
+          return;
+        }
+        customPresets = imported.slice(0, CustomPresets.MAX_PRESETS);
+        buildCustomPresetsUI();
+        if (!suppressPersist) persistState();
+        showToast(`Imported ${customPresets.length} preset(s)`);
+      } catch {
+        showToast('Invalid preset file');
+      }
+    };
+    reader.readAsText(file);
   }
 
   function initCustomPresets() {
@@ -473,6 +633,13 @@
     els.savePresetForm?.addEventListener('submit', (event) => {
       event.preventDefault();
       saveCurrentPreset(getSavePresetLabel());
+    });
+    els.exportPresetsBtn?.addEventListener('click', exportCustomPresets);
+    els.importPresetsBtn?.addEventListener('click', () => els.importPresetsInput?.click());
+    els.importPresetsInput?.addEventListener('change', (event) => {
+      const file = event.target.files?.[0];
+      if (file) importCustomPresets(file);
+      event.target.value = '';
     });
   }
 
@@ -490,7 +657,7 @@
 
       const headerToggleKey = group.headerToggle;
       if (headerToggleKey) {
-        const toggle = createToggleControl(headerToggleKey);
+        const toggle = createToggleControl(headerToggleKey, CROSSHAIR_SETTINGS[headerToggleKey]);
         toggle.classList.add('summary-toggle');
         toggle.addEventListener('click', (e) => e.stopPropagation());
         toggle.addEventListener('mousedown', (e) => e.stopPropagation());
@@ -532,7 +699,16 @@
     const parsed = CrosshairCommands.fromUrlParam(encoded);
     if (!parsed) return false;
 
-    applyCrosshairState(parsed);
+    applyCrosshairState(parsed.crosshair);
+
+    if (parsed.previewBackground) {
+      previewBackground = parsed.previewBackground;
+    }
+
+    if (parsed.previewMode) {
+      previewMode = parsed.previewMode;
+    }
+
     return true;
   }
 
@@ -594,11 +770,20 @@
         theme: colorTheme,
       }));
       const url = new URL(window.location.href);
-      url.searchParams.set(URL_PARAM, CrosshairCommands.toUrlParam(crosshairState));
+      url.searchParams.set(URL_PARAM, CrosshairCommands.toUrlParam(crosshairState, {
+        includePreview: true,
+        previewBackground,
+        previewMode,
+      }));
       window.history.replaceState(null, '', url.toString());
     } catch {
       // storage or history may be unavailable
     }
+  }
+
+  function schedulePersist() {
+    clearTimeout(persistTimer);
+    persistTimer = setTimeout(persistState, PERSIST_DEBOUNCE_MS);
   }
 
   function syncControlsFromState() {
@@ -640,52 +825,85 @@
     if (theme !== 'system' && theme !== 'light' && theme !== 'dark') return;
     colorTheme = theme;
     applyColorTheme(theme);
-    els.themeToggle?.querySelectorAll('[data-theme]').forEach((btn) => {
-      btn.classList.toggle('active', btn.dataset.theme === theme);
-    });
-    if (!suppressPersist) persistState();
+    setTogglePressed(els.themeToggle, '.theme-btn', theme, 'data-theme');
+    if (!suppressPersist) schedulePersist();
   }
 
   function initThemeToggle() {
+    setTogglePressed(els.themeToggle, '.theme-btn', colorTheme, 'data-theme');
     els.themeToggle?.querySelectorAll('[data-theme]').forEach((btn) => {
-      btn.classList.toggle('active', btn.dataset.theme === colorTheme);
       btn.addEventListener('click', () => setColorTheme(btn.dataset.theme));
     });
     applyColorTheme(colorTheme);
   }
 
   function resetToDefaults() {
+    if (!window.confirm('Reset all crosshair settings, preview, and theme to defaults?')) return;
+
     crosshairState = createDefaultCrosshairState();
     previewBackground = Backgrounds.DEFAULT_ID;
     previewZoom = PreviewZoom.DEFAULT;
     previewMode = PreviewMode.DEFAULT_MODE;
     colorTheme = 'system';
     syncControlsFromState();
-    els.bgToggleRoot.querySelectorAll('[data-bg]').forEach((btn) => {
-      btn.classList.toggle('active', btn.dataset.bg === previewBackground);
-    });
+    setPreviewBackground(previewBackground);
     applyPreviewZoom();
     applyPreviewMode();
     setColorTheme(colorTheme);
+    CrosshairRenderer.invalidateBgCache();
     refresh();
     showToast('Reset to defaults');
   }
 
-  async function copyCommands() {
-    const text = CrosshairCommands.toCommandString(crosshairState);
+  async function copyText(text, button, successLabel = 'Copied!') {
     try {
       await navigator.clipboard.writeText(text);
-      showToast('Copied!');
     } catch {
+      els.commandOutput.value = text;
       els.commandOutput.select();
       document.execCommand('copy');
-      showToast('Copied!');
     }
+
+    if (button) {
+      const original = button.textContent;
+      button.textContent = successLabel;
+      button.classList.add('btn-success');
+      setTimeout(() => {
+        button.textContent = original;
+        button.classList.remove('btn-success');
+      }, 1500);
+    }
+
+    showToast(successLabel);
+  }
+
+  async function copyCommands(minimal = false) {
+    const text = CrosshairCommands.toCommandString(crosshairState, { minimal });
+    await copyText(text, minimal ? els.copyMinimalBtn : els.copyBtn);
+  }
+
+  function applyImportedCommands() {
+    const { state, parsed, skipped } = CrosshairCommands.fromCommandString(els.commandOutput.value);
+
+    if (parsed === 0) {
+      showToast('No valid commands found');
+      return;
+    }
+
+    applyCrosshairState(state);
+    syncControlsFromState();
+    refresh();
+    const suffix = skipped > 0 ? ` (${skipped} skipped)` : '';
+    showToast(`Applied ${parsed} setting(s)${suffix}`);
   }
 
   async function shareLink() {
     const url = new URL(window.location.href);
-    url.searchParams.set(URL_PARAM, CrosshairCommands.toUrlParam(crosshairState));
+    url.searchParams.set(URL_PARAM, CrosshairCommands.toUrlParam(crosshairState, {
+      includePreview: true,
+      previewBackground,
+      previewMode,
+    }));
     try {
       await navigator.clipboard.writeText(url.toString());
       showToast('Share link copied!');
@@ -698,11 +916,14 @@
   function setPreviewBackground(id) {
     if (!Backgrounds.isValidId(id)) return;
     previewBackground = id;
-    els.bgToggleRoot.querySelectorAll('[data-bg]').forEach((btn) => {
-      btn.classList.toggle('active', btn.dataset.bg === id);
+    CrosshairRenderer.invalidateBgCache();
+    setTogglePressed(els.bgToggleRoot, '[data-bg]', id, 'data-bg');
+    CrosshairRenderer.ensureImageLoaded(id, () => {
+      CrosshairRenderer.invalidateBgCache();
+      updatePreview();
     });
     updatePreview();
-    if (!suppressPersist) persistState();
+    if (!suppressPersist) schedulePersist();
   }
 
   function applyPreviewZoom() {
@@ -718,7 +939,7 @@
     previewZoom = PreviewZoom.clamp(zoom);
     applyPreviewZoom();
     updateResetAllButton();
-    if (!suppressPersist) persistState();
+    if (!suppressPersist) schedulePersist();
   }
 
   function initPreviewZoom() {
@@ -732,18 +953,19 @@
   }
 
   function applyPreviewMode() {
-    els.previewModeRoot?.querySelectorAll('[data-mode]').forEach((btn) => {
-      btn.classList.toggle('active', btn.dataset.mode === previewMode);
-    });
+    setTogglePressed(els.previewModeRoot, '[data-mode]', previewMode, 'data-mode');
+    updateLineupModeButton();
   }
 
   function setPreviewMode(mode) {
     if (!PreviewMode.isValidMode(mode)) return;
+    if (mode === PreviewMode.MODES.LINEUP && !PreviewMode.isLineupEnabled(crosshairState)) return;
+
     previewMode = mode;
     applyPreviewMode();
     updateResetAllButton();
     updatePreview();
-    if (!suppressPersist) persistState();
+    if (!suppressPersist) schedulePersist();
   }
 
   function initPreviewMode() {
@@ -773,10 +995,23 @@
       for (const item of group.items) {
         const btn = document.createElement('button');
         btn.type = 'button';
-        btn.className = `bg-btn${group.id === 'maps' ? ' bg-btn-map' : ''}`;
+        const isMap = group.id === 'maps';
+        btn.className = `bg-btn${isMap ? ' bg-btn-map' : ''}`;
         btn.dataset.bg = item.id;
-        btn.textContent = item.label;
-        btn.classList.toggle('active', item.id === previewBackground);
+        const isActive = item.id === previewBackground;
+        btn.classList.toggle('active', isActive);
+        btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+        btn.setAttribute('aria-label', `${item.label} background`);
+
+        if (isMap && item.src) {
+          const thumb = document.createElement('span');
+          thumb.className = 'bg-btn-thumb';
+          thumb.style.backgroundImage = `url(${item.src})`;
+          btn.append(thumb, document.createTextNode(item.label));
+        } else {
+          btn.textContent = item.label;
+        }
+
         btn.addEventListener('click', () => setPreviewBackground(item.id));
         toggle.append(btn);
       }
@@ -792,6 +1027,15 @@
     els.previewCanvas.height = size;
   }
 
+  function initKeyboardShortcuts() {
+    document.addEventListener('keydown', (event) => {
+      if ((event.ctrlKey || event.metaKey) && event.key === 'z' && deletedPresetUndo) {
+        event.preventDefault();
+        undoDeletePreset();
+      }
+    });
+  }
+
   function init() {
     loadFromStorage();
     loadFromUrl();
@@ -801,13 +1045,21 @@
     initPreviewZoom();
     initPreviewMode();
     initCustomPresets();
+    initKeyboardShortcuts();
     buildPresetsUI();
     buildSettingsUI();
     buildBackgroundToggles();
 
-    els.copyBtn.addEventListener('click', copyCommands);
+    els.copyBtn.addEventListener('click', () => copyCommands(false));
+    els.copyMinimalBtn?.addEventListener('click', () => copyCommands(true));
+    els.applyImportBtn?.addEventListener('click', applyImportedCommands);
     els.resetBtn.addEventListener('click', resetToDefaults);
     els.shareBtn.addEventListener('click', shareLink);
+
+    syncControlsFromState();
+    applyPreviewZoom();
+    applyPreviewMode();
+    setTogglePressed(els.bgToggleRoot, '[data-bg]', previewBackground, 'data-bg');
 
     refresh();
     CrosshairRenderer.preloadImages(updatePreview);
