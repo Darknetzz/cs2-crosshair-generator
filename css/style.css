@@ -437,6 +437,10 @@ body {
   padding-top: 0.75rem;
 }
 
+.setting-row[hidden] {
+  display: none !important;
+}
+
 .setting-row.disabled {
   opacity: 0.45;
 }

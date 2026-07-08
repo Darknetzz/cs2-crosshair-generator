@@ -359,7 +359,7 @@ function applyPresetState(overrides) {
 function isSettingEnabled(key, state) {
   const meta = CROSSHAIR_SETTINGS[key];
   if (!meta.enabledWhen) return true;
-  return state[meta.enabledWhen.key] === meta.enabledWhen.value;
+  return Number(state[meta.enabledWhen.key]) === meta.enabledWhen.value;
 }
 
 /** Whether a setting matches its default value. */
