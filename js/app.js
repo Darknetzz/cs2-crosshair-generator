@@ -7,12 +7,17 @@
 
   let crosshairState = createDefaultCrosshairState();
   let previewBackground = 'dark';
+  let previewZoom = PreviewZoom.DEFAULT;
   let colorTheme = 'system';
   let suppressPersist = false;
 
   const els = {
     settingsContainer: document.getElementById('settings-container'),
     previewCanvas: document.getElementById('preview-canvas'),
+    canvasWrap: document.querySelector('.canvas-wrap'),
+    zoomInBtn: document.getElementById('zoom-in-btn'),
+    zoomOutBtn: document.getElementById('zoom-out-btn'),
+    zoomLabel: document.getElementById('zoom-label'),
     commandOutput: document.getElementById('command-output'),
     copyBtn: document.getElementById('copy-btn'),
     resetBtn: document.getElementById('reset-btn'),
@@ -70,7 +75,9 @@
     for (const key of CROSSHAIR_CVAR_ORDER) {
       if (!isSettingAtDefault(key, crosshairState)) return false;
     }
-    return previewBackground === Backgrounds.DEFAULT_ID && colorTheme === 'system';
+    return previewBackground === Backgrounds.DEFAULT_ID
+      && previewZoom === PreviewZoom.DEFAULT
+      && colorTheme === 'system';
   }
 
   function updateResetAllButton() {
@@ -423,6 +430,11 @@
         loaded = true;
       }
 
+      if (parsed?.previewZoom != null) {
+        previewZoom = PreviewZoom.clamp(parsed.previewZoom);
+        loaded = true;
+      }
+
       if (parsed?.theme === 'system' || parsed?.theme === 'light' || parsed?.theme === 'dark') {
         colorTheme = parsed.theme;
         loaded = true;
@@ -439,6 +451,7 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify({
         crosshair: crosshairState,
         previewBackground,
+        previewZoom,
         theme: colorTheme,
       }));
       const url = new URL(window.location.href);
@@ -505,11 +518,13 @@
   function resetToDefaults() {
     crosshairState = createDefaultCrosshairState();
     previewBackground = Backgrounds.DEFAULT_ID;
+    previewZoom = PreviewZoom.DEFAULT;
     colorTheme = 'system';
     syncControlsFromState();
     els.bgToggleRoot.querySelectorAll('[data-bg]').forEach((btn) => {
       btn.classList.toggle('active', btn.dataset.bg === previewBackground);
     });
+    applyPreviewZoom();
     setColorTheme(colorTheme);
     refresh();
     showToast('Reset to defaults');
@@ -547,6 +562,32 @@
     });
     updatePreview();
     if (!suppressPersist) persistState();
+  }
+
+  function applyPreviewZoom() {
+    els.canvasWrap?.style.setProperty('--preview-zoom', String(previewZoom));
+    if (els.zoomLabel) {
+      els.zoomLabel.textContent = `${Math.round(previewZoom * 100)}%`;
+    }
+    if (els.zoomInBtn) els.zoomInBtn.disabled = !PreviewZoom.canZoomIn(previewZoom);
+    if (els.zoomOutBtn) els.zoomOutBtn.disabled = !PreviewZoom.canZoomOut(previewZoom);
+  }
+
+  function setPreviewZoom(zoom) {
+    previewZoom = PreviewZoom.clamp(zoom);
+    applyPreviewZoom();
+    updateResetAllButton();
+    if (!suppressPersist) persistState();
+  }
+
+  function initPreviewZoom() {
+    applyPreviewZoom();
+    els.zoomInBtn?.addEventListener('click', () => {
+      setPreviewZoom(previewZoom + PreviewZoom.STEP);
+    });
+    els.zoomOutBtn?.addEventListener('click', () => {
+      setPreviewZoom(previewZoom - PreviewZoom.STEP);
+    });
   }
 
   function buildBackgroundToggles() {
@@ -593,6 +634,7 @@
 
     initPreviewCanvas();
     initThemeToggle();
+    initPreviewZoom();
     buildPresetsUI();
     buildSettingsUI();
     buildBackgroundToggles();

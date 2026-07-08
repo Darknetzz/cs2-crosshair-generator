@@ -40,6 +40,12 @@
     <section class="preview-panel" aria-label="Crosshair preview">
       <div class="preview-toolbar">
         <div id="bg-toggle-root" class="bg-toggle-root" aria-label="Preview background"></div>
+        <div class="preview-zoom" role="group" aria-label="Preview zoom">
+          <span class="toolbar-label">Zoom</span>
+          <button type="button" id="zoom-out-btn" class="zoom-btn" aria-label="Zoom out">−</button>
+          <span id="zoom-label" class="zoom-label" aria-live="polite">100%</span>
+          <button type="button" id="zoom-in-btn" class="zoom-btn" aria-label="Zoom in">+</button>
+        </div>
         <div class="color-preview" aria-label="Current crosshair color">
           <span class="toolbar-label">Color</span>
           <span id="color-swatch" class="color-swatch"></span>
@@ -94,6 +100,7 @@
   <script src="js/crosshair-settings.js"></script>
   <script src="js/presets.js"></script>
   <script src="js/backgrounds.js"></script>
+  <script src="js/preview-zoom.js"></script>
   <script src="js/crosshair-renderer.js"></script>
   <script src="js/commands.js"></script>
   <script src="js/app.js"></script>
