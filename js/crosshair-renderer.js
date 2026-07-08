@@ -418,13 +418,25 @@ const CrosshairRenderer = (() => {
     return height / PREVIEW_SIZE;
   }
 
-  function drawUserCrosshair(ctx, width, height, state, dynamicFactor = 0) {
+  function getCrosshairLayout(width, height) {
     const scale = getCrosshairScale(height);
     const drawSize = INTERNAL_SIZE * scale;
     const offsetX = Math.floor((width - drawSize) / 2);
     const offsetY = Math.floor((height - drawSize) / 2);
-    const centerX = Math.floor(INTERNAL_SIZE / 2);
-    const centerY = Math.floor(INTERNAL_SIZE / 2);
+    const internalCenter = INTERNAL_SIZE / 2;
+    return {
+      scale,
+      offsetX,
+      offsetY,
+      cx: offsetX + internalCenter * scale,
+      cy: offsetY + internalCenter * scale,
+    };
+  }
+
+  function drawUserCrosshair(ctx, width, height, state, dynamicFactor = 0) {
+    const { scale, offsetX, offsetY } = getCrosshairLayout(width, height);
+    const centerX = INTERNAL_SIZE / 2;
+    const centerY = INTERNAL_SIZE / 2;
 
     ctx.save();
     ctx.translate(offsetX, offsetY);
@@ -521,8 +533,7 @@ const CrosshairRenderer = (() => {
     const tickScale = getGrenadeReticleScale(height);
     const gap = (GRENADE_RETICLE.CENTER_GAP / 2) * tickScale;
     const tickSpacing = GRENADE_RETICLE.TICK_INTERVAL * tickScale;
-    const cx = width / 2;
-    const cy = height / 2;
+    const { cx, cy } = getCrosshairLayout(width, height);
     const pad = Math.max(1, tickScale);
 
     drawRulerSegment(ctx, pad, cy, cx - gap, cy, true, tickSpacing, tickScale, color);
