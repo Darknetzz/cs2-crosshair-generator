@@ -6,12 +6,14 @@ const CrosshairRenderer = (() => {
   const INTERNAL_SIZE = 64;
   const PREVIEW_SIZE = 640;
   const ANIMATION_CYCLE_MS = 1800;
+  const CHECKER_TILE = 16;
 
   let animFrameId = null;
   let animCanvas = null;
   let getStateFn = null;
   let getBackgroundFn = null;
   let getOptionsFn = null;
+  let reduceMotion = false;
 
   const GRENADE_RETICLE = {
     REF_HEIGHT: 1080,
@@ -23,6 +25,29 @@ const CrosshairRenderer = (() => {
     MAJOR_EVERY: 5,
   };
 
+  const imageCache = new Map();
+  const loadingImages = new Set();
+  let checkerPattern = null;
+
+  const bgCache = {
+    canvas: null,
+    width: 0,
+    height: 0,
+    mode: null,
+  };
+
+  function initMotionPreference() {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    reduceMotion = mq.matches;
+    mq.addEventListener('change', (event) => {
+      reduceMotion = event.matches;
+    });
+  }
+
+  if (typeof window !== 'undefined') {
+    initMotionPreference();
+  }
+
   function isDynamicStyle(style) {
     return style === 0 || style === 2 || style === 3;
   }
@@ -31,9 +56,21 @@ const CrosshairRenderer = (() => {
     return animFrameId !== null;
   }
 
-  function getDynamicFactor(timestamp) {
+  function getDynamicFactor(timestamp, style) {
+    if (reduceMotion) return 0;
+
     const phase = (timestamp % ANIMATION_CYCLE_MS) / ANIMATION_CYCLE_MS;
-    return (1 - Math.cos(phase * Math.PI * 2)) / 2;
+    const wave = (1 - Math.cos(phase * Math.PI * 2)) / 2;
+
+    if (style === 3) {
+      return Math.pow(wave, 0.45);
+    }
+
+    if (style === 0) {
+      return wave * 0.85;
+    }
+
+    return wave;
   }
 
   function resolveColor(state) {
@@ -162,9 +199,17 @@ const CrosshairRenderer = (() => {
   }
 
   function drawArm(ctx, arm, color, drawOutlineEnabled, outlinePad, scale, dynamic) {
-    const { style, factor, splitDist, splitRatio, innerAlphaMod, outerAlphaMod } = dynamic;
+    const {
+      style,
+      factor,
+      splitDist,
+      splitRatio,
+      innerAlphaMod,
+      outerAlphaMod,
+      useWeaponGap,
+    } = dynamic;
 
-    if (style !== 2 || factor <= 0) {
+    if (style !== 2 || factor <= 0 || !useWeaponGap) {
       drawPart(ctx, arm, color, drawOutlineEnabled, outlinePad, scale);
       return;
     }
@@ -193,11 +238,27 @@ const CrosshairRenderer = (() => {
     }
   }
 
-  const imageCache = new Map();
-
   function drawSolidBackground(ctx, width, height, color) {
     ctx.fillStyle = color;
     ctx.fillRect(0, 0, width, height);
+  }
+
+  function getCheckerPattern() {
+    if (checkerPattern) return checkerPattern;
+
+    const size = CHECKER_TILE * 2;
+    const canvas = document.createElement('canvas');
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#3a3a3a';
+    ctx.fillRect(0, 0, size, size);
+    ctx.fillStyle = '#2a2a2a';
+    ctx.fillRect(CHECKER_TILE, 0, CHECKER_TILE, CHECKER_TILE);
+    ctx.fillRect(0, CHECKER_TILE, CHECKER_TILE, CHECKER_TILE);
+
+    checkerPattern = ctx.createPattern(canvas, 'repeat');
+    return checkerPattern;
   }
 
   function drawImageCover(ctx, width, height, img) {
@@ -231,14 +292,8 @@ const CrosshairRenderer = (() => {
     }
 
     if (mode === 'checker') {
-      const tile = 16;
-      for (let y = 0; y < height; y += tile) {
-        for (let x = 0; x < width; x += tile) {
-          const even = ((x / tile) + (y / tile)) % 2 === 0;
-          ctx.fillStyle = even ? '#3a3a3a' : '#2a2a2a';
-          ctx.fillRect(x, y, tile, tile);
-        }
-      }
+      ctx.fillStyle = getCheckerPattern();
+      ctx.fillRect(0, 0, width, height);
       return;
     }
 
@@ -250,6 +305,47 @@ const CrosshairRenderer = (() => {
     grad.addColorStop(1, '#2a2825');
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, width, height);
+  }
+
+  function ensureImageLoaded(bgId, onReady) {
+    const bg = Backgrounds.getById(bgId);
+    if (!bg || bg.type !== 'image') {
+      onReady?.();
+      return;
+    }
+
+    if (imageCache.has(bgId)) {
+      const img = imageCache.get(bgId);
+      if (img.complete) {
+        onReady?.();
+        return;
+      }
+      img.addEventListener('load', () => onReady?.(), { once: true });
+      img.addEventListener('error', () => onReady?.(), { once: true });
+      return;
+    }
+
+    if (loadingImages.has(bgId)) {
+      const check = () => {
+        const img = imageCache.get(bgId);
+        if (img?.complete) onReady?.();
+        else setTimeout(check, 50);
+      };
+      check();
+      return;
+    }
+
+    loadingImages.add(bgId);
+    const img = new Image();
+    img.decoding = 'async';
+    const done = () => {
+      loadingImages.delete(bgId);
+      onReady?.();
+    };
+    img.onload = done;
+    img.onerror = done;
+    img.src = bg.src;
+    imageCache.set(bgId, img);
   }
 
   function drawBackground(ctx, width, height, mode) {
@@ -266,35 +362,56 @@ const CrosshairRenderer = (() => {
     drawProceduralBackground(ctx, width, height, mode);
   }
 
+  function invalidateBgCache() {
+    bgCache.mode = null;
+  }
+
+  function drawBackgroundCached(ctx, width, height, mode) {
+    if (
+      !bgCache.canvas
+      || bgCache.width !== width
+      || bgCache.height !== height
+      || bgCache.mode !== mode
+    ) {
+      if (!bgCache.canvas) bgCache.canvas = document.createElement('canvas');
+      bgCache.canvas.width = width;
+      bgCache.canvas.height = height;
+      const bgCtx = bgCache.canvas.getContext('2d');
+      drawBackground(bgCtx, width, height, mode);
+      bgCache.width = width;
+      bgCache.height = height;
+      bgCache.mode = mode;
+    }
+
+    ctx.drawImage(bgCache.canvas, 0, 0);
+  }
+
   function preloadImages(onReady) {
-    const items = Backgrounds.getImageItems().filter((item) => !imageCache.has(item.id));
-    if (items.length === 0) {
-      onReady?.();
-      return;
+    onReady?.();
+  }
+
+  function getBaseGap(state) {
+    const style = state.cl_crosshairstyle;
+    const useWeapon = state.cl_crosshairgap_useweaponvalue === 1;
+
+    if (!useWeapon) {
+      if (style === 4) return state.cl_fixedcrosshairgap;
+      if (style === 5) return state.cl_crosshairgap;
     }
 
-    let pending = items.length;
-    const done = () => {
-      pending -= 1;
-      if (pending === 0) onReady?.();
-    };
-
-    for (const item of items) {
-      const img = new Image();
-      img.decoding = 'async';
-      img.onload = done;
-      img.onerror = done;
-      img.src = item.src;
-      imageCache.set(item.id, img);
-    }
+    return state.cl_crosshairgap;
   }
 
   function getEffectiveGap(state, dynamicFactor) {
-    const gap = state.cl_crosshairgap;
-    if (!isDynamicStyle(state.cl_crosshairstyle) || state.cl_crosshairstyle === 2) {
-      return gap;
+    const style = state.cl_crosshairstyle;
+    const baseGap = getBaseGap(state);
+    const useWeapon = state.cl_crosshairgap_useweaponvalue === 1;
+
+    if (!isDynamicStyle(style) || style === 2 || !useWeapon) {
+      return baseGap;
     }
-    return gap + state.cl_crosshair_dynamic_splitdist * dynamicFactor;
+
+    return baseGap + state.cl_crosshair_dynamic_splitdist * dynamicFactor;
   }
 
   function getCrosshairScale(height) {
@@ -321,6 +438,7 @@ const CrosshairRenderer = (() => {
     const drawOutlineEnabled = state.cl_crosshair_drawoutline === 1;
     const outlinePad = state.cl_crosshair_outlinethickness;
     const style = state.cl_crosshairstyle;
+    const useWeaponGap = state.cl_crosshairgap_useweaponvalue === 1;
 
     const dynamic = {
       style,
@@ -329,6 +447,7 @@ const CrosshairRenderer = (() => {
       splitRatio: state.cl_crosshair_dynamic_maxdist_splitratio,
       innerAlphaMod: state.cl_crosshair_dynamic_splitalpha_innermod,
       outerAlphaMod: state.cl_crosshair_dynamic_splitalpha_outermod,
+      useWeaponGap,
     };
 
     const dot = computeDotBounds(thickness, centerX, centerY);
@@ -425,6 +544,49 @@ const CrosshairRenderer = (() => {
     ctx.restore();
   }
 
+  function drawSniperScope(ctx, width, height, state) {
+    const cx = width / 2;
+    const cy = height / 2;
+    const radius = Math.min(width, height) * 0.42;
+    const lineWidth = Math.max(1, state.cl_crosshair_sniper_width * (height / PREVIEW_SIZE) * 8);
+    const color = resolveColor(state);
+
+    ctx.save();
+
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.65)';
+    ctx.beginPath();
+    ctx.rect(0, 0, width, height);
+    ctx.arc(cx, cy, radius, 0, Math.PI * 2, true);
+    ctx.fill('evenodd');
+
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+    ctx.lineWidth = Math.max(1, lineWidth * 0.5);
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+    ctx.stroke();
+
+    ctx.strokeStyle = colorToRgba(color);
+    ctx.lineWidth = lineWidth;
+    ctx.beginPath();
+    ctx.moveTo(cx - radius, cy);
+    ctx.lineTo(cx + radius, cy);
+    ctx.moveTo(cx, cy - radius);
+    ctx.lineTo(cx, cy + radius);
+    ctx.stroke();
+
+    if (state.cl_sniper_show_inaccuracy === 1) {
+      const pulse = reduceMotion ? 0.35 : (Math.sin(performance.now() / 400) + 1) / 2;
+      const inaccuracyRadius = radius * (0.12 + pulse * 0.08);
+      ctx.strokeStyle = `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a * 0.45})`;
+      ctx.lineWidth = Math.max(1, lineWidth * 0.6);
+      ctx.beginPath();
+      ctx.arc(cx, cy, inaccuracyRadius, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+
+    ctx.restore();
+  }
+
   function normalizeRenderOptions(options = {}) {
     const mode = PreviewMode.isValidMode(options.mode)
       ? options.mode
@@ -437,7 +599,13 @@ const CrosshairRenderer = (() => {
     const { mode } = normalizeRenderOptions(options);
 
     ctx.clearRect(0, 0, width, height);
-    drawBackground(ctx, width, height, background);
+    drawBackgroundCached(ctx, width, height, background);
+
+    if (mode === PreviewMode.MODES.SNIPER) {
+      drawSniperScope(ctx, width, height, state);
+      drawUserCrosshair(ctx, width, height, state, 0);
+      return;
+    }
 
     if (mode === PreviewMode.MODES.LINEUP) {
       const enabled = PreviewMode.isLineupEnabled(state);
@@ -459,10 +627,6 @@ const CrosshairRenderer = (() => {
     drawUserCrosshair(ctx, width, height, state, dynamicFactor);
   }
 
-  function drawCrosshair(ctx, width, height, state, background, dynamicFactor = 0) {
-    drawPreview(ctx, width, height, state, background, dynamicFactor);
-  }
-
   /**
    * Render crosshair onto canvas.
    * @param {HTMLCanvasElement} canvas
@@ -476,6 +640,20 @@ const CrosshairRenderer = (() => {
     drawPreview(ctx, canvas.width, canvas.height, state, background, dynamicFactor, options);
   }
 
+  /**
+   * Render a small crosshair preview for preset cards.
+   * @param {HTMLCanvasElement} canvas
+   * @param {object} state
+   * @param {number} [size=40]
+   */
+  function renderMini(canvas, state, size = 40) {
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext('2d');
+    drawSolidBackground(ctx, size, size, '#2a2825');
+    drawUserCrosshair(ctx, size, size, state, 0);
+  }
+
   function animationLoop(timestamp) {
     if (!animCanvas || !getStateFn || !getBackgroundFn) return;
 
@@ -486,12 +664,13 @@ const CrosshairRenderer = (() => {
     }
 
     const options = getOptionsFn?.() ?? {};
-    if (options.mode === PreviewMode.MODES.LINEUP) {
+    if (options.mode !== PreviewMode.MODES.NORMAL) {
       stopAnimation();
       return;
     }
 
-    render(animCanvas, state, getBackgroundFn(), getDynamicFactor(timestamp), options);
+    const factor = getDynamicFactor(timestamp, state.cl_crosshairstyle);
+    render(animCanvas, state, getBackgroundFn(), factor, options);
     animFrameId = requestAnimationFrame(animationLoop);
   }
 
@@ -517,8 +696,11 @@ const CrosshairRenderer = (() => {
 
   return {
     render,
+    renderMini,
     resolveColor,
     preloadImages,
+    ensureImageLoaded,
+    invalidateBgCache,
     isDynamicStyle,
     isAnimating,
     startAnimation,

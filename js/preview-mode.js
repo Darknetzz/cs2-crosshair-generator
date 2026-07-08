@@ -1,11 +1,12 @@
 /**
- * Preview mode (normal crosshair vs grenade lineup reticle).
+ * Preview mode (normal crosshair vs grenade lineup vs sniper scope).
  * Display only — does not affect exported commands.
  */
 const PreviewMode = (() => {
   const MODES = {
     NORMAL: 'normal',
     LINEUP: 'lineup',
+    SNIPER: 'sniper',
   };
 
   const DEFAULT_MODE = MODES.NORMAL;
@@ -19,7 +20,7 @@ const PreviewMode = (() => {
   ];
 
   function isValidMode(mode) {
-    return mode === MODES.NORMAL || mode === MODES.LINEUP;
+    return mode === MODES.NORMAL || mode === MODES.LINEUP || mode === MODES.SNIPER;
   }
 
   function isLineupEnabled(state) {

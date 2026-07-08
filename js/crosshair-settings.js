@@ -240,12 +240,14 @@ const CROSSHAIR_SETTINGS = {
     description: 'Crosshair follows weapon recoil pattern while shooting.',
     type: 'toggle',
     default: 1,
+    previewOnly: true,
   },
   cl_crosshairgap_useweaponvalue: {
     label: 'Weapon gap value',
     description: 'Use per-weapon gap values instead of a fixed gap.',
     type: 'toggle',
     default: 0,
+    previewOnly: true,
   },
   cl_fixedcrosshairgap: {
     label: 'Fixed gap',
@@ -311,12 +313,14 @@ const CROSSHAIR_SETTINGS = {
     description: 'Show the dynamic inaccuracy indicator inside the sniper scope (added Oct 2025).',
     type: 'toggle',
     default: 0,
+    previewOnly: true,
   },
   cl_crosshair_friendly_warning: {
     label: 'Friendly warning',
     description: 'Crosshair warning when aiming at a teammate.',
     type: 'select',
     default: 2,
+    previewOnly: true,
     options: [
       { value: 0, label: 'Off' },
       { value: 1, label: 'On (crosshair only)' },
@@ -346,6 +350,7 @@ const CROSSHAIR_SETTINGS = {
     max: 5,
     step: 0.1,
     enabledWhen: { key: 'cl_grenadecrosshair_smoke', value: 1 },
+    previewOnly: true,
   },
   cl_grenadecrosshair_flash: {
     label: 'Flash lineup reticle',
@@ -363,6 +368,7 @@ const CROSSHAIR_SETTINGS = {
     max: 5,
     step: 0.1,
     enabledWhen: { key: 'cl_grenadecrosshair_flash', value: 1 },
+    previewOnly: true,
   },
   cl_grenadecrosshair_explosive: {
     label: 'HE lineup reticle',
@@ -380,6 +386,7 @@ const CROSSHAIR_SETTINGS = {
     max: 5,
     step: 0.1,
     enabledWhen: { key: 'cl_grenadecrosshair_explosive', value: 1 },
+    previewOnly: true,
   },
   cl_grenadecrosshair_fire: {
     label: 'Fire lineup reticle',
@@ -397,6 +404,7 @@ const CROSSHAIR_SETTINGS = {
     max: 5,
     step: 0.1,
     enabledWhen: { key: 'cl_grenadecrosshair_fire', value: 1 },
+    previewOnly: true,
   },
   cl_grenadecrosshair_decoy: {
     label: 'Decoy lineup reticle',
@@ -414,6 +422,7 @@ const CROSSHAIR_SETTINGS = {
     max: 5,
     step: 0.1,
     enabledWhen: { key: 'cl_grenadecrosshair_decoy', value: 1 },
+    previewOnly: true,
   },
 };
 
@@ -476,4 +485,12 @@ function isSettingAtDefault(key, state) {
   const defaultVal = clampSettingValue(key, CROSSHAIR_SETTINGS[key].default);
   const currentVal = clampSettingValue(key, state[key]);
   return currentVal === defaultVal;
+}
+
+/** Whether two crosshair states are equivalent. */
+function crosshairStatesMatch(a, b) {
+  for (const key of CROSSHAIR_CVAR_ORDER) {
+    if (clampSettingValue(key, a[key]) !== clampSettingValue(key, b[key])) return false;
+  }
+  return true;
 }

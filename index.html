@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>CS2 Crosshair Generator</title>
   <meta name="description" content="Design a Counter-Strike 2 crosshair with live preview and copy console commands instantly.">
+  <meta name="theme-color" content="#0d1117">
+  <meta property="og:title" content="CS2 Crosshair Generator">
+  <meta property="og:description" content="Design a Counter-Strike 2 crosshair with live preview and copy console commands instantly.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230d1117'/%3E%3Crect x='14' y='4' width='4' height='24' fill='%23f97316'/%3E%3Crect x='4' y='14' width='24' height='4' fill='%23f97316'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="css/style.css">
   <script>
     (function () {
@@ -22,6 +27,8 @@
   </script>
 </head>
 <body>
+  <a class="skip-link" href="#settings-panel">Skip to settings</a>
+
   <header class="site-header">
     <div class="site-header-inner">
       <div class="site-header-text">
@@ -29,35 +36,40 @@
         <p class="subtitle">Tweak every crosshair setting, preview it live, and copy the console commands.</p>
       </div>
       <div id="theme-toggle" class="theme-toggle" role="group" aria-label="Color theme">
-        <button type="button" class="theme-btn" data-theme="system">Auto</button>
-        <button type="button" class="theme-btn" data-theme="dark">Dark</button>
-        <button type="button" class="theme-btn" data-theme="light">Light</button>
+        <button type="button" class="theme-btn" data-theme="system" aria-pressed="true">Auto</button>
+        <button type="button" class="theme-btn" data-theme="dark" aria-pressed="false">Dark</button>
+        <button type="button" class="theme-btn" data-theme="light" aria-pressed="false">Light</button>
       </div>
     </div>
   </header>
 
-  <main class="layout">
+  <main class="layout" id="main-content">
     <section class="preview-panel" aria-label="Crosshair preview">
-      <div class="preview-toolbar">
-        <div id="bg-toggle-root" class="bg-toggle-root" aria-label="Preview background"></div>
-        <div class="preview-mode" role="group" aria-label="Preview mode">
-          <span class="toolbar-label">Preview</span>
-          <div class="mode-toggle">
-            <button type="button" class="mode-btn" data-mode="normal">Normal</button>
-            <button type="button" class="mode-btn" data-mode="lineup">Lineup</button>
+      <details class="preview-toolbar-details" open>
+        <summary class="preview-toolbar-summary">Preview options</summary>
+        <div class="preview-toolbar">
+          <div id="bg-toggle-root" class="bg-toggle-root" aria-label="Preview background"></div>
+          <div class="preview-mode" role="group" aria-label="Preview mode">
+            <span class="toolbar-label">Preview</span>
+            <div class="mode-toggle">
+              <button type="button" class="mode-btn" data-mode="normal" aria-pressed="true">Normal</button>
+              <button type="button" class="mode-btn" data-mode="lineup" aria-pressed="false">Lineup</button>
+              <button type="button" class="mode-btn" data-mode="sniper" aria-pressed="false">Sniper</button>
+            </div>
+          </div>
+          <div class="preview-zoom" role="group" aria-label="Preview zoom">
+            <span class="toolbar-label">Zoom</span>
+            <button type="button" id="zoom-out-btn" class="zoom-btn" aria-label="Zoom out">−</button>
+            <span id="zoom-label" class="zoom-label" aria-live="polite">100%</span>
+            <button type="button" id="zoom-in-btn" class="zoom-btn" aria-label="Zoom in">+</button>
+          </div>
+          <div class="color-preview" aria-label="Current crosshair color">
+            <span class="toolbar-label">Color</span>
+            <span id="color-swatch" class="color-swatch" role="img" aria-labelledby="color-swatch-label"></span>
+            <span id="color-swatch-label" class="sr-only">Crosshair color</span>
           </div>
         </div>
-        <div class="preview-zoom" role="group" aria-label="Preview zoom">
-          <span class="toolbar-label">Zoom</span>
-          <button type="button" id="zoom-out-btn" class="zoom-btn" aria-label="Zoom out">−</button>
-          <span id="zoom-label" class="zoom-label" aria-live="polite">100%</span>
-          <button type="button" id="zoom-in-btn" class="zoom-btn" aria-label="Zoom in">+</button>
-        </div>
-        <div class="color-preview" aria-label="Current crosshair color">
-          <span class="toolbar-label">Color</span>
-          <span id="color-swatch" class="color-swatch"></span>
-        </div>
-      </div>
+      </details>
 
       <div class="canvas-wrap">
         <canvas id="preview-canvas" aria-label="Crosshair preview canvas"></canvas>
@@ -69,8 +81,11 @@
       <p id="lineup-note" class="preview-note" hidden>
         Grenade lineup reticle preview — shown after the pin delay, as if you were holding a grenade.
       </p>
+      <p id="sniper-note" class="preview-note" hidden>
+        Sniper scope preview — crosshair lines use your sniper width setting.
+      </p>
       <p class="preview-note muted">
-        Crosshair is shown at true in-game size (64×64 px at 1080p). Recoil follow, weapon gap, and sniper scope behavior are not simulated.
+        Crosshair is shown at true in-game size (64×64 px at 1080p). Recoil follow and weapon gap are not fully simulated.
       </p>
 
       <div class="presets-panel">
@@ -82,8 +97,13 @@
         <div class="presets-section custom-presets-section">
           <div class="presets-section-header">
             <h2 class="presets-heading">My presets</h2>
-            <button type="button" id="save-preset-btn" class="btn btn-compact">Save current</button>
+            <div class="presets-actions">
+              <button type="button" id="export-presets-btn" class="btn btn-compact" hidden>Export</button>
+              <button type="button" id="import-presets-btn" class="btn btn-compact">Import</button>
+              <button type="button" id="save-preset-btn" class="btn btn-compact">Save current</button>
+            </div>
           </div>
+          <input type="file" id="import-presets-input" class="sr-only" accept="application/json,.json">
           <form id="save-preset-form" class="save-preset-form" hidden>
             <label class="sr-only" for="save-preset-name">Preset name</label>
             <input
@@ -103,7 +123,7 @@
       </div>
     </section>
 
-    <section class="controls-panel" aria-label="Crosshair settings">
+    <section class="controls-panel" id="settings-panel" aria-label="Crosshair settings">
       <div id="settings-container" class="settings-container"></div>
     </section>
 
@@ -112,20 +132,21 @@
         <h2>Console commands</h2>
         <div class="action-buttons">
           <button type="button" id="copy-btn" class="btn btn-primary">Copy commands</button>
+          <button type="button" id="copy-minimal-btn" class="btn">Copy changed only</button>
+          <button type="button" id="apply-import-btn" class="btn">Apply pasted</button>
           <button type="button" id="share-btn" class="btn">Share link</button>
           <button type="button" id="reset-btn" class="btn btn-ghost">Reset</button>
         </div>
       </div>
-      <label class="sr-only" for="command-output">Generated crosshair console commands</label>
+      <label class="sr-only" for="command-output">Generated crosshair console commands — paste commands here to import</label>
       <textarea
         id="command-output"
         class="command-output"
-        readonly
         rows="20"
-        aria-live="polite"
+        spellcheck="false"
       ></textarea>
       <p class="commands-hint">
-        Open CS2, press <kbd>~</kbd> to open the console, paste the commands, and press Enter.
+        Edit or paste commands above, then click <strong>Apply pasted</strong>. In CS2, press <kbd>~</kbd> to open the console, paste, and press Enter.
       </p>
     </section>
   </main>
