@@ -286,10 +286,15 @@ const CrosshairRenderer = (() => {
     return gap + state.cl_crosshair_dynamic_splitdist * dynamicFactor;
   }
 
+  function getCrosshairScale(height) {
+    return height / PREVIEW_SIZE;
+  }
+
   function drawCrosshair(ctx, width, height, state, background, dynamicFactor = 0) {
-    const scale = 1;
-    const offsetX = Math.floor((width - INTERNAL_SIZE) / 2);
-    const offsetY = Math.floor((height - INTERNAL_SIZE) / 2);
+    const scale = getCrosshairScale(height);
+    const drawSize = INTERNAL_SIZE * scale;
+    const offsetX = Math.floor((width - drawSize) / 2);
+    const offsetY = Math.floor((height - drawSize) / 2);
     const centerX = Math.floor(INTERNAL_SIZE / 2);
     const centerY = Math.floor(INTERNAL_SIZE / 2);
 
@@ -386,6 +391,7 @@ const CrosshairRenderer = (() => {
     isAnimating,
     startAnimation,
     stopAnimation,
+    getCrosshairScale,
     INTERNAL_SIZE,
     PREVIEW_SIZE,
   };

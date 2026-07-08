@@ -4,7 +4,10 @@
 const CrosshairCommands = (() => {
   function formatValue(key, value) {
     const meta = CROSSHAIR_SETTINGS[key];
-    if (meta.type === 'toggle') return value ? 1 : 0;
+    if (meta.type === 'toggle') {
+      if (meta.consoleFormat === 'bool') return value ? 'true' : 'false';
+      return value ? 1 : 0;
+    }
     if (Number.isInteger(value)) return value;
     return String(value);
   }
