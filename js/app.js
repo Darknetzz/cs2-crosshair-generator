@@ -427,9 +427,12 @@
         loaded = true;
       }
 
-      if (parsed?.previewAspect && PreviewAspect.isValidId(parsed.previewAspect)) {
-        previewAspect = parsed.previewAspect;
-        loaded = true;
+      if (parsed?.previewAspect) {
+        const aspect = PreviewAspect.normalizeId(parsed.previewAspect);
+        if (PreviewAspect.isValidId(aspect)) {
+          previewAspect = aspect;
+          loaded = true;
+        }
       }
 
       if (parsed?.theme === 'system' || parsed?.theme === 'light' || parsed?.theme === 'dark') {
@@ -563,6 +566,7 @@
   }
 
   function setPreviewAspect(id) {
+    id = PreviewAspect.normalizeId(id);
     if (!PreviewAspect.isValidId(id)) return;
     previewAspect = id;
     updateAspectToggle();
