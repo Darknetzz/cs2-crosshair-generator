@@ -452,9 +452,15 @@ body {
   transition: color 0.15s, border-color 0.15s;
 }
 
-.setting-reset-btn:hover {
+.setting-reset-btn:hover:not(:disabled) {
   color: var(--text);
   border-color: var(--accent);
+}
+
+.setting-reset-btn:disabled,
+.setting-reset-btn.is-default {
+  opacity: 0.35;
+  cursor: default;
 }
 
 .setting-reset-btn:focus-visible {

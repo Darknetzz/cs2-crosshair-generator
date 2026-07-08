@@ -358,3 +358,10 @@ function isSettingEnabled(key, state) {
   if (!meta.enabledWhen) return true;
   return state[meta.enabledWhen.key] === meta.enabledWhen.value;
 }
+
+/** Whether a setting matches its default value. */
+function isSettingAtDefault(key, state) {
+  const defaultVal = clampSettingValue(key, CROSSHAIR_SETTINGS[key].default);
+  const currentVal = clampSettingValue(key, state[key]);
+  return currentVal === defaultVal;
+}

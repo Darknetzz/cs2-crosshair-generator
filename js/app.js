@@ -89,6 +89,13 @@
         input.disabled = !enabled;
       });
     }
+
+    document.querySelectorAll('[data-reset-for]').forEach((btn) => {
+      const key = btn.dataset.resetFor;
+      const atDefault = isSettingAtDefault(key, crosshairState);
+      btn.disabled = atDefault;
+      btn.classList.toggle('is-default', atDefault);
+    });
   }
 
   function createRangeControl(key, meta) {
@@ -222,6 +229,7 @@
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'setting-reset-btn';
+    btn.dataset.resetFor = key;
     btn.title = 'Reset to default';
     btn.setAttribute('aria-label', `Reset ${CROSSHAIR_SETTINGS[key].label} to default`);
     btn.textContent = '↺';
