@@ -426,11 +426,16 @@
   }
 
   function createPresetMiniCanvas(state) {
+    const wrap = document.createElement('span');
+    wrap.className = 'preset-preview';
+
     const canvas = document.createElement('canvas');
     canvas.className = 'preset-mini-canvas';
     canvas.setAttribute('aria-hidden', 'true');
-    CrosshairRenderer.renderMini(canvas, state, 48);
-    return canvas;
+    CrosshairRenderer.renderMini(canvas, state, 112);
+
+    wrap.append(canvas);
+    return wrap;
   }
 
   function createPresetLoadButton(preset, subtitle) {
