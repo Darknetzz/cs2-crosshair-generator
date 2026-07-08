@@ -16,12 +16,7 @@
   <main class="layout">
     <section class="preview-panel" aria-label="Crosshair preview">
       <div class="preview-toolbar">
-        <span class="toolbar-label">Background</span>
-        <div class="bg-toggle" role="group" aria-label="Preview background">
-          <button type="button" class="bg-btn active" data-bg="dark">Dark</button>
-          <button type="button" class="bg-btn" data-bg="light">Light</button>
-          <button type="button" class="bg-btn" data-bg="checker">Checker</button>
-        </div>
+        <div id="bg-toggle-root" class="bg-toggle-root" aria-label="Preview background"></div>
         <div class="color-preview" aria-label="Current crosshair color">
           <span class="toolbar-label">Color</span>
           <span id="color-swatch" class="color-swatch"></span>
@@ -33,7 +28,7 @@
       </div>
 
       <p id="style-note" class="preview-note" hidden>
-        Dynamic styles expand while moving or shooting in-game. This preview shows the static frame only.
+        Dynamic preview — crosshair expands as if you were moving or shooting in-game.
       </p>
       <p class="preview-note muted">
         Preview size matches in-game pixels at 1080p. Recoil follow, weapon gap, and sniper scope behavior are not simulated.
@@ -70,6 +65,7 @@
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
   <script src="js/crosshair-settings.js"></script>
+  <script src="js/backgrounds.js"></script>
   <script src="js/crosshair-renderer.js"></script>
   <script src="js/commands.js"></script>
   <script src="js/app.js"></script>

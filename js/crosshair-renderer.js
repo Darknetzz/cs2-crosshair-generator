@@ -4,6 +4,7 @@
  */
 const CrosshairRenderer = (() => {
   const INTERNAL_SIZE = 64;
+  const ANIMATION_CYCLE_MS = 1800;
 
   const PRESET_COLORS = {
     0: [255, 0, 0],
@@ -12,6 +13,24 @@ const CrosshairRenderer = (() => {
     3: [0, 0, 255],
     4: [0, 255, 255],
   };
+
+  let animFrameId = null;
+  let animCanvas = null;
+  let getStateFn = null;
+  let getBackgroundFn = null;
+
+  function isDynamicStyle(style) {
+    return style === 0 || style === 2 || style === 3;
+  }
+
+  function isAnimating() {
+    return animFrameId !== null;
+  }
+
+  function getDynamicFactor(timestamp) {
+    const phase = (timestamp % ANIMATION_CYCLE_MS) / ANIMATION_CYCLE_MS;
+    return (1 - Math.cos(phase * Math.PI * 2)) / 2;
+  }
 
   function resolveColor(state) {
     const useAlpha = state.cl_crosshairusealpha === 1;
@@ -29,6 +48,10 @@ const CrosshairRenderer = (() => {
     }
 
     return { r: rgb[0], g: rgb[1], b: rgb[2], a: alpha };
+  }
+
+  function withAlpha(color, mod) {
+    return { r: color.r, g: color.g, b: color.b, a: color.a * mod };
   }
 
   function computeDotBounds(thickness, centerX, centerY) {
@@ -58,6 +81,59 @@ const CrosshairRenderer = (() => {
     ];
   }
 
+  function splitArm(arm, splitRatio, splitOffset) {
+    const innerRatio = Math.max(0, Math.min(1, splitRatio));
+    const armLen = arm.side === 'left' || arm.side === 'right'
+      ? arm.x1 - arm.x0
+      : arm.y1 - arm.y0;
+    const innerLen = armLen * innerRatio;
+
+    switch (arm.side) {
+      case 'right':
+        return {
+          inner: { x0: arm.x0, y0: arm.y0, x1: arm.x0 + innerLen, y1: arm.y1 },
+          outer: {
+            x0: arm.x0 + innerLen + splitOffset,
+            y0: arm.y0,
+            x1: arm.x0 + armLen + splitOffset,
+            y1: arm.y1,
+          },
+        };
+      case 'left':
+        return {
+          inner: { x0: arm.x1 - innerLen, y0: arm.y0, x1: arm.x1, y1: arm.y1 },
+          outer: {
+            x0: arm.x0 - splitOffset,
+            y0: arm.y0,
+            x1: arm.x1 - innerLen - splitOffset,
+            y1: arm.y1,
+          },
+        };
+      case 'top':
+        return {
+          inner: { x0: arm.x0, y0: arm.y1 - innerLen, x1: arm.x1, y1: arm.y1 },
+          outer: {
+            x0: arm.x0,
+            y0: arm.y0 - splitOffset,
+            x1: arm.x1,
+            y1: arm.y1 - innerLen - splitOffset,
+          },
+        };
+      case 'bottom':
+        return {
+          inner: { x0: arm.x0, y0: arm.y0, x1: arm.x1, y1: arm.y0 + innerLen },
+          outer: {
+            x0: arm.x0,
+            y0: arm.y0 + innerLen + splitOffset,
+            x1: arm.x1,
+            y1: arm.y1 + splitOffset,
+          },
+        };
+      default:
+        return { inner: arm, outer: null };
+    }
+  }
+
   function drawRect(ctx, rect, color, offsetX, offsetY) {
     const w = rect.x1 - rect.x0;
     const h = rect.y1 - rect.y0;
@@ -76,10 +152,79 @@ const CrosshairRenderer = (() => {
     }, { r: 0, g: 0, b: 0, a: 1 }, offsetX, offsetY);
   }
 
-  function drawBackground(ctx, width, height, mode) {
+  function drawPart(ctx, rect, color, drawOutlineEnabled, outlinePad, offsetX, offsetY) {
+    if (drawOutlineEnabled) drawOutline(ctx, rect, outlinePad, offsetX, offsetY);
+    drawRect(ctx, rect, color, offsetX, offsetY);
+  }
+
+  function drawArm(ctx, arm, color, drawOutlineEnabled, outlinePad, offsetX, offsetY, dynamic) {
+    const { style, factor, splitDist, splitRatio, innerAlphaMod, outerAlphaMod } = dynamic;
+
+    if (style !== 2 || factor <= 0) {
+      drawPart(ctx, arm, color, drawOutlineEnabled, outlinePad, offsetX, offsetY);
+      return;
+    }
+
+    const splitOffset = splitDist * factor;
+    const { inner, outer } = splitArm(arm, splitRatio, splitOffset);
+
+    drawPart(
+      ctx,
+      inner,
+      withAlpha(color, innerAlphaMod),
+      drawOutlineEnabled,
+      outlinePad,
+      offsetX,
+      offsetY,
+    );
+
+    if (outer && splitRatio < 1) {
+      drawPart(
+        ctx,
+        outer,
+        withAlpha(color, outerAlphaMod),
+        drawOutlineEnabled,
+        outlinePad,
+        offsetX,
+        offsetY,
+      );
+    }
+  }
+
+  const imageCache = new Map();
+
+  function drawSolidBackground(ctx, width, height, color) {
+    ctx.fillStyle = color;
+    ctx.fillRect(0, 0, width, height);
+  }
+
+  function drawImageCover(ctx, width, height, img) {
+    if (!img?.complete || !img.naturalWidth) return false;
+
+    const sw = img.naturalWidth;
+    const sh = img.naturalHeight;
+    const scale = Math.max(width / sw, height / sh);
+    const dw = sw * scale;
+    const dh = sh * scale;
+    const dx = (width - dw) / 2;
+    const dy = (height - dh) / 2;
+    ctx.drawImage(img, dx, dy, dw, dh);
+    return true;
+  }
+
+  function drawProceduralBackground(ctx, width, height, mode) {
     if (mode === 'light') {
-      ctx.fillStyle = '#c4b89a';
-      ctx.fillRect(0, 0, width, height);
+      drawSolidBackground(ctx, width, height, '#c4b89a');
+      return;
+    }
+
+    if (mode === 'black') {
+      drawSolidBackground(ctx, width, height, '#000000');
+      return;
+    }
+
+    if (mode === 'white') {
+      drawSolidBackground(ctx, width, height, '#ffffff');
       return;
     }
 
@@ -95,7 +240,6 @@ const CrosshairRenderer = (() => {
       return;
     }
 
-    // dark (default — resembles in-game wall)
     const grad = ctx.createRadialGradient(
       width / 2, height / 2, 0,
       width / 2, height / 2, width * 0.6,
@@ -106,17 +250,52 @@ const CrosshairRenderer = (() => {
     ctx.fillRect(0, 0, width, height);
   }
 
-  /**
-   * Render crosshair onto canvas.
-   * @param {HTMLCanvasElement} canvas
-   * @param {object} state - crosshair cvar state
-   * @param {string} background - 'dark' | 'light' | 'checker'
-   */
-  function render(canvas, state, background = 'dark') {
-    const ctx = canvas.getContext('2d');
-    const displaySize = canvas.width;
-    // In-game, the 64×64 crosshair coordinate space maps 1:1 to screen pixels.
-    // Center that region inside the larger preview canvas instead of stretching it.
+  function drawBackground(ctx, width, height, mode) {
+    const bg = Backgrounds.getById(mode);
+
+    if (bg.type === 'image') {
+      const img = imageCache.get(bg.id);
+      if (!drawImageCover(ctx, width, height, img)) {
+        drawProceduralBackground(ctx, width, height, Backgrounds.DEFAULT_ID);
+      }
+      return;
+    }
+
+    drawProceduralBackground(ctx, width, height, mode);
+  }
+
+  function preloadImages(onReady) {
+    const items = Backgrounds.getImageItems().filter((item) => !imageCache.has(item.id));
+    if (items.length === 0) {
+      onReady?.();
+      return;
+    }
+
+    let pending = items.length;
+    const done = () => {
+      pending -= 1;
+      if (pending === 0) onReady?.();
+    };
+
+    for (const item of items) {
+      const img = new Image();
+      img.decoding = 'async';
+      img.onload = done;
+      img.onerror = done;
+      img.src = item.src;
+      imageCache.set(item.id, img);
+    }
+  }
+
+  function getEffectiveGap(state, dynamicFactor) {
+    const gap = state.cl_crosshairgap;
+    if (!isDynamicStyle(state.cl_crosshairstyle) || state.cl_crosshairstyle === 2) {
+      return gap;
+    }
+    return gap + state.cl_crosshair_dynamic_splitdist * dynamicFactor;
+  }
+
+  function drawCrosshair(ctx, displaySize, state, background, dynamicFactor = 0) {
     const offsetX = Math.floor((displaySize - INTERNAL_SIZE) / 2);
     const offsetY = Math.floor((displaySize - INTERNAL_SIZE) / 2);
     const centerX = Math.floor(INTERNAL_SIZE / 2);
@@ -127,31 +306,89 @@ const CrosshairRenderer = (() => {
 
     const color = resolveColor(state);
     const thickness = state.cl_crosshairthickness;
-    const gap = state.cl_crosshairgap;
+    const gap = getEffectiveGap(state, dynamicFactor);
     const size = state.cl_crosshairsize;
     const showDot = state.cl_crosshairdot === 1;
     const tShape = state.cl_crosshair_t === 1;
     const drawOutlineEnabled = state.cl_crosshair_drawoutline === 1;
     const outlinePad = state.cl_crosshair_outlinethickness;
+    const style = state.cl_crosshairstyle;
+
+    const dynamic = {
+      style,
+      factor: dynamicFactor,
+      splitDist: state.cl_crosshair_dynamic_splitdist,
+      splitRatio: state.cl_crosshair_dynamic_maxdist_splitratio,
+      innerAlphaMod: state.cl_crosshair_dynamic_splitalpha_innermod,
+      outerAlphaMod: state.cl_crosshair_dynamic_splitalpha_outermod,
+    };
 
     const dot = computeDotBounds(thickness, centerX, centerY);
     const arms = computeArms(dot, gap, size);
 
-    // Draw dot
     if (showDot) {
-      if (drawOutlineEnabled) drawOutline(ctx, dot, outlinePad, offsetX, offsetY);
-      drawRect(ctx, dot, color, offsetX, offsetY);
+      drawPart(ctx, dot, color, drawOutlineEnabled, outlinePad, offsetX, offsetY);
     }
 
-    // Draw arms (skip if size is 0 and no visible length)
     if (size !== 0) {
       for (const arm of arms) {
         if (tShape && arm.side === 'top') continue;
-        if (drawOutlineEnabled) drawOutline(ctx, arm, outlinePad, offsetX, offsetY);
-        drawRect(ctx, arm, color, offsetX, offsetY);
+        drawArm(ctx, arm, color, drawOutlineEnabled, outlinePad, offsetX, offsetY, dynamic);
       }
     }
   }
 
-  return { render, resolveColor, INTERNAL_SIZE };
+  /**
+   * Render crosshair onto canvas.
+   * @param {HTMLCanvasElement} canvas
+   * @param {object} state - crosshair cvar state
+   * @param {string} background - background id from Backgrounds config
+   * @param {number} [dynamicFactor=0] - 0 = resting, 1 = full movement spread
+   */
+  function render(canvas, state, background = 'dark', dynamicFactor = 0) {
+    const ctx = canvas.getContext('2d');
+    drawCrosshair(ctx, canvas.width, state, background, dynamicFactor);
+  }
+
+  function animationLoop(timestamp) {
+    if (!animCanvas || !getStateFn || !getBackgroundFn) return;
+
+    const state = getStateFn();
+    if (!isDynamicStyle(state.cl_crosshairstyle)) {
+      stopAnimation();
+      return;
+    }
+
+    render(animCanvas, state, getBackgroundFn(), getDynamicFactor(timestamp));
+    animFrameId = requestAnimationFrame(animationLoop);
+  }
+
+  function startAnimation(canvas, getState, getBackground) {
+    animCanvas = canvas;
+    getStateFn = getState;
+    getBackgroundFn = getBackground;
+    if (isAnimating()) return;
+    animFrameId = requestAnimationFrame(animationLoop);
+  }
+
+  function stopAnimation() {
+    if (animFrameId !== null) {
+      cancelAnimationFrame(animFrameId);
+      animFrameId = null;
+    }
+    animCanvas = null;
+    getStateFn = null;
+    getBackgroundFn = null;
+  }
+
+  return {
+    render,
+    resolveColor,
+    preloadImages,
+    isDynamicStyle,
+    isAnimating,
+    startAnimation,
+    stopAnimation,
+    INTERNAL_SIZE,
+  };
 })();

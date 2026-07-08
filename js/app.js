@@ -19,7 +19,7 @@
     toast: document.getElementById('toast'),
     colorSwatch: document.getElementById('color-swatch'),
     styleNote: document.getElementById('style-note'),
-    bgButtons: document.querySelectorAll('[data-bg]'),
+    bgToggleRoot: document.getElementById('bg-toggle-root'),
   };
 
   function showToast(message) {
@@ -30,8 +30,7 @@
   }
 
   function updateStyleNote() {
-    const style = crosshairState.cl_crosshairstyle;
-    const isDynamic = style >= 0 && style <= 3;
+    const isDynamic = CrosshairRenderer.isDynamicStyle(crosshairState.cl_crosshairstyle);
     els.styleNote.hidden = !isDynamic;
   }
 
@@ -41,9 +40,23 @@
   }
 
   function updatePreview() {
-    CrosshairRenderer.render(els.previewCanvas, crosshairState, previewBackground);
     updateColorSwatch();
     updateStyleNote();
+    managePreviewAnimation();
+  }
+
+  function managePreviewAnimation() {
+    if (CrosshairRenderer.isDynamicStyle(crosshairState.cl_crosshairstyle)) {
+      CrosshairRenderer.startAnimation(
+        els.previewCanvas,
+        () => crosshairState,
+        () => previewBackground,
+      );
+      return;
+    }
+
+    CrosshairRenderer.stopAnimation();
+    CrosshairRenderer.render(els.previewCanvas, crosshairState, previewBackground);
   }
 
   function updateCommands() {
@@ -293,14 +306,45 @@
     }
   }
 
-  function initBackgroundToggles() {
-    els.bgButtons.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        previewBackground = btn.dataset.bg;
-        els.bgButtons.forEach((b) => b.classList.toggle('active', b === btn));
-        updatePreview();
-      });
+  function setPreviewBackground(id) {
+    if (!Backgrounds.isValidId(id)) return;
+    previewBackground = id;
+    els.bgToggleRoot.querySelectorAll('[data-bg]').forEach((btn) => {
+      btn.classList.toggle('active', btn.dataset.bg === id);
     });
+    updatePreview();
+  }
+
+  function buildBackgroundToggles() {
+    els.bgToggleRoot.replaceChildren();
+
+    for (const group of Backgrounds.GROUPS) {
+      const groupEl = document.createElement('div');
+      groupEl.className = 'bg-group';
+
+      const label = document.createElement('span');
+      label.className = 'bg-group-label';
+      label.textContent = group.label;
+
+      const toggle = document.createElement('div');
+      toggle.className = 'bg-toggle';
+      toggle.setAttribute('role', 'group');
+      toggle.setAttribute('aria-label', `${group.label} backgrounds`);
+
+      for (const item of group.items) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `bg-btn${group.id === 'maps' ? ' bg-btn-map' : ''}`;
+        btn.dataset.bg = item.id;
+        btn.textContent = item.label;
+        btn.classList.toggle('active', item.id === previewBackground);
+        btn.addEventListener('click', () => setPreviewBackground(item.id));
+        toggle.append(btn);
+      }
+
+      groupEl.append(label, toggle);
+      els.bgToggleRoot.append(groupEl);
+    }
   }
 
   function init() {
@@ -308,13 +352,14 @@
     if (!fromUrl) loadFromStorage();
 
     buildSettingsUI();
-    initBackgroundToggles();
+    buildBackgroundToggles();
 
     els.copyBtn.addEventListener('click', copyCommands);
     els.resetBtn.addEventListener('click', resetToDefaults);
     els.shareBtn.addEventListener('click', shareLink);
 
     refresh();
+    CrosshairRenderer.preloadImages(updatePreview);
   }
 
   document.addEventListener('DOMContentLoaded', init);
