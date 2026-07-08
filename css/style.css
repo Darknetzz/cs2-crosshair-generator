@@ -662,6 +662,7 @@ select {
   padding: 1rem;
   box-shadow: var(--shadow);
   min-width: 0;
+  max-height: calc(100vh - 2rem);
 }
 
 .commands-header {
@@ -738,7 +739,7 @@ select {
   background: var(--bg);
   color: var(--text);
   resize: vertical;
-  min-height: 14rem;
+  min-height: 22rem;
 }
 
 @media (max-width: 1100px) {
