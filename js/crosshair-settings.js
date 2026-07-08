@@ -52,7 +52,7 @@ const CROSSHAIR_GROUPS = [
     label: 'Sniper & Misc',
     settings: [
       'cl_crosshair_sniper_width',
-      'cl_crosshair_sniper_show_normal_inaccuracy',
+      'cl_sniper_show_inaccuracy',
       'cl_crosshair_friendly_warning',
     ],
   },
@@ -254,9 +254,9 @@ const CROSSHAIR_SETTINGS = {
     max: 5,
     step: 1,
   },
-  cl_crosshair_sniper_show_normal_inaccuracy: {
-    label: 'Sniper show inaccuracy',
-    description: 'Show normal inaccuracy spread while scoped.',
+  cl_sniper_show_inaccuracy: {
+    label: 'Scoped inaccuracy',
+    description: 'Show the dynamic inaccuracy indicator inside the sniper scope (added Oct 2025).',
     type: 'toggle',
     default: 0,
   },
