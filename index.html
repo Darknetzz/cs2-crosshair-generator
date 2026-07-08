@@ -6,11 +6,34 @@
   <title>CS2 Crosshair Generator</title>
   <meta name="description" content="Design a Counter-Strike 2 crosshair with live preview and copy console commands instantly.">
   <link rel="stylesheet" href="css/style.css">
+  <script>
+    (function () {
+      try {
+        const raw = localStorage.getItem('cs2-crosshair-state');
+        if (!raw) return;
+        const parsed = JSON.parse(raw);
+        if (parsed.theme === 'light' || parsed.theme === 'dark') {
+          document.documentElement.dataset.theme = parsed.theme;
+        }
+      } catch {
+        // ignore invalid storage
+      }
+    })();
+  </script>
 </head>
 <body>
   <header class="site-header">
-    <h1>CS2 Crosshair Generator</h1>
-    <p class="subtitle">Tweak every crosshair setting, preview it live, and copy the console commands.</p>
+    <div class="site-header-inner">
+      <div class="site-header-text">
+        <h1>CS2 Crosshair Generator</h1>
+        <p class="subtitle">Tweak every crosshair setting, preview it live, and copy the console commands.</p>
+      </div>
+      <div id="theme-toggle" class="theme-toggle" role="group" aria-label="Color theme">
+        <button type="button" class="theme-btn" data-theme="system">Auto</button>
+        <button type="button" class="theme-btn" data-theme="dark">Dark</button>
+        <button type="button" class="theme-btn" data-theme="light">Light</button>
+      </div>
+    </div>
   </header>
 
   <main class="layout">

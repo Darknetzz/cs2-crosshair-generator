@@ -25,8 +25,13 @@ Then visit `http://localhost:8080`.
 
 1. Adjust settings in the right panel, or click a **Pro preset**
 2. Pick a preview background to test visibility
-3. Click **Copy commands**
-4. In CS2, press `` ` `` to open the console, paste, and press Enter
+3. Use **Auto / Dark / Light** in the header to change the page theme (saved automatically)
+4. Click **Copy commands**
+5. In CS2, press `` ` `` to open the console, paste, and press Enter
+
+## Theme
+
+The page defaults to **Auto**, which follows your system light/dark preference. Use the **Auto / Dark / Light** buttons in the header to override it. Your choice is saved in `localStorage` with your other settings.
 
 ## Project structure
 

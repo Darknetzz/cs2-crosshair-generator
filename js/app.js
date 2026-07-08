@@ -7,6 +7,7 @@
 
   let crosshairState = createDefaultCrosshairState();
   let previewBackground = 'dark';
+  let colorTheme = 'system';
   let suppressPersist = false;
 
   const els = {
@@ -21,6 +22,7 @@
     styleNote: document.getElementById('style-note'),
     bgToggleRoot: document.getElementById('bg-toggle-root'),
     presetsGrid: document.getElementById('presets-grid'),
+    themeToggle: document.getElementById('theme-toggle'),
   };
 
   function showToast(message) {
@@ -392,6 +394,11 @@
         loaded = true;
       }
 
+      if (parsed?.theme === 'system' || parsed?.theme === 'light' || parsed?.theme === 'dark') {
+        colorTheme = parsed.theme;
+        loaded = true;
+      }
+
       return loaded;
     } catch {
       return false;
@@ -403,6 +410,7 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify({
         crosshair: crosshairState,
         previewBackground,
+        theme: colorTheme,
       }));
       const url = new URL(window.location.href);
       url.searchParams.set(URL_PARAM, CrosshairCommands.toUrlParam(crosshairState));
@@ -439,13 +447,41 @@
     suppressPersist = false;
   }
 
+  function applyColorTheme(theme) {
+    if (theme === 'light' || theme === 'dark') {
+      document.documentElement.dataset.theme = theme;
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+    }
+  }
+
+  function setColorTheme(theme) {
+    if (theme !== 'system' && theme !== 'light' && theme !== 'dark') return;
+    colorTheme = theme;
+    applyColorTheme(theme);
+    els.themeToggle?.querySelectorAll('[data-theme]').forEach((btn) => {
+      btn.classList.toggle('active', btn.dataset.theme === theme);
+    });
+    if (!suppressPersist) persistState();
+  }
+
+  function initThemeToggle() {
+    els.themeToggle?.querySelectorAll('[data-theme]').forEach((btn) => {
+      btn.classList.toggle('active', btn.dataset.theme === colorTheme);
+      btn.addEventListener('click', () => setColorTheme(btn.dataset.theme));
+    });
+    applyColorTheme(colorTheme);
+  }
+
   function resetToDefaults() {
     crosshairState = createDefaultCrosshairState();
     previewBackground = Backgrounds.DEFAULT_ID;
+    colorTheme = 'system';
     syncControlsFromState();
     els.bgToggleRoot.querySelectorAll('[data-bg]').forEach((btn) => {
       btn.classList.toggle('active', btn.dataset.bg === previewBackground);
     });
+    setColorTheme(colorTheme);
     refresh();
     showToast('Reset to defaults');
   }
@@ -527,6 +563,7 @@
     loadFromUrl();
 
     initPreviewCanvas();
+    initThemeToggle();
     buildPresetsUI();
     buildSettingsUI();
     buildBackgroundToggles();
