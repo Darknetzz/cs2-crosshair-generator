@@ -64,28 +64,28 @@
         <div id="presets-grid" class="presets-grid" role="list"></div>
       </div>
       <div id="settings-container" class="settings-container"></div>
+    </section>
 
-      <div class="commands-panel">
-        <div class="commands-header">
-          <h2>Console commands</h2>
-          <div class="action-buttons">
-            <button type="button" id="copy-btn" class="btn btn-primary">Copy commands</button>
-            <button type="button" id="share-btn" class="btn">Share link</button>
-            <button type="button" id="reset-btn" class="btn btn-ghost">Reset</button>
-          </div>
+    <section class="commands-panel" aria-label="Console commands">
+      <div class="commands-header">
+        <h2>Console commands</h2>
+        <div class="action-buttons">
+          <button type="button" id="copy-btn" class="btn btn-primary">Copy commands</button>
+          <button type="button" id="share-btn" class="btn">Share link</button>
+          <button type="button" id="reset-btn" class="btn btn-ghost">Reset</button>
         </div>
-        <label class="sr-only" for="command-output">Generated crosshair console commands</label>
-        <textarea
-          id="command-output"
-          class="command-output"
-          readonly
-          rows="8"
-          aria-live="polite"
-        ></textarea>
-        <p class="commands-hint">
-          Open CS2, press <kbd>~</kbd> to open the console, paste the commands, and press Enter.
-        </p>
       </div>
+      <label class="sr-only" for="command-output">Generated crosshair console commands</label>
+      <textarea
+        id="command-output"
+        class="command-output"
+        readonly
+        rows="12"
+        aria-live="polite"
+      ></textarea>
+      <p class="commands-hint">
+        Open CS2, press <kbd>~</kbd> to open the console, paste the commands, and press Enter.
+      </p>
     </section>
   </main>
 
