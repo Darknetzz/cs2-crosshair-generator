@@ -3,6 +3,8 @@
  */
 const CustomPresets = (() => {
   const MAX_PRESETS = 20;
+  const DEFAULT_LABEL_PREFIX = 'Preset ';
+  const DEFAULT_LABEL_PATTERN = /^Preset (\d+)$/i;
 
   function createId() {
     return `custom-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
@@ -75,6 +77,15 @@ const CustomPresets = (() => {
     return presets.filter((preset) => preset.id !== id);
   }
 
+  function getNextDefaultLabel(presets) {
+    let max = 0;
+    for (const preset of presets) {
+      const match = preset.label.match(DEFAULT_LABEL_PATTERN);
+      if (match) max = Math.max(max, Number(match[1]));
+    }
+    return `${DEFAULT_LABEL_PREFIX}${max + 1}`;
+  }
+
   return {
     MAX_PRESETS,
     parseList,
@@ -83,5 +94,6 @@ const CustomPresets = (() => {
     upsertPreset,
     removePreset,
     findByLabel,
+    getNextDefaultLabel,
   };
 })();

@@ -418,8 +418,9 @@
   function showSavePresetForm() {
     els.savePresetForm.hidden = false;
     els.savePresetBtn.hidden = true;
-    els.savePresetName.value = '';
+    els.savePresetName.value = CustomPresets.getNextDefaultLabel(customPresets);
     els.savePresetName.focus();
+    els.savePresetName.select();
   }
 
   function hideSavePresetForm() {
