@@ -1,6 +1,32 @@
 /**
  * CS2 crosshair cvar definitions — single source of truth for defaults, ranges, and UI metadata.
  */
+const CROSSHAIR_PRESET_COLORS = {
+  0: [255, 0, 0],
+  1: [0, 255, 0],
+  2: [255, 255, 0],
+  3: [0, 0, 255],
+  4: [0, 255, 255],
+};
+
+const CHANNEL_SWATCH_COLORS = {
+  cl_crosshaircolor_r: '#ff4444',
+  cl_crosshaircolor_g: '#44dd44',
+  cl_crosshaircolor_b: '#4488ff',
+};
+
+function presetColorToCss(value) {
+  const rgb = CROSSHAIR_PRESET_COLORS[value];
+  return rgb ? `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})` : null;
+}
+
+function getCrosshairSwatchColor(state) {
+  if (state.cl_crosshaircolor === 5) {
+    return `rgb(${state.cl_crosshaircolor_r}, ${state.cl_crosshaircolor_g}, ${state.cl_crosshaircolor_b})`;
+  }
+  return presetColorToCss(state.cl_crosshaircolor) ?? presetColorToCss(1);
+}
+
 const CROSSHAIR_GROUPS = [
   {
     id: 'shape',

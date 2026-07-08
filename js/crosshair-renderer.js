@@ -7,14 +7,6 @@ const CrosshairRenderer = (() => {
   const PREVIEW_SIZE = 512;
   const ANIMATION_CYCLE_MS = 1800;
 
-  const PRESET_COLORS = {
-    0: [255, 0, 0],
-    1: [0, 255, 0],
-    2: [255, 255, 0],
-    3: [0, 0, 255],
-    4: [0, 255, 255],
-  };
-
   let animFrameId = null;
   let animCanvas = null;
   let getStateFn = null;
@@ -45,7 +37,7 @@ const CrosshairRenderer = (() => {
         state.cl_crosshaircolor_b,
       ];
     } else {
-      rgb = PRESET_COLORS[state.cl_crosshaircolor] || PRESET_COLORS[1];
+      rgb = CROSSHAIR_PRESET_COLORS[state.cl_crosshaircolor] || CROSSHAIR_PRESET_COLORS[1];
     }
 
     return { r: rgb[0], g: rgb[1], b: rgb[2], a: alpha };

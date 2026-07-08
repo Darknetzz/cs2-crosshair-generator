@@ -68,6 +68,7 @@
     updatePreview();
     updateCommands();
     updateControlStates();
+    updateColorPresetButtons();
     if (!suppressPersist) persistState();
   }
 
@@ -141,6 +142,57 @@
     return label;
   }
 
+  function createColorSwatchDot(color, className = 'color-swatch-dot') {
+    const dot = document.createElement('span');
+    dot.className = className;
+    dot.style.background = color;
+    dot.setAttribute('aria-hidden', 'true');
+    return dot;
+  }
+
+  function updateColorPresetButtons() {
+    const wrap = document.getElementById('input-cl_crosshaircolor');
+    if (!wrap) return;
+
+    const selected = crosshairState.cl_crosshaircolor;
+    wrap.querySelectorAll('[data-color-value]').forEach((btn) => {
+      const value = Number(btn.dataset.colorValue);
+      btn.classList.toggle('active', value === selected);
+
+      if (value === 5) {
+        btn.querySelector('.color-swatch-dot')?.style.setProperty(
+          'background',
+          getCrosshairSwatchColor(crosshairState),
+        );
+      }
+    });
+  }
+
+  function createColorPresetControl(key, meta) {
+    const wrap = document.createElement('div');
+    wrap.className = 'color-preset-toggle';
+    wrap.id = `input-${key}`;
+    wrap.setAttribute('role', 'group');
+    wrap.setAttribute('aria-label', meta.label);
+
+    for (const opt of meta.options) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'color-preset-btn';
+      btn.dataset.colorValue = opt.value;
+      btn.classList.toggle('active', opt.value === crosshairState[key]);
+
+      const swatchColor = opt.value === 5
+        ? getCrosshairSwatchColor(crosshairState)
+        : presetColorToCss(opt.value);
+      btn.append(createColorSwatchDot(swatchColor), document.createTextNode(opt.label));
+      btn.addEventListener('click', () => setState(key, opt.value));
+      wrap.append(btn);
+    }
+
+    return wrap;
+  }
+
   function createSelectControl(key, meta) {
     const select = document.createElement('select');
     select.id = `input-${key}`;
@@ -168,8 +220,18 @@
 
     const label = document.createElement('label');
     label.className = 'setting-label';
-    label.htmlFor = `input-${key}`;
-    label.textContent = meta.label;
+    if (key !== 'cl_crosshaircolor') {
+      label.htmlFor = `input-${key}`;
+    }
+
+    if (key in CHANNEL_SWATCH_COLORS) {
+      label.classList.add('setting-label-with-swatch');
+      label.append(createColorSwatchDot(CHANNEL_SWATCH_COLORS[key], 'setting-label-dot'));
+    }
+
+    const labelText = document.createElement('span');
+    labelText.textContent = meta.label;
+    label.append(labelText);
 
     const desc = document.createElement('span');
     desc.className = 'setting-desc';
@@ -184,7 +246,9 @@
     } else if (meta.type === 'toggle') {
       control = createToggleControl(key);
     } else if (meta.type === 'select') {
-      control = createSelectControl(key, meta);
+      control = key === 'cl_crosshaircolor'
+        ? createColorPresetControl(key, meta)
+        : createSelectControl(key, meta);
     }
 
     row.append(labelWrap, control);
@@ -310,7 +374,11 @@
       if (meta.type === 'toggle') {
         input.checked = val === 1;
       } else if (meta.type === 'select') {
-        input.value = String(val);
+        if (key === 'cl_crosshaircolor') {
+          updateColorPresetButtons();
+        } else {
+          input.value = String(val);
+        }
       } else if (meta.type === 'range') {
         input.value = val;
         const row = input.closest('.setting-row');
