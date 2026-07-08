@@ -139,6 +139,7 @@
   }
 
   function updateCommands() {
+    if (document.activeElement === els.commandOutput) return;
     els.commandOutput.value = CrosshairCommands.toMultilineString(crosshairState);
   }
 
