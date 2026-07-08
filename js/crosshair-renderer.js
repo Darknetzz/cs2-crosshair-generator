@@ -4,7 +4,7 @@
  */
 const CrosshairRenderer = (() => {
   const INTERNAL_SIZE = 64;
-  const PREVIEW_SIZE = 512;
+  const PREVIEW_SIZE = 640;
   const ANIMATION_CYCLE_MS = 1800;
 
   let animFrameId = null;

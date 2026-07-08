@@ -427,12 +427,9 @@
         loaded = true;
       }
 
-      if (parsed?.previewAspect) {
-        const aspect = PreviewAspect.normalizeId(parsed.previewAspect);
-        if (PreviewAspect.isValidId(aspect)) {
-          previewAspect = aspect;
-          loaded = true;
-        }
+      if (parsed?.previewAspect && PreviewAspect.isValidId(parsed.previewAspect)) {
+        previewAspect = parsed.previewAspect;
+        loaded = true;
       }
 
       if (parsed?.theme === 'system' || parsed?.theme === 'light' || parsed?.theme === 'dark') {
@@ -566,7 +563,6 @@
   }
 
   function setPreviewAspect(id) {
-    id = PreviewAspect.normalizeId(id);
     if (!PreviewAspect.isValidId(id)) return;
     previewAspect = id;
     updateAspectToggle();
@@ -582,10 +578,20 @@
   }
 
   function initAspectToggle() {
+    const label = els.aspectToggle?.querySelector('.toolbar-label');
+    if (!els.aspectToggle || !label) return;
+
+    els.aspectToggle.replaceChildren(label);
+    for (const option of PreviewAspect.OPTIONS) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'aspect-btn';
+      btn.dataset.aspect = option.id;
+      btn.textContent = option.label;
+      btn.addEventListener('click', () => setPreviewAspect(option.id));
+      els.aspectToggle.append(btn);
+    }
     updateAspectToggle();
-    els.aspectToggle?.querySelectorAll('[data-aspect]').forEach((btn) => {
-      btn.addEventListener('click', () => setPreviewAspect(btn.dataset.aspect));
-    });
   }
 
   function buildBackgroundToggles() {
@@ -627,6 +633,7 @@
     );
     els.previewCanvas.width = width;
     els.previewCanvas.height = height;
+    els.previewCanvas.closest('.canvas-wrap')?.setAttribute('data-aspect', previewAspect);
   }
 
   function initPreviewCanvas() {
