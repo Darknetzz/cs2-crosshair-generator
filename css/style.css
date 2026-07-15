@@ -61,6 +61,11 @@ body {
   line-height: 1.5;
 }
 
+/* Win over component display rules (flex/grid) that would unhide elements */
+[hidden] {
+  display: none !important;
+}
+
 .skip-link {
   position: absolute;
   top: -100%;
@@ -565,6 +570,64 @@ body {
 .viewmodel-preview {
   display: flex;
   flex-direction: column;
+  gap: 0.65rem;
+}
+
+.viewmodel-weapon-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.viewmodel-canvas-wrap {
+  position: relative;
+  aspect-ratio: 3440 / 1440;
+}
+
+.viewmodel-aim {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  pointer-events: none;
+  opacity: 0.45;
+  background:
+    linear-gradient(#fff, #fff) center/100% 1px no-repeat,
+    linear-gradient(#fff, #fff) center/1px 100% no-repeat;
+}
+
+.viewmodel-hud {
+  position: absolute;
+  top: 0.65rem;
+  left: 0.75rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.72);
+  font: 600 0.72rem/1.35 var(--font);
+  letter-spacing: 0.01em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.65);
+  pointer-events: none;
+  white-space: pre;
+}
+
+.viewmodel-loading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(13, 17, 23, 0.55);
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+.viewmodel-loading[hidden] {
+  display: none !important;
 }
 
 .preview-note {
@@ -788,7 +851,7 @@ body {
 .settings-container {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 1rem;
 }
 
 .settings-group {

@@ -1,221 +1,322 @@
 /**
- * Canvas renderer for an approximate CS2 first-person viewmodel preview.
- * Maps viewmodel_fov / offset_x / offset_y / offset_z onto a stylized rifle silhouette.
+ * CS2 viewmodel preview from real in-game screenshot plates.
+ * Blends FOV / offset extremes and snaps to Desktop / Classic preset shots.
  */
 const ViewmodelRenderer = (() => {
   const PREVIEW_SIZE = 640;
+  const ASPECT = 3440 / 1440;
+  const BASE = 'assets/viewmodels';
 
-  const FOV_MIN = 54;
-  const FOV_MAX = 68;
-  const OFFSET_X = { min: -2.5, max: 2.5 };
-  const OFFSET_Y = { min: -2, max: 2 };
-  const OFFSET_Z = { min: -2, max: 2 };
+  const FOV = { min: 60, max: 68 };
+  const OFFSET_X = { min: -2, max: 2.5, def: 1 };
+  const OFFSET_Y = { min: -2, max: 2, def: 1 };
+  const OFFSET_Z = { min: -2, max: 2, def: -1 };
 
   const PRESET_LABELS = {
     1: 'Desktop',
-    2: 'Couch',
-    3: 'Classic',
+    2: 'Classic',
   };
 
-  function clamp01(value) {
-    return Math.max(0, Math.min(1, value));
-  }
+  const WEAPONS = {
+    ak: {
+      id: 'ak',
+      label: 'AK',
+      fovMin: `${BASE}/fov/fov-ak-min.png`,
+      fovMax: `${BASE}/fov/fov-ak-max.png`,
+      xMin: `${BASE}/x/x-ak-min.png`,
+      xMax: `${BASE}/x/x-ak-max.png`,
+      yMin: `${BASE}/y/y-ak-min.png`,
+      yMax: `${BASE}/y/y-ak-max.png`,
+      zMin: `${BASE}/z/z-ak-min.png`,
+      zMax: `${BASE}/z/z-ak-max.png`,
+      // Filenames follow capture numbers; UI labels follow live CS2 (1=Desktop, 2=Classic).
+      preset1: `${BASE}/presets/viewmodel-ak-presetpos-1-classic.png`,
+      preset2: `${BASE}/presets/viewmodel-ak-presetpos-2-desktop.png`,
+    },
+    glock: {
+      id: 'glock',
+      label: 'Glock',
+      fovMin: `${BASE}/fov/fov-glock-min.png`,
+      fovMax: `${BASE}/fov/fov-glock-max.png`,
+      xMin: `${BASE}/x/x-glock-min.png`,
+      xMax: `${BASE}/x/x-glock-max.png`,
+      yMin: `${BASE}/y/y-glock-min.png`,
+      yMax: `${BASE}/y/y-glock-max.png`,
+      zMin: `${BASE}/z/z-glock-min.png`,
+      zMax: `${BASE}/z/z-glock-max.png`,
+      preset1: `${BASE}/presets/viewmodel-glock-presetpos-1-classic.png`,
+      preset2: `${BASE}/presets/viewmodel-glock-presetpos-2-desktop.png`,
+    },
+  };
 
-  function lerp(a, b, t) {
-    return a + (b - a) * t;
-  }
+  const imageCache = new Map();
+  const loading = new Set();
+  let weaponId = 'ak';
+  let scratchA = null;
+  let scratchB = null;
 
-  function normalize(value, min, max) {
-    if (max === min) return 0.5;
-    return clamp01((value - min) / (max - min));
-  }
+  const hudEl = () => document.getElementById('viewmodel-hud');
+  const loadingEl = () => document.getElementById('viewmodel-loading');
 
   function getPresetLabel(preset) {
     return PRESET_LABELS[preset] ?? `Preset ${preset}`;
   }
 
-  /**
-   * Convert cvars into screen-space placement for a right-hand rifle silhouette.
-   * Axes follow the in-app labels: X left/right, Y closer/farther, Z down/up.
-   */
-  function computeLayout(state, width, height) {
-    const fov = Number(state.viewmodel_fov);
-    const offsetX = Number(state.viewmodel_offset_x);
-    const offsetY = Number(state.viewmodel_offset_y);
-    const offsetZ = Number(state.viewmodel_offset_z);
-
-    const fovT = normalize(fov, FOV_MIN, FOV_MAX);
-    const yT = normalize(offsetY, OFFSET_Y.min, OFFSET_Y.max);
-
-    // Higher FOV pulls the gun away from center (smaller, more cornered).
-    const scale = lerp(1.22, 0.72, fovT) * lerp(1.12, 0.88, yT);
-
-    const baseX = width * lerp(0.58, 0.72, fovT);
-    const baseY = height * lerp(0.62, 0.78, fovT);
-
-    const xTravel = width * 0.14;
-    const zTravel = height * 0.12;
-    const yTravel = height * 0.04;
-
-    const xNorm = (offsetX - (OFFSET_X.min + OFFSET_X.max) / 2)
-      / ((OFFSET_X.max - OFFSET_X.min) / 2);
-    const zNorm = (offsetZ - (OFFSET_Z.min + OFFSET_Z.max) / 2)
-      / ((OFFSET_Z.max - OFFSET_Z.min) / 2);
-    const yNorm = (offsetY - (OFFSET_Y.min + OFFSET_Y.max) / 2)
-      / ((OFFSET_Y.max - OFFSET_Y.min) / 2);
-
-    return {
-      x: baseX + xNorm * xTravel + yNorm * width * 0.03,
-      y: baseY - zNorm * zTravel + yNorm * yTravel,
-      scale,
-      rotation: lerp(-0.42, -0.28, fovT) + xNorm * 0.04,
-    };
+  function clamp01(value) {
+    return Math.max(0, Math.min(1, value));
   }
 
-  function drawAimPoint(ctx, width, height) {
-    const cx = width / 2;
-    const cy = height / 2;
-    const arm = Math.max(6, width * 0.012);
-    const gap = Math.max(3, width * 0.006);
-
-    ctx.save();
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
-    ctx.lineWidth = Math.max(1, width * 0.002);
-    ctx.beginPath();
-    ctx.moveTo(cx - arm - gap, cy);
-    ctx.lineTo(cx - gap, cy);
-    ctx.moveTo(cx + gap, cy);
-    ctx.lineTo(cx + arm + gap, cy);
-    ctx.moveTo(cx, cy - arm - gap);
-    ctx.lineTo(cx, cy - gap);
-    ctx.moveTo(cx, cy + gap);
-    ctx.lineTo(cx, cy + arm + gap);
-    ctx.stroke();
-    ctx.restore();
+  function setLoading(visible, message) {
+    const el = loadingEl();
+    if (!el) return;
+    el.hidden = !visible;
+    if (message) el.textContent = message;
   }
 
-  function roundRectPath(ctx, x, y, w, h, r) {
-    const radius = Math.min(r, w / 2, h / 2);
-    ctx.beginPath();
-    ctx.moveTo(x + radius, y);
-    ctx.arcTo(x + w, y, x + w, y + h, radius);
-    ctx.arcTo(x + w, y + h, x, y + h, radius);
-    ctx.arcTo(x, y + h, x, y, radius);
-    ctx.arcTo(x, y, x + w, y, radius);
-    ctx.closePath();
-  }
-
-  function fillPart(ctx, x, y, w, h, r, fill, stroke) {
-    roundRectPath(ctx, x, y, w, h, r);
-    ctx.fillStyle = fill;
-    ctx.fill();
-    if (stroke) {
-      ctx.strokeStyle = stroke;
-      ctx.lineWidth = 1.25;
-      ctx.stroke();
-    }
-  }
-
-  function drawRifle(ctx, layout) {
-    const unit = 120 * layout.scale;
-
-    ctx.save();
-    ctx.translate(layout.x, layout.y);
-    ctx.rotate(layout.rotation);
-    ctx.scale(layout.scale, layout.scale);
-
-    // Soft ground contact / hand shadow
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.28)';
-    ctx.beginPath();
-    ctx.ellipse(18, 52, 70, 16, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    const metal = '#3d4450';
-    const metalDark = '#2a3038';
-    const accent = '#f97316';
-    const hand = '#c4a574';
-    const handDark = '#9a7d52';
-    const stroke = 'rgba(0, 0, 0, 0.45)';
-
-    // Mag
-    fillPart(ctx, -8, 8, 22, 38, 3, metalDark, stroke);
-
-    // Receiver / body
-    fillPart(ctx, -55, -10, 120, 28, 4, metal, stroke);
-
-    // Handguard
-    fillPart(ctx, -115, -8, 70, 22, 3, metalDark, stroke);
-
-    // Barrel
-    fillPart(ctx, -155, -3, 48, 10, 2, '#1f242b', stroke);
-
-    // Front sight
-    fillPart(ctx, -150, -14, 6, 14, 1, accent, null);
-
-    // Rear sight / dust cover line
-    fillPart(ctx, 20, -16, 28, 8, 2, metalDark, stroke);
-
-    // Stock
-    fillPart(ctx, 60, -6, 55, 18, 3, metalDark, stroke);
-    fillPart(ctx, 100, -2, 18, 28, 2, metal, stroke);
-
-    // Grip
-    ctx.save();
-    ctx.translate(28, 18);
-    ctx.rotate(0.55);
-    fillPart(ctx, -8, 0, 16, 34, 3, metalDark, stroke);
-    ctx.restore();
-
-    // Hands
-    fillPart(ctx, 10, 14, 28, 20, 8, hand, stroke);
-    fillPart(ctx, -70, 8, 26, 18, 8, handDark, stroke);
-
-    // Muzzle flash cue (static)
-    ctx.fillStyle = 'rgba(249, 115, 22, 0.15)';
-    ctx.beginPath();
-    ctx.ellipse(-160, 2, 14, 6, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.restore();
-  }
-
-  function drawHudChrome(ctx, width, height, state) {
-    const pad = Math.max(10, width * 0.02);
-    const label = getPresetLabel(state.viewmodel_presetpos);
-
-    ctx.save();
-    ctx.font = `${Math.max(11, Math.round(width * 0.022))}px ui-sans-serif, system-ui, sans-serif`;
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-    ctx.textBaseline = 'top';
-    ctx.fillText(`${label}  ·  FOV ${state.viewmodel_fov}`, pad, pad);
-
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
-    ctx.fillText(
+  function updateHud(state) {
+    const el = hudEl();
+    if (!el || !state) return;
+    const weapon = WEAPONS[weaponId]?.label ?? weaponId;
+    el.textContent = [
+      `${weapon}  ·  ${getPresetLabel(state.viewmodel_presetpos)}  ·  FOV ${state.viewmodel_fov}`,
       `X ${state.viewmodel_offset_x}   Y ${state.viewmodel_offset_y}   Z ${state.viewmodel_offset_z}`,
-      pad,
-      pad + Math.max(16, width * 0.03),
-    );
-    ctx.restore();
+    ].join('\n');
   }
 
-  function render(canvas, state, background = 'dark') {
-    if (!canvas) return;
+  function loadImage(url) {
+    if (!url) return Promise.resolve(null);
+    if (imageCache.has(url)) {
+      const cached = imageCache.get(url);
+      if (cached.complete && cached.naturalWidth) return Promise.resolve(cached);
+    }
+
+    return new Promise((resolve) => {
+      if (loading.has(url)) {
+        const poll = () => {
+          const img = imageCache.get(url);
+          if (img?.complete) resolve(img.naturalWidth ? img : null);
+          else requestAnimationFrame(poll);
+        };
+        poll();
+        return;
+      }
+
+      loading.add(url);
+      const img = new Image();
+      img.decoding = 'async';
+      img.onload = () => {
+        loading.delete(url);
+        resolve(img);
+      };
+      img.onerror = () => {
+        loading.delete(url);
+        imageCache.delete(url);
+        resolve(null);
+      };
+      img.src = url;
+      imageCache.set(url, img);
+    });
+  }
+
+  function sourceSize(source) {
+    if (!source) return null;
+    if (source.naturalWidth) {
+      return { w: source.naturalWidth, h: source.naturalHeight };
+    }
+    if (source.width && source.height) {
+      return { w: source.width, h: source.height };
+    }
+    return null;
+  }
+
+  function drawCover(ctx, source, width, height) {
+    const size = sourceSize(source);
+    if (!size) return false;
+    const scale = Math.max(width / size.w, height / size.h);
+    const dw = size.w * scale;
+    const dh = size.h * scale;
+    ctx.drawImage(source, (width - dw) / 2, (height - dh) / 2, dw, dh);
+    return true;
+  }
+
+  function ensureScratch(slot, width, height) {
+    let canvas = slot === 'b' ? scratchB : scratchA;
+    if (!canvas) {
+      canvas = document.createElement('canvas');
+      if (slot === 'b') scratchB = canvas;
+      else scratchA = canvas;
+    }
+    if (canvas.width !== width || canvas.height !== height) {
+      canvas.width = width;
+      canvas.height = height;
+    }
+    return canvas;
+  }
+
+  /** Crossfade imgA → imgB by t into ctx (cover-fit). */
+  function paintCrossfade(ctx, imgA, imgB, t, width, height) {
+    const amount = clamp01(t);
+    if (!imgA && !imgB) return false;
+    if (!imgB || amount <= 0.001) return drawCover(ctx, imgA, width, height);
+    if (!imgA || amount >= 0.999) return drawCover(ctx, imgB, width, height);
+
+    drawCover(ctx, imgA, width, height);
+    ctx.save();
+    ctx.globalAlpha = amount;
+    drawCover(ctx, imgB, width, height);
+    ctx.restore();
+    return true;
+  }
+
+  function isNearDefaultOffsets(state) {
+    return Number(state.viewmodel_fov) === FOV.min
+      && Number(state.viewmodel_offset_x) === OFFSET_X.def
+      && Number(state.viewmodel_offset_y) === OFFSET_Y.def
+      && Number(state.viewmodel_offset_z) === OFFSET_Z.def;
+  }
+
+  function axisBlendTowardExtreme(value, def, min, max) {
+    if (value < def) {
+      const span = def - min;
+      return { side: 'min', t: span > 0 ? clamp01((def - value) / span) : 0 };
+    }
+    if (value > def) {
+      const span = max - def;
+      return { side: 'max', t: span > 0 ? clamp01((value - def) / span) : 0 };
+    }
+    return { side: null, t: 0 };
+  }
+
+  async function resolvePlates(weapon) {
+    const urls = [
+      weapon.fovMin, weapon.fovMax,
+      weapon.xMin, weapon.xMax,
+      weapon.yMin, weapon.yMax,
+      weapon.zMin, weapon.zMax,
+      weapon.preset1, weapon.preset2,
+    ];
+    const imgs = await Promise.all(urls.map(loadImage));
+    const [
+      fovMin, fovMax, xMin, xMax, yMin, yMax, zMin, zMax, preset1, preset2,
+    ] = imgs;
+    return { fovMin, fovMax, xMin, xMax, yMin, yMax, zMin, zMax, preset1, preset2 };
+  }
+
+  function paintCustom(ctx, plates, state, width, height) {
+    const fov = Number(state.viewmodel_fov);
+    const fovT = (fov - FOV.min) / (FOV.max - FOV.min);
+
+    const tmp = ensureScratch('a', width, height);
+    const tctx = tmp.getContext('2d');
+    tctx.clearRect(0, 0, width, height);
+
+    if (!paintCrossfade(tctx, plates.fovMin, plates.fovMax, fovT, width, height)) {
+      return false;
+    }
+
+    const axes = [
+      {
+        ...axisBlendTowardExtreme(Number(state.viewmodel_offset_x), OFFSET_X.def, OFFSET_X.min, OFFSET_X.max),
+        minImg: plates.xMin,
+        maxImg: plates.xMax,
+      },
+      {
+        ...axisBlendTowardExtreme(Number(state.viewmodel_offset_y), OFFSET_Y.def, OFFSET_Y.min, OFFSET_Y.max),
+        minImg: plates.yMin,
+        maxImg: plates.yMax,
+      },
+      {
+        ...axisBlendTowardExtreme(Number(state.viewmodel_offset_z), OFFSET_Z.def, OFFSET_Z.min, OFFSET_Z.max),
+        minImg: plates.zMin,
+        maxImg: plates.zMax,
+      },
+    ];
+
+    // Strongest offset axis gets a layered crossfade so multi-axis won't muddy.
+    let best = null;
+    for (const axis of axes) {
+      if (axis.t > 0.02 && (axis.side === 'min' ? axis.minImg : axis.maxImg)) {
+        if (!best || axis.t > best.t) best = axis;
+      }
+    }
+
+    if (best) {
+      const extreme = best.side === 'min' ? best.minImg : best.maxImg;
+      return paintCrossfade(ctx, tmp, extreme, best.t * 0.85, width, height);
+    }
+
+    ctx.drawImage(tmp, 0, 0);
+    return true;
+  }
+
+  async function render(canvas, state, background = 'dark') {
+    if (!canvas || !state) return;
+
+    updateHud(state);
+    setLoading(true, 'Loading screenshots…');
 
     const width = canvas.width || PREVIEW_SIZE;
-    const height = canvas.height || PREVIEW_SIZE;
+    const height = canvas.height || Math.round(PREVIEW_SIZE / ASPECT);
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
     CrosshairRenderer.paintBackground(ctx, width, height, background);
-    drawAimPoint(ctx, width, height);
-    drawRifle(ctx, computeLayout(state, width, height));
-    drawHudChrome(ctx, width, height, state);
+
+    const weapon = WEAPONS[weaponId] || WEAPONS.ak;
+    const plates = await resolvePlates(weapon);
+
+    const ready = Boolean(plates.fovMin || plates.fovMax || plates.preset1 || plates.preset2);
+    if (!ready) {
+      setLoading(true, 'Add CS2 screenshots to assets/viewmodels');
+      return;
+    }
+
+    setLoading(false);
+
+    const usePresetPlate = isNearDefaultOffsets(state);
+    let painted = false;
+
+    if (usePresetPlate) {
+      const presetImg = Number(state.viewmodel_presetpos) === 2 ? plates.preset2 : plates.preset1;
+      painted = drawCover(ctx, presetImg, width, height);
+    }
+
+    if (!painted) {
+      painted = paintCustom(ctx, plates, state, width, height);
+    }
+
+    if (!painted) {
+      const fallback = plates.fovMin || plates.fovMax || plates.preset1 || plates.preset2;
+      drawCover(ctx, fallback, width, height);
+    }
+  }
+
+  function setWeapon(id) {
+    if (!WEAPONS[id]) return;
+    weaponId = id;
+  }
+
+  function getWeapon() {
+    return weaponId;
+  }
+
+  function getWeapons() {
+    return Object.values(WEAPONS).map(({ id, label }) => ({ id, label }));
+  }
+
+  function preload(onReady) {
+    const weapon = WEAPONS[weaponId] || WEAPONS.ak;
+    resolvePlates(weapon).then(() => onReady?.());
   }
 
   return {
     render,
-    computeLayout,
+    preload,
+    setWeapon,
+    getWeapon,
+    getWeapons,
     getPresetLabel,
     PREVIEW_SIZE,
+    ASPECT,
   };
 })();

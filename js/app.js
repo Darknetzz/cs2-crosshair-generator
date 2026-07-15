@@ -147,23 +147,27 @@
   }
 
   function getViewmodelDisplaySize() {
-    return Math.max(
+    const width = Math.max(
       1,
       Math.round(getCanvasBaseSize(els.viewmodelCanvasWrap, ViewmodelRenderer.PREVIEW_SIZE)),
     );
+    const height = Math.max(1, Math.round(width / (ViewmodelRenderer.ASPECT || (16 / 9))));
+    return { width, height };
   }
 
   function syncCanvasSize(canvas, size) {
     if (!canvas) return false;
 
-    const changed = canvas.width !== size || canvas.height !== size;
+    const width = typeof size === 'number' ? size : size.width;
+    const height = typeof size === 'number' ? size : size.height;
+    const changed = canvas.width !== width || canvas.height !== height;
     if (changed) {
-      canvas.width = size;
-      canvas.height = size;
+      canvas.width = width;
+      canvas.height = height;
     }
 
-    canvas.style.width = `${size}px`;
-    canvas.style.height = `${size}px`;
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
     return changed;
   }
 
@@ -175,10 +179,26 @@
     }
   }
 
+  function initViewmodelWeaponToggle() {
+    const root = document.getElementById('viewmodel-weapon-toggle');
+    root?.querySelectorAll('[data-weapon]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        ViewmodelRenderer.setWeapon(btn.dataset.weapon);
+        setTogglePressed(root, '[data-weapon]', btn.dataset.weapon, 'data-weapon');
+        updateViewmodelPreview();
+      });
+    });
+    setTogglePressed(root, '[data-weapon]', ViewmodelRenderer.getWeapon(), 'data-weapon');
+  }
+
   function updateViewmodelPreview() {
     if (activeSectionId !== 'viewmodel') return;
     syncCanvasDimensions();
-    ViewmodelRenderer.render(els.viewmodelCanvas, getViewmodelState(), previewBackground);
+    void ViewmodelRenderer.render(
+      els.viewmodelCanvas,
+      getViewmodelState(),
+      previewBackground,
+    );
   }
 
   function updatePreview() {
@@ -1370,6 +1390,7 @@
     initThemeToggle();
     initPreviewZoom();
     initPreviewMode();
+    initViewmodelWeaponToggle();
     initCustomPresets();
     initKeyboardShortcuts();
     initExportScope();
@@ -1396,6 +1417,7 @@
       updatePreview();
       updateViewmodelPreview();
     });
+    ViewmodelRenderer.preload?.(updateViewmodelPreview);
   }
 
   document.addEventListener('DOMContentLoaded', init);

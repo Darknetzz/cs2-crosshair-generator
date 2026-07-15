@@ -134,12 +134,22 @@
         </div>
 
         <div id="viewmodel-preview" class="viewmodel-preview" hidden>
-          <div class="canvas-wrap" id="viewmodel-canvas-wrap">
-            <canvas id="viewmodel-canvas" aria-label="Viewmodel preview canvas"></canvas>
+          <div class="viewmodel-weapon-toggle" id="viewmodel-weapon-toggle" role="group" aria-label="Preview weapon">
+            <span class="toolbar-label">Weapon</span>
+            <div class="mode-toggle">
+              <button type="button" class="mode-btn active" data-weapon="ak" aria-pressed="true">AK</button>
+              <button type="button" class="mode-btn" data-weapon="glock" aria-pressed="false">Glock</button>
+            </div>
+          </div>
+          <div class="canvas-wrap viewmodel-canvas-wrap" id="viewmodel-canvas-wrap">
+            <canvas id="viewmodel-canvas" aria-label="Viewmodel preview from CS2 screenshots"></canvas>
+            <div class="viewmodel-aim" aria-hidden="true"></div>
+            <pre id="viewmodel-hud" class="viewmodel-hud" aria-hidden="true"></pre>
+            <div id="viewmodel-loading" class="viewmodel-loading">Loading screenshots…</div>
           </div>
           <p class="preview-note muted">
-            Approximate first-person weapon position from FOV and offsets — not a 3D in-game model.
-            Center marks the aimpoint so you can judge how much screen the gun covers.
+            Real CS2 first-person captures — FOV blends 60↔68; offsets blend toward extremes.
+            Between captured values the mix is approximate. Ultrawide source plates may be cropped.
           </p>
         </div>
       </div>
