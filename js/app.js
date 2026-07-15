@@ -27,6 +27,7 @@
     visualPreview: document.getElementById('visual-preview'),
     crosshairPreview: document.getElementById('crosshair-preview'),
     viewmodelPreview: document.getElementById('viewmodel-preview'),
+    radarPreview: document.getElementById('radar-preview'),
     crosshairToolbarExtras: document.getElementById('crosshair-toolbar-extras'),
     sectionSummary: document.getElementById('section-summary'),
     sectionSummaryTitle: document.getElementById('section-summary-title'),
@@ -35,8 +36,10 @@
     sectionSummaryEmpty: document.getElementById('section-summary-empty'),
     previewCanvas: document.getElementById('preview-canvas'),
     viewmodelCanvas: document.getElementById('viewmodel-canvas'),
+    radarCanvas: document.getElementById('radar-canvas'),
     canvasWrap: document.getElementById('crosshair-canvas-wrap'),
     viewmodelCanvasWrap: document.getElementById('viewmodel-canvas-wrap'),
+    radarCanvasWrap: document.getElementById('radar-canvas-wrap'),
     zoomInBtn: document.getElementById('zoom-in-btn'),
     zoomOutBtn: document.getElementById('zoom-out-btn'),
     zoomLabel: document.getElementById('zoom-label'),
@@ -74,8 +77,14 @@
     return sectionsState.viewmodel;
   }
 
+  function getRadarState() {
+    return sectionsState.radar;
+  }
+
   function hasVisualPreview() {
-    return activeSectionId === 'crosshair' || activeSectionId === 'viewmodel';
+    return activeSectionId === 'crosshair'
+      || activeSectionId === 'viewmodel'
+      || activeSectionId === 'radar';
   }
 
   function getActiveSection() {
@@ -155,6 +164,15 @@
     return { width, height };
   }
 
+  function getRadarDisplaySize() {
+    const width = Math.max(
+      1,
+      Math.round(getCanvasBaseSize(els.radarCanvasWrap, RadarRenderer.PREVIEW_SIZE)),
+    );
+    const height = Math.max(1, Math.round(width / (RadarRenderer.ASPECT || (16 / 9))));
+    return { width, height };
+  }
+
   function syncCanvasSize(canvas, size) {
     if (!canvas) return false;
 
@@ -174,7 +192,8 @@
   function syncCanvasDimensions() {
     const crosshairChanged = syncCanvasSize(els.previewCanvas, getCrosshairDisplaySize());
     const viewmodelChanged = syncCanvasSize(els.viewmodelCanvas, getViewmodelDisplaySize());
-    if (crosshairChanged || viewmodelChanged) {
+    const radarChanged = syncCanvasSize(els.radarCanvas, getRadarDisplaySize());
+    if (crosshairChanged || viewmodelChanged || radarChanged) {
       CrosshairRenderer.invalidateBgCache();
     }
   }
@@ -191,6 +210,43 @@
     setTogglePressed(root, '[data-weapon]', ViewmodelRenderer.getWeapon(), 'data-weapon');
   }
 
+  function initRadarPreviewToggles() {
+    const scoreboardRoot = document.getElementById('radar-scoreboard-toggle');
+    scoreboardRoot?.querySelectorAll('[data-scoreboard]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        RadarRenderer.setScoreboardOpen(btn.dataset.scoreboard === 'on');
+        setTogglePressed(
+          scoreboardRoot,
+          '[data-scoreboard]',
+          btn.dataset.scoreboard,
+          'data-scoreboard',
+        );
+        updateRadarPreview();
+      });
+    });
+    setTogglePressed(
+      scoreboardRoot,
+      '[data-scoreboard]',
+      RadarRenderer.isScoreboardOpen() ? 'on' : 'off',
+      'data-scoreboard',
+    );
+
+    const zoomRoot = document.getElementById('radar-zoom-toggle');
+    zoomRoot?.querySelectorAll('[data-radar-zoom]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        RadarRenderer.setUseAlternateZoom(btn.dataset.radarZoom === 'alternate');
+        setTogglePressed(zoomRoot, '[data-radar-zoom]', btn.dataset.radarZoom, 'data-radar-zoom');
+        updateRadarPreview();
+      });
+    });
+    setTogglePressed(
+      zoomRoot,
+      '[data-radar-zoom]',
+      RadarRenderer.isUsingAlternateZoom() ? 'alternate' : 'primary',
+      'data-radar-zoom',
+    );
+  }
+
   function updateViewmodelPreview() {
     if (activeSectionId !== 'viewmodel') return;
     syncCanvasDimensions();
@@ -201,9 +257,33 @@
     );
   }
 
+  function manageRadarAnimation() {
+    const state = getRadarState();
+    if (Number(state.cl_radar_scale_dynamic) === 1) {
+      RadarRenderer.startAnimation(
+        els.radarCanvas,
+        () => getRadarState(),
+        () => previewBackground,
+      );
+      return;
+    }
+    RadarRenderer.stopAnimation();
+    RadarRenderer.render(els.radarCanvas, state, previewBackground);
+  }
+
+  function updateRadarPreview() {
+    if (activeSectionId !== 'radar') return;
+    syncCanvasDimensions();
+    manageRadarAnimation();
+  }
+
   function updatePreview() {
     if (activeSectionId === 'viewmodel') {
       updateViewmodelPreview();
+      return;
+    }
+    if (activeSectionId === 'radar') {
+      updateRadarPreview();
       return;
     }
     if (activeSectionId !== 'crosshair') return;
@@ -312,11 +392,13 @@
   function updateSectionVisibility() {
     const isCrosshair = activeSectionId === 'crosshair';
     const isViewmodel = activeSectionId === 'viewmodel';
+    const isRadar = activeSectionId === 'radar';
     const visual = hasVisualPreview();
 
     if (els.visualPreview) els.visualPreview.hidden = !visual;
     els.crosshairPreview.hidden = !isCrosshair;
     if (els.viewmodelPreview) els.viewmodelPreview.hidden = !isViewmodel;
+    if (els.radarPreview) els.radarPreview.hidden = !isRadar;
     if (els.crosshairToolbarExtras) els.crosshairToolbarExtras.hidden = !isCrosshair;
     els.sectionSummary.hidden = visual;
 
@@ -329,12 +411,18 @@
     updateSectionSummary();
 
     if (isCrosshair) {
+      RadarRenderer.stopAnimation();
       updatePreview();
     } else if (isViewmodel) {
       CrosshairRenderer.stopAnimation();
+      RadarRenderer.stopAnimation();
       updateViewmodelPreview();
+    } else if (isRadar) {
+      CrosshairRenderer.stopAnimation();
+      updateRadarPreview();
     } else {
       CrosshairRenderer.stopAnimation();
+      RadarRenderer.stopAnimation();
     }
   }
 
@@ -1368,6 +1456,9 @@
       if (els.viewmodelCanvasWrap) {
         new ResizeObserver(onLayoutChange).observe(els.viewmodelCanvasWrap);
       }
+      if (els.radarCanvasWrap) {
+        new ResizeObserver(onLayoutChange).observe(els.radarCanvasWrap);
+      }
     }
 
     window.addEventListener('resize', onLayoutChange);
@@ -1391,6 +1482,7 @@
     initPreviewZoom();
     initPreviewMode();
     initViewmodelWeaponToggle();
+    initRadarPreviewToggles();
     initCustomPresets();
     initKeyboardShortcuts();
     initExportScope();
