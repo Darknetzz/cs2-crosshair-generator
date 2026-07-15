@@ -966,6 +966,122 @@ body {
   gap: 0.35rem;
 }
 
+/* Binds catalog */
+.binds-intro {
+  margin: 0 0 0.85rem;
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+.bind-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.85rem 0 0.15rem;
+  border-top: 1px solid var(--border);
+}
+
+.bind-row:first-child {
+  border-top: none;
+  padding-top: 0.35rem;
+}
+
+.bind-row-header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 0.75rem;
+  align-items: start;
+}
+
+.bind-row-text {
+  min-width: 0;
+}
+
+.bind-row-title {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.bind-cheat-badge {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  padding: 0.12rem 0.4rem;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: var(--surface-raised);
+  color: var(--muted);
+}
+
+.bind-row-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.bind-key-label {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.bind-key-input {
+  width: 6.5rem;
+  padding: 0.35rem 0.5rem;
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-raised);
+  color: var(--text);
+}
+
+.bind-key-input:disabled {
+  opacity: 0.55;
+}
+
+.bind-key-input.is-invalid,
+.bind-row-invalid .bind-key-input {
+  border-color: #dc2626;
+}
+
+.bind-package-note {
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.bind-preview {
+  margin: 0;
+  padding: 0.55rem 0.65rem;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: var(--muted);
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-x: auto;
+}
+
+@media (max-width: 520px) {
+  .bind-row-header {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .bind-row-controls {
+    grid-column: 1 / -1;
+    justify-content: flex-end;
+  }
+}
+
 .setting-reset-btn {
   flex-shrink: 0;
   width: 1.65rem;

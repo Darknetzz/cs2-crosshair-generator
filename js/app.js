@@ -365,6 +365,35 @@
     if (hasVisualPreview()) return;
 
     const state = sectionsState[section.id];
+
+    if (section.kind === 'binds') {
+      const enabled = section.CVAR_ORDER.filter((id) => state[id]?.enabled);
+      els.sectionSummaryTitle.textContent = section.label;
+      els.sectionSummaryMeta.textContent = enabled.length
+        ? `${enabled.length} bind${enabled.length === 1 ? '' : 's'} enabled`
+        : 'No binds enabled';
+
+      els.sectionSummaryList.replaceChildren();
+      for (const id of enabled) {
+        const entry = section.BY_ID[id];
+        const item = document.createElement('li');
+        const label = document.createElement('span');
+        label.className = 'section-summary-key';
+        label.textContent = entry.label;
+        const value = document.createElement('code');
+        const preview = section.entryPreviewLines(entry, state[id]).join('\n');
+        value.textContent = preview || '(enabled)';
+        item.append(label, value);
+        els.sectionSummaryList.append(item);
+      }
+
+      els.sectionSummaryEmpty.hidden = enabled.length > 0;
+      els.sectionSummaryEmpty.textContent = 'Enable binds in this section to include them in your config.';
+      els.sectionSummaryList.hidden = enabled.length === 0;
+      return;
+    }
+
+    els.sectionSummaryEmpty.textContent = 'All settings in this section match defaults.';
     const changedKeys = section.CVAR_ORDER.filter((key) => !section.isAtDefault(key, state));
 
     els.sectionSummaryTitle.textContent = section.label;
@@ -443,6 +472,11 @@
 
   function updateControlStates() {
     for (const section of ConfigSections.ALL) {
+      if (section.kind === 'binds') {
+        updateBindControlStates(section);
+        continue;
+      }
+
       const state = sectionsState[section.id];
       for (const key of section.CVAR_ORDER) {
         const row = document.querySelector(`[data-setting="${key}"]`);
@@ -472,6 +506,67 @@
       btn.disabled = atDefault;
       btn.classList.toggle('is-default', atDefault);
     });
+  }
+
+  function updateBindControlStates(section) {
+    const state = sectionsState[section.id];
+
+    for (const entry of section.ENTRIES) {
+      const row = document.querySelector(`[data-bind-id="${entry.id}"]`);
+      if (!row) continue;
+
+      const entryState = state[entry.id];
+      const enabled = Boolean(entryState?.enabled);
+      const keyInput = row.querySelector('.bind-key-input');
+      if (keyInput) {
+        keyInput.disabled = !enabled;
+        const key = section.normalizeKey(entryState?.key);
+        const invalid = enabled && entry.kind !== 'package' && !section.isValidKey(key);
+        keyInput.classList.toggle('is-invalid', invalid);
+        row.classList.toggle('bind-row-invalid', invalid);
+      }
+
+      const preview = row.querySelector('.bind-preview');
+      if (preview) {
+        preview.textContent = section.entryPreviewLines(entry, entryState).join('\n');
+        preview.hidden = !enabled;
+      }
+    }
+
+    document.querySelectorAll('[data-reset-bind]').forEach((btn) => {
+      const id = btn.dataset.resetBind;
+      const atDefault = section.isAtDefault(id, state);
+      btn.disabled = atDefault;
+      btn.classList.toggle('is-default', atDefault);
+    });
+  }
+
+  function setBindEnabled(id, enabled) {
+    const entry = BindSection.BY_ID[id];
+    if (!entry) return;
+    const current = sectionsState.binds[id] || BindSection.clamp(id, null);
+    sectionsState.binds[id] = BindSection.clamp(id, { ...current, enabled: Boolean(enabled) });
+    refresh();
+  }
+
+  function setBindKey(id, rawKey) {
+    const entry = BindSection.BY_ID[id];
+    if (!entry || entry.kind === 'package') return;
+    const current = sectionsState.binds[id] || BindSection.clamp(id, null);
+    sectionsState.binds[id] = BindSection.clamp(id, {
+      ...current,
+      key: BindSection.normalizeKey(rawKey),
+    });
+    refresh();
+  }
+
+  function resetBind(id) {
+    const entry = BindSection.BY_ID[id];
+    if (!entry) return;
+    sectionsState.binds[id] = BindSection.clamp(id, null);
+    syncBindControlsFromState();
+    refresh();
+    showToast(`${entry.label} reset`);
   }
 
   function createRangeControl(section, key, meta) {
@@ -929,7 +1024,135 @@
     });
   }
 
+  function buildBindsSettings(section) {
+    const mount = document.createElement('div');
+    mount.className = 'section-settings';
+    mount.dataset.section = section.id;
+    mount.hidden = section.id !== activeSectionId;
+
+    const intro = document.createElement('p');
+    intro.className = 'binds-intro muted';
+    intro.textContent = 'Enable binds to include them in export. Keys use CS2 names (v, mouse5, mwheeldown).';
+    mount.append(intro);
+
+    for (const group of section.GROUPS) {
+      const details = document.createElement('details');
+      details.className = 'settings-group';
+      details.open = true;
+
+      const summary = document.createElement('summary');
+      const summaryLabel = document.createElement('span');
+      summaryLabel.className = 'summary-label';
+      summaryLabel.textContent = group.label;
+      summary.append(summaryLabel);
+      details.append(summary);
+
+      const body = document.createElement('div');
+      body.className = 'settings-group-body';
+
+      for (const entry of section.ENTRIES.filter((item) => item.group === group.id)) {
+        body.append(createBindRow(entry));
+      }
+
+      details.append(body);
+      mount.append(details);
+    }
+
+    sectionMounts[section.id] = mount;
+    els.settingsContainer.append(mount);
+  }
+
+  function createBindRow(entry) {
+    const state = sectionsState.binds[entry.id];
+    const row = document.createElement('div');
+    row.className = 'bind-row';
+    row.dataset.bindId = entry.id;
+
+    const header = document.createElement('div');
+    header.className = 'bind-row-header';
+
+    const toggle = document.createElement('label');
+    toggle.className = 'toggle';
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.id = `bind-enabled-${entry.id}`;
+    checkbox.checked = Boolean(state?.enabled);
+    checkbox.setAttribute('aria-label', `Enable ${entry.label}`);
+    checkbox.addEventListener('change', () => setBindEnabled(entry.id, checkbox.checked));
+    const slider = document.createElement('span');
+    slider.className = 'toggle-slider';
+    toggle.append(checkbox, slider);
+
+    const textWrap = document.createElement('div');
+    textWrap.className = 'bind-row-text';
+    const title = document.createElement('label');
+    title.className = 'bind-row-title';
+    title.htmlFor = `bind-enabled-${entry.id}`;
+    title.textContent = entry.label;
+    const desc = document.createElement('p');
+    desc.className = 'setting-desc';
+    desc.textContent = entry.description;
+    if (entry.requiresCheats) {
+      const badge = document.createElement('span');
+      badge.className = 'bind-cheat-badge';
+      badge.textContent = 'sv_cheats';
+      title.append(' ', badge);
+    }
+    textWrap.append(title, desc);
+
+    const controls = document.createElement('div');
+    controls.className = 'bind-row-controls';
+
+    if (entry.kind !== 'package') {
+      const keyLabel = document.createElement('label');
+      keyLabel.className = 'bind-key-label';
+      keyLabel.htmlFor = `bind-key-${entry.id}`;
+      keyLabel.textContent = 'Key';
+      const keyInput = document.createElement('input');
+      keyInput.type = 'text';
+      keyInput.className = 'bind-key-input';
+      keyInput.id = `bind-key-${entry.id}`;
+      keyInput.value = state?.key ?? entry.defaultKey;
+      keyInput.autocomplete = 'off';
+      keyInput.spellcheck = false;
+      keyInput.placeholder = entry.defaultKey || 'key';
+      keyInput.disabled = !state?.enabled;
+      keyInput.addEventListener('input', () => setBindKey(entry.id, keyInput.value));
+      controls.append(keyLabel, keyInput);
+    } else {
+      const packageNote = document.createElement('span');
+      packageNote.className = 'bind-package-note muted';
+      packageNote.textContent = 'Keys 1–0';
+      controls.append(packageNote);
+    }
+
+    const resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'setting-reset-btn';
+    resetBtn.dataset.resetBind = entry.id;
+    resetBtn.title = 'Reset to default';
+    resetBtn.setAttribute('aria-label', `Reset ${entry.label} to default`);
+    resetBtn.textContent = '↺';
+    resetBtn.addEventListener('click', () => resetBind(entry.id));
+    controls.append(resetBtn);
+
+    header.append(toggle, textWrap, controls);
+
+    const preview = document.createElement('pre');
+    preview.className = 'bind-preview';
+    preview.textContent = BindSection.entryPreviewLines(entry, state).join('\n');
+    preview.hidden = !state?.enabled;
+
+    row.append(header, preview);
+    return row;
+  }
+
   function buildSettingsForSection(section) {
+    if (section.kind === 'binds') {
+      buildBindsSettings(section);
+      return;
+    }
+
     const mount = document.createElement('div');
     mount.className = 'section-settings';
     mount.dataset.section = section.id;
@@ -1179,6 +1402,11 @@
   function syncControlsFromState() {
     suppressPersist = true;
     for (const section of ConfigSections.ALL) {
+      if (section.kind === 'binds') {
+        syncBindControlsFromState();
+        continue;
+      }
+
       const state = sectionsState[section.id];
       for (const key of section.CVAR_ORDER) {
         const input = document.getElementById(`input-${key}`);
@@ -1204,6 +1432,28 @@
       }
     }
     suppressPersist = false;
+  }
+
+  function syncBindControlsFromState() {
+    const state = sectionsState.binds;
+    for (const entry of BindSection.ENTRIES) {
+      const entryState = state[entry.id];
+      const checkbox = document.getElementById(`bind-enabled-${entry.id}`);
+      if (checkbox) checkbox.checked = Boolean(entryState?.enabled);
+
+      const keyInput = document.getElementById(`bind-key-${entry.id}`);
+      if (keyInput) {
+        keyInput.value = entryState?.key ?? entry.defaultKey;
+        keyInput.disabled = !entryState?.enabled;
+      }
+
+      const row = document.querySelector(`[data-bind-id="${entry.id}"]`);
+      const preview = row?.querySelector('.bind-preview');
+      if (preview) {
+        preview.textContent = BindSection.entryPreviewLines(entry, entryState).join('\n');
+        preview.hidden = !entryState?.enabled;
+      }
+    }
   }
 
   function applyColorTheme(theme) {

@@ -8,6 +8,7 @@ const ConfigSections = (() => {
     HudSection,
     RadarSection,
     FpsSection,
+    BindSection,
   ];
 
   const BY_ID = Object.fromEntries(ALL.map((section) => [section.id, section]));
@@ -27,6 +28,7 @@ const ConfigSections = (() => {
 
   function findSectionForCvar(key) {
     for (const section of ALL) {
+      if (section.kind === 'binds') continue;
       if (key in section.SETTINGS) return section;
     }
     return null;

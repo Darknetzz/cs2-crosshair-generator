@@ -25,12 +25,16 @@ const ConfigCommands = (() => {
   }
 
   function keysForSection(section, state, minimal) {
+    if (typeof section.toCommandLines === 'function') return [];
     return minimal
       ? section.CVAR_ORDER.filter((key) => !section.isAtDefault(key, state))
       : section.CVAR_ORDER;
   }
 
   function toSectionLines(section, state, options = {}) {
+    if (typeof section.toCommandLines === 'function') {
+      return section.toCommandLines(state, options);
+    }
     const keys = keysForSection(section, state, Boolean(options.minimal));
     return keys.map((key) => `${key} ${formatValue(section, key, state[key])}`);
   }
@@ -83,7 +87,7 @@ const ConfigCommands = (() => {
 
   /**
    * Parse console / cfg text into a partial multi-section patch (unknown lines skipped).
-   * Only includes cvars that were present in the input so callers can merge without resetting others.
+   * Only includes cvars / known binds that were present in the input so callers can merge without resetting others.
    * @param {string} text
    * @returns {{ sections: object, parsed: number, skipped: number }}
    */
@@ -92,12 +96,105 @@ const ConfigCommands = (() => {
     let parsed = 0;
     let skipped = 0;
 
-    for (const line of String(text).split(/[;\n]+/)) {
-      const trimmed = line.trim();
-      if (!trimmed) continue;
-      if (trimmed.startsWith('//') || trimmed.startsWith('#')) continue;
+    function ensureSection(id) {
+      if (!sections[id]) sections[id] = {};
+      return sections[id];
+    }
 
-      const match = trimmed.match(/^([A-Za-z_][\w]*)\s+(.+)$/);
+    function splitCommands(raw) {
+      const parts = [];
+      let current = '';
+      let quote = null;
+
+      for (let i = 0; i < raw.length; i += 1) {
+        const ch = raw[i];
+        if (quote) {
+          current += ch;
+          if (ch === quote) quote = null;
+          continue;
+        }
+        if (ch === '"' || ch === "'") {
+          quote = ch;
+          current += ch;
+          continue;
+        }
+        if (ch === ';' || ch === '\n') {
+          const trimmed = current.trim();
+          if (trimmed) parts.push(trimmed);
+          current = '';
+          continue;
+        }
+        current += ch;
+      }
+
+      const trimmed = current.trim();
+      if (trimmed) parts.push(trimmed);
+      return parts;
+    }
+
+    function parseBindLine(trimmed) {
+      const match = trimmed.match(/^bind\s+(?:"([^"]+)"|'([^']+)'|(\S+))\s+(?:"([^"]*)"|'([^']*)'|(.+))$/i);
+      if (!match) return false;
+
+      const key = BindSection.normalizeKey(match[1] || match[2] || match[3]);
+      const command = String(match[4] ?? match[5] ?? match[6] ?? '').trim();
+      if (!key || !command) return false;
+
+      const entry = BindSection.findEntryForBindCommand(command);
+      if (!entry) {
+        if (/^slot\d+\s*;\s*switchhands$/i.test(command)) {
+          const binds = ensureSection('binds');
+          binds.switchHands = { enabled: true, key: '' };
+          parsed += 1;
+          return true;
+        }
+        return false;
+      }
+
+      const binds = ensureSection('binds');
+      binds[entry.id] = { enabled: true, key };
+      parsed += 1;
+      return true;
+    }
+
+    function parseAliasLine(trimmed) {
+      const match = trimmed.match(/^alias\s+(?:"([^"]+)"|'([^']+)'|(\S+))\s+/i);
+      if (!match) return false;
+
+      const aliasName = match[1] || match[2] || match[3];
+      const entry = BindSection.findEntryForAliasName(aliasName);
+      if (!entry) return false;
+
+      const binds = ensureSection('binds');
+      if (!binds[entry.id]) {
+        binds[entry.id] = {
+          enabled: true,
+          key: entry.defaultKey || '',
+        };
+      } else {
+        binds[entry.id] = {
+          ...binds[entry.id],
+          enabled: true,
+        };
+      }
+      parsed += 1;
+      return true;
+    }
+
+    for (const segment of splitCommands(String(text))) {
+      if (segment.startsWith('//') || segment.startsWith('#')) continue;
+
+      if (/^bind\s+/i.test(segment)) {
+        if (!parseBindLine(segment)) skipped += 1;
+        continue;
+      }
+
+      if (/^alias\s+/i.test(segment)) {
+        if (!parseAliasLine(segment)) skipped += 1;
+        continue;
+      }
+
+      const match = segment.match(/^([A-Za-z_][\w]*)\s+(.+)$/);
       if (!match) {
         skipped += 1;
         continue;
@@ -110,8 +207,7 @@ const ConfigCommands = (() => {
         continue;
       }
 
-      if (!sections[section.id]) sections[section.id] = {};
-      sections[section.id][key] = parseCommandValue(section, key, match[2]);
+      ensureSection(section.id)[key] = parseCommandValue(section, key, match[2]);
       parsed += 1;
     }
 
@@ -192,6 +288,15 @@ const ConfigCommands = (() => {
     const compact = {};
     for (const section of ConfigSections.ALL) {
       const state = sectionsState[section.id] || {};
+
+      if (section.kind === 'binds' && typeof section.collectDelta === 'function') {
+        const bindsDelta = section.collectDelta(state);
+        if (Object.keys(bindsDelta).length) {
+          compact._binds = bindsDelta;
+        }
+        continue;
+      }
+
       for (const key of section.CVAR_ORDER) {
         if (!section.isAtDefault(key, state)) {
           compact[key] = state[key];
@@ -224,6 +329,10 @@ const ConfigCommands = (() => {
           const section = ConfigSections.findSectionForCvar(key);
           if (!section) continue;
           sections[section.id][key] = section.clamp(key, value);
+        }
+
+        if (parsed._binds && typeof parsed._binds === 'object') {
+          BindSection.mergeState(sections.binds, parsed._binds);
         }
       }
 
