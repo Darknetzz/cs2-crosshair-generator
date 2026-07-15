@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>CS2 Config Generator</title>
-  <meta name="description" content="Build a Counter-Strike 2 config with live crosshair preview, HUD/viewmodel/radar/FPS settings, and downloadable .cfg files.">
+  <meta name="description" content="Build a Counter-Strike 2 config with live crosshair and viewmodel preview, HUD/radar/FPS settings, and downloadable .cfg files.">
   <meta name="theme-color" content="#0d1117">
   <meta property="og:title" content="CS2 Config Generator">
-  <meta property="og:description" content="Build a Counter-Strike 2 config with live crosshair preview and downloadable .cfg files.">
+  <meta property="og:description" content="Build a Counter-Strike 2 config with live crosshair and viewmodel preview and downloadable .cfg files.">
   <meta property="og:type" content="website">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230d1117'/%3E%3Crect x='14' y='4' width='4' height='24' fill='%23f97316'/%3E%3Crect x='4' y='14' width='24' height='4' fill='%23f97316'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="css/style.css">
@@ -37,7 +37,7 @@
     <div class="site-header-inner">
       <div class="site-header-text">
         <h1>CS2 Config Generator</h1>
-        <p class="subtitle">Build crosshair, viewmodel, HUD, radar, and FPS settings — preview your crosshair live, then copy or download a .cfg.</p>
+        <p class="subtitle">Build crosshair, viewmodel, HUD, radar, and FPS settings — preview crosshair and viewmodel live, then copy or download a .cfg.</p>
       </div>
       <div id="theme-toggle" class="theme-toggle" role="group" aria-label="Color theme">
         <button type="button" class="theme-btn" data-theme="system" aria-pressed="true">Auto</button>
@@ -51,82 +51,96 @@
 
   <main class="layout" id="main-content">
     <section class="preview-panel" aria-label="Section preview">
-      <div id="crosshair-preview" class="crosshair-preview">
+      <div id="visual-preview" class="visual-preview">
         <details class="preview-toolbar-details" open>
           <summary class="preview-toolbar-summary">Preview options</summary>
           <div class="preview-toolbar">
             <div id="bg-toggle-root" class="bg-toggle-root" aria-label="Preview background"></div>
-            <div class="preview-mode" role="group" aria-label="Preview mode">
-              <span class="toolbar-label">Preview</span>
-              <div class="mode-toggle">
-                <button type="button" class="mode-btn" data-mode="normal" aria-pressed="true">Normal</button>
-                <button type="button" class="mode-btn" data-mode="lineup" aria-pressed="false">Lineup</button>
-                <button type="button" class="mode-btn" data-mode="sniper" aria-pressed="false">Sniper</button>
+            <div id="crosshair-toolbar-extras" class="crosshair-toolbar-extras">
+              <div class="preview-mode" role="group" aria-label="Preview mode">
+                <span class="toolbar-label">Preview</span>
+                <div class="mode-toggle">
+                  <button type="button" class="mode-btn" data-mode="normal" aria-pressed="true">Normal</button>
+                  <button type="button" class="mode-btn" data-mode="lineup" aria-pressed="false">Lineup</button>
+                  <button type="button" class="mode-btn" data-mode="sniper" aria-pressed="false">Sniper</button>
+                </div>
               </div>
-            </div>
-            <div class="preview-zoom" role="group" aria-label="Preview zoom">
-              <span class="toolbar-label">Zoom</span>
-              <button type="button" id="zoom-out-btn" class="zoom-btn" aria-label="Zoom out">−</button>
-              <span id="zoom-label" class="zoom-label" aria-live="polite">100%</span>
-              <button type="button" id="zoom-in-btn" class="zoom-btn" aria-label="Zoom in">+</button>
-            </div>
-            <div class="color-preview" aria-label="Current crosshair color">
-              <span class="toolbar-label">Color</span>
-              <span id="color-swatch" class="color-swatch" role="img" aria-labelledby="color-swatch-label"></span>
-              <span id="color-swatch-label" class="sr-only">Crosshair color</span>
+              <div class="preview-zoom" role="group" aria-label="Preview zoom">
+                <span class="toolbar-label">Zoom</span>
+                <button type="button" id="zoom-out-btn" class="zoom-btn" aria-label="Zoom out">−</button>
+                <span id="zoom-label" class="zoom-label" aria-live="polite">100%</span>
+                <button type="button" id="zoom-in-btn" class="zoom-btn" aria-label="Zoom in">+</button>
+              </div>
+              <div class="color-preview" aria-label="Current crosshair color">
+                <span class="toolbar-label">Color</span>
+                <span id="color-swatch" class="color-swatch" role="img" aria-labelledby="color-swatch-label"></span>
+                <span id="color-swatch-label" class="sr-only">Crosshair color</span>
+              </div>
             </div>
           </div>
         </details>
 
-        <div class="canvas-wrap">
-          <canvas id="preview-canvas" aria-label="Crosshair preview canvas"></canvas>
+        <div id="crosshair-preview" class="crosshair-preview">
+          <div class="canvas-wrap" id="crosshair-canvas-wrap">
+            <canvas id="preview-canvas" aria-label="Crosshair preview canvas"></canvas>
+          </div>
+
+          <p id="style-note" class="preview-note" hidden>
+            Dynamic preview — crosshair expands as if you were moving or shooting in-game.
+          </p>
+          <p id="lineup-note" class="preview-note" hidden>
+            Grenade lineup reticle preview — shown after the pin delay, as if you were holding a grenade.
+          </p>
+          <p id="sniper-note" class="preview-note" hidden>
+            Sniper scope preview — thin black lines with a pale center dot (color settings do not apply).
+          </p>
+          <p class="preview-note muted">
+            Crosshair is shown at true in-game size (64×64 px at 1080p). Recoil follow and weapon gap are not fully simulated.
+          </p>
+
+          <div class="presets-panel">
+            <div class="presets-section">
+              <h2 class="presets-heading">Pro presets</h2>
+              <div id="presets-grid" class="presets-grid" role="list"></div>
+            </div>
+
+            <div class="presets-section custom-presets-section">
+              <div class="presets-section-header">
+                <h2 class="presets-heading">My presets</h2>
+                <div class="presets-actions">
+                  <button type="button" id="export-presets-btn" class="btn btn-compact" hidden>Export</button>
+                  <button type="button" id="import-presets-btn" class="btn btn-compact">Import</button>
+                  <button type="button" id="save-preset-btn" class="btn btn-compact">Save current</button>
+                </div>
+              </div>
+              <input type="file" id="import-presets-input" class="sr-only" accept="application/json,.json">
+              <form id="save-preset-form" class="save-preset-form" hidden>
+                <label class="sr-only" for="save-preset-name">Preset name</label>
+                <input
+                  type="text"
+                  id="save-preset-name"
+                  class="save-preset-input"
+                  placeholder="Preset name"
+                  maxlength="24"
+                  autocomplete="off"
+                >
+                <button type="submit" class="btn btn-primary btn-compact">Save</button>
+                <button type="button" id="save-preset-cancel" class="btn btn-compact">Cancel</button>
+              </form>
+              <p id="custom-presets-empty" class="custom-presets-empty muted">No saved presets yet.</p>
+              <div id="custom-presets-grid" class="presets-grid" role="list" hidden></div>
+            </div>
+          </div>
         </div>
 
-        <p id="style-note" class="preview-note" hidden>
-          Dynamic preview — crosshair expands as if you were moving or shooting in-game.
-        </p>
-        <p id="lineup-note" class="preview-note" hidden>
-          Grenade lineup reticle preview — shown after the pin delay, as if you were holding a grenade.
-        </p>
-        <p id="sniper-note" class="preview-note" hidden>
-          Sniper scope preview — thin black lines with a pale center dot (color settings do not apply).
-        </p>
-        <p class="preview-note muted">
-          Crosshair is shown at true in-game size (64×64 px at 1080p). Recoil follow and weapon gap are not fully simulated.
-        </p>
-
-        <div class="presets-panel">
-          <div class="presets-section">
-            <h2 class="presets-heading">Pro presets</h2>
-            <div id="presets-grid" class="presets-grid" role="list"></div>
+        <div id="viewmodel-preview" class="viewmodel-preview" hidden>
+          <div class="canvas-wrap" id="viewmodel-canvas-wrap">
+            <canvas id="viewmodel-canvas" aria-label="Viewmodel preview canvas"></canvas>
           </div>
-
-          <div class="presets-section custom-presets-section">
-            <div class="presets-section-header">
-              <h2 class="presets-heading">My presets</h2>
-              <div class="presets-actions">
-                <button type="button" id="export-presets-btn" class="btn btn-compact" hidden>Export</button>
-                <button type="button" id="import-presets-btn" class="btn btn-compact">Import</button>
-                <button type="button" id="save-preset-btn" class="btn btn-compact">Save current</button>
-              </div>
-            </div>
-            <input type="file" id="import-presets-input" class="sr-only" accept="application/json,.json">
-            <form id="save-preset-form" class="save-preset-form" hidden>
-              <label class="sr-only" for="save-preset-name">Preset name</label>
-              <input
-                type="text"
-                id="save-preset-name"
-                class="save-preset-input"
-                placeholder="Preset name"
-                maxlength="24"
-                autocomplete="off"
-              >
-              <button type="submit" class="btn btn-primary btn-compact">Save</button>
-              <button type="button" id="save-preset-cancel" class="btn btn-compact">Cancel</button>
-            </form>
-            <p id="custom-presets-empty" class="custom-presets-empty muted">No saved presets yet.</p>
-            <div id="custom-presets-grid" class="presets-grid" role="list" hidden></div>
-          </div>
+          <p class="preview-note muted">
+            Approximate first-person weapon position from FOV and offsets — not a 3D in-game model.
+            Center marks the aimpoint so you can judge how much screen the gun covers.
+          </p>
         </div>
       </div>
 
@@ -192,6 +206,7 @@
   <script src="js/preview-zoom.js"></script>
   <script src="js/preview-mode.js"></script>
   <script src="js/crosshair-renderer.js"></script>
+  <script src="js/viewmodel-renderer.js"></script>
   <script src="js/commands.js"></script>
   <script src="js/app.js"></script>
 </body>

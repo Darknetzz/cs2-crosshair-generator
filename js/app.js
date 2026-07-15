@@ -24,14 +24,19 @@
   const els = {
     sectionTabs: document.getElementById('section-tabs'),
     settingsContainer: document.getElementById('settings-container'),
+    visualPreview: document.getElementById('visual-preview'),
     crosshairPreview: document.getElementById('crosshair-preview'),
+    viewmodelPreview: document.getElementById('viewmodel-preview'),
+    crosshairToolbarExtras: document.getElementById('crosshair-toolbar-extras'),
     sectionSummary: document.getElementById('section-summary'),
     sectionSummaryTitle: document.getElementById('section-summary-title'),
     sectionSummaryMeta: document.getElementById('section-summary-meta'),
     sectionSummaryList: document.getElementById('section-summary-list'),
     sectionSummaryEmpty: document.getElementById('section-summary-empty'),
     previewCanvas: document.getElementById('preview-canvas'),
-    canvasWrap: document.querySelector('.canvas-wrap'),
+    viewmodelCanvas: document.getElementById('viewmodel-canvas'),
+    canvasWrap: document.getElementById('crosshair-canvas-wrap'),
+    viewmodelCanvasWrap: document.getElementById('viewmodel-canvas-wrap'),
     zoomInBtn: document.getElementById('zoom-in-btn'),
     zoomOutBtn: document.getElementById('zoom-out-btn'),
     zoomLabel: document.getElementById('zoom-label'),
@@ -64,6 +69,14 @@
     themeToggle: document.getElementById('theme-toggle'),
     settingsPanel: document.getElementById('settings-panel'),
   };
+
+  function getViewmodelState() {
+    return sectionsState.viewmodel;
+  }
+
+  function hasVisualPreview() {
+    return activeSectionId === 'crosshair' || activeSectionId === 'viewmodel';
+  }
 
   function getActiveSection() {
     return ConfigSections.getActiveOrDefault(activeSectionId);
@@ -121,33 +134,58 @@
     }
   }
 
-  function getCanvasBaseSize() {
-    const width = els.canvasWrap?.clientWidth || CrosshairRenderer.PREVIEW_SIZE;
-    return Math.min(width, CrosshairRenderer.PREVIEW_SIZE);
+  function getCanvasBaseSize(wrap, maxSize) {
+    const width = wrap?.clientWidth || maxSize;
+    return Math.min(width, maxSize);
   }
 
-  function getCanvasDisplaySize() {
-    return Math.max(1, Math.round(getCanvasBaseSize() * previewZoom));
+  function getCrosshairDisplaySize() {
+    return Math.max(
+      1,
+      Math.round(getCanvasBaseSize(els.canvasWrap, CrosshairRenderer.PREVIEW_SIZE) * previewZoom),
+    );
   }
 
-  function syncCanvasDimensions() {
-    const canvas = els.previewCanvas;
-    if (!canvas) return;
+  function getViewmodelDisplaySize() {
+    return Math.max(
+      1,
+      Math.round(getCanvasBaseSize(els.viewmodelCanvasWrap, ViewmodelRenderer.PREVIEW_SIZE)),
+    );
+  }
 
-    const size = getCanvasDisplaySize();
+  function syncCanvasSize(canvas, size) {
+    if (!canvas) return false;
+
     const changed = canvas.width !== size || canvas.height !== size;
-
     if (changed) {
       canvas.width = size;
       canvas.height = size;
-      CrosshairRenderer.invalidateBgCache();
     }
 
     canvas.style.width = `${size}px`;
     canvas.style.height = `${size}px`;
+    return changed;
+  }
+
+  function syncCanvasDimensions() {
+    const crosshairChanged = syncCanvasSize(els.previewCanvas, getCrosshairDisplaySize());
+    const viewmodelChanged = syncCanvasSize(els.viewmodelCanvas, getViewmodelDisplaySize());
+    if (crosshairChanged || viewmodelChanged) {
+      CrosshairRenderer.invalidateBgCache();
+    }
+  }
+
+  function updateViewmodelPreview() {
+    if (activeSectionId !== 'viewmodel') return;
+    syncCanvasDimensions();
+    ViewmodelRenderer.render(els.viewmodelCanvas, getViewmodelState(), previewBackground);
   }
 
   function updatePreview() {
+    if (activeSectionId === 'viewmodel') {
+      updateViewmodelPreview();
+      return;
+    }
     if (activeSectionId !== 'crosshair') return;
     syncCanvasDimensions();
     updateColorSwatch();
@@ -224,7 +262,7 @@
 
   function updateSectionSummary() {
     const section = getActiveSection();
-    if (section.id === 'crosshair') return;
+    if (hasVisualPreview()) return;
 
     const state = sectionsState[section.id];
     const changedKeys = section.CVAR_ORDER.filter((key) => !section.isAtDefault(key, state));
@@ -253,8 +291,14 @@
 
   function updateSectionVisibility() {
     const isCrosshair = activeSectionId === 'crosshair';
+    const isViewmodel = activeSectionId === 'viewmodel';
+    const visual = hasVisualPreview();
+
+    if (els.visualPreview) els.visualPreview.hidden = !visual;
     els.crosshairPreview.hidden = !isCrosshair;
-    els.sectionSummary.hidden = isCrosshair;
+    if (els.viewmodelPreview) els.viewmodelPreview.hidden = !isViewmodel;
+    if (els.crosshairToolbarExtras) els.crosshairToolbarExtras.hidden = !isCrosshair;
+    els.sectionSummary.hidden = visual;
 
     for (const section of ConfigSections.ALL) {
       const mount = sectionMounts[section.id];
@@ -266,6 +310,9 @@
 
     if (isCrosshair) {
       updatePreview();
+    } else if (isViewmodel) {
+      CrosshairRenderer.stopAnimation();
+      updateViewmodelPreview();
     } else {
       CrosshairRenderer.stopAnimation();
     }
@@ -1296,8 +1343,11 @@
       updatePreview();
     };
 
-    if (typeof ResizeObserver !== 'undefined' && els.canvasWrap) {
-      new ResizeObserver(onLayoutChange).observe(els.canvasWrap);
+    if (typeof ResizeObserver !== 'undefined') {
+      if (els.canvasWrap) new ResizeObserver(onLayoutChange).observe(els.canvasWrap);
+      if (els.viewmodelCanvasWrap) {
+        new ResizeObserver(onLayoutChange).observe(els.viewmodelCanvasWrap);
+      }
     }
 
     window.addEventListener('resize', onLayoutChange);
@@ -1342,7 +1392,10 @@
     setTogglePressed(els.bgToggleRoot, '[data-bg]', previewBackground, 'data-bg');
 
     refresh();
-    CrosshairRenderer.preloadImages(updatePreview);
+    CrosshairRenderer.preloadImages(() => {
+      updatePreview();
+      updateViewmodelPreview();
+    });
   }
 
   document.addEventListener('DOMContentLoaded', init);

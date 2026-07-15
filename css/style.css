@@ -525,6 +525,19 @@ body {
   background: #0f0;
 }
 
+.crosshair-toolbar-extras {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.crosshair-toolbar-extras .color-preview {
+  margin-left: auto;
+}
+
 .canvas-wrap {
   display: flex;
   justify-content: center;
@@ -535,10 +548,23 @@ body {
   scrollbar-width: thin;
 }
 
-#preview-canvas {
+#preview-canvas,
+#viewmodel-canvas {
   display: block;
   max-width: none;
+}
+
+#preview-canvas {
   image-rendering: pixelated;
+}
+
+#viewmodel-canvas {
+  image-rendering: auto;
+}
+
+.viewmodel-preview {
+  display: flex;
+  flex-direction: column;
 }
 
 .preview-note {

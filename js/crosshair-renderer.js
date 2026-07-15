@@ -743,6 +743,7 @@ const CrosshairRenderer = (() => {
     preloadImages,
     ensureImageLoaded,
     invalidateBgCache,
+    paintBackground: drawBackground,
     isDynamicStyle,
     isAnimating,
     startAnimation,
