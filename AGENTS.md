@@ -67,7 +67,7 @@ Do not rewrite published version sections; put follow-ups under `[Unreleased]` o
 | `js/commands.js` | Serialize/import console commands and `.cfg` text |
 | `js/commands-page.js` | Commands reference UI (search/sort/paginate) |
 | `data/cs2-commands.json` | Generated full cvar/command catalog |
-| `scripts/refresh-cs2-commands.py` | Rebuild catalog from ArminC dump + section enrichments |
+| `scripts/refresh-cs2-commands.py` | Merge Nihilnia + ArminC (or local) dumps into the command catalog |
 | `scripts/release.sh` | Rotate CHANGELOG, commit, annotated SemVer tag (no push) |
 | `CHANGELOG.md` | Keep a Changelog (`[Unreleased]` + released sections) |
 | `cliff.toml` | git-cliff config for draft notes / bump suggestions |

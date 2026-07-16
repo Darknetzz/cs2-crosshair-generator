@@ -19,10 +19,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ConVar flag legend and tooltips explaining engine metadata under each command name
 - `sv_cheats` badge on Commands that require cheats enabled
 - Client / server badges on Commands derived from `cl` / `sv` flags
-- Script to refresh the command catalog from the ArminC CS2 cvar dump (`scripts/refresh-cs2-commands.py`)
+- Script to refresh the command catalog (`scripts/refresh-cs2-commands.py`)
 
 ### Changed
 
+- Commands catalog merges ArminC (broad/hidden) + Nihilnia (fresher public) dumps by default
 - Bind export and editor previews label each bind with a `//` comment and separate blocks with a blank line
 - Wider config export column; long cvar lines scroll horizontally instead of wrapping
 - Wider inline preview column for crosshair / viewmodel / radar canvases

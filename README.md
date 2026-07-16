@@ -118,7 +118,7 @@ The page defaults to **Auto**, which follows your system light/dark preference. 
 │   ├── maps/                  # Map background images (WebP)
 │   └── viewmodels/            # Viewmodel preview images (WebP)
 ├── data/
-│   └── cs2-commands.json      # Generated command catalog (ArminC + enrichments)
+│   └── cs2-commands.json      # Generated command catalog (Nihilnia + enrichments)
 ├── scripts/
 │   ├── refresh-cs2-commands.py  # Refresh data/cs2-commands.json
 │   └── release.sh               # Rotate CHANGELOG, commit, tag (no push)
@@ -131,7 +131,22 @@ The page defaults to **Auto**, which follows your system light/dark preference. 
 python3 scripts/refresh-cs2-commands.py
 ```
 
-Fetches the public [ArminC CS2 cvar list](https://github.com/ArmynC/ArminC-CS2-Cvars), merges accepted-value ranges from this app’s settings, assigns functional **categories from command-name prefixes**, and writes `data/cs2-commands.json`. Use `--input path/to/cvarlist.md` to parse a local dump instead of downloading.
+Fetches and **merges** two public dumps by default:
+
+1. [ArminC-CS2-Cvars](https://github.com/ArmynC/ArminC-CS2-Cvars) — broader list (includes many hidden/dev cvars)
+2. [Nihilnia/CounterStrike](https://github.com/Nihilnia/CounterStrike) — fresher in-game-style dump (~1.41.x)
+
+Shared names keep the richer/newer fields; ArminC-only names are kept. Then accepted-value ranges from this app’s settings and prefix **categories** are applied.
+
+```bash
+# Single source only
+python3 scripts/refresh-cs2-commands.py --url 'https://raw.githubusercontent.com/Nihilnia/CounterStrike/main/Counter%20Strike%202/List%20of%20console%20commands%20and%20variables.md'
+
+# Local file(s), merged in order (later overlays earlier)
+python3 scripts/refresh-cs2-commands.py --input dump-a.md --input dump-b.txt
+```
+
+Note: CS2 no longer supports `con_logfile`, and `condump` often creates no files. Prefer pasting a console `cvarlist` capture or using the maintained public dumps.
 
 ## Map backgrounds
 

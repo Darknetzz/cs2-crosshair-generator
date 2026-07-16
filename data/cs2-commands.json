@@ -1,9 +1,13 @@
 {
   "meta": {
-    "source": "https://raw.githubusercontent.com/ArmynC/ArminC-CS2-Cvars/main/cvars/cvarlist.md",
-    "fetchedAt": "2026-07-16T03:26:51Z",
-    "count": 5071,
-    "enrichmentCount": 64,
+    "source": "https://raw.githubusercontent.com/ArmynC/ArminC-CS2-Cvars/main/cvars/cvarlist.md + https://raw.githubusercontent.com/Nihilnia/CounterStrike/main/Counter%20Strike%202/List%20of%20console%20commands%20and%20variables.md",
+    "sources": [
+      "https://raw.githubusercontent.com/ArmynC/ArminC-CS2-Cvars/main/cvars/cvarlist.md",
+      "https://raw.githubusercontent.com/Nihilnia/CounterStrike/main/Counter%20Strike%202/List%20of%20console%20commands%20and%20variables.md"
+    ],
+    "fetchedAt": "2026-07-16T06:00:01Z",
+    "count": 5197,
+    "enrichmentCount": 67,
     "categories": [
       "Audio",
       "Binds / Input actions",
@@ -1682,7 +1686,8 @@
     {
       "name": "animgraph_footlock_ik_enable",
       "flags": [
-        "cheat"
+        "cheat",
+        "rep"
       ],
       "default": "true",
       "description": "Enable IK.",
@@ -2105,6 +2110,20 @@
       "category": "Other"
     },
     {
+      "name": "automatically_open_saved_animgraph_recording",
+      "flags": [
+        "sv",
+        "cl",
+        "a",
+        "rep"
+      ],
+      "default": "false",
+      "description": "",
+      "accepted": "bool",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
       "name": "autosave",
       "flags": [
         "sv"
@@ -2440,7 +2459,7 @@
         "rep",
         "release"
       ],
-      "default": "5",
+      "default": "0",
       "description": "Upper bound above Average Human Contribution Score that a bot must be above to change its difficulty",
       "accepted": "—",
       "kind": "cvar",
@@ -2550,7 +2569,7 @@
         "sv",
         "release"
       ],
-      "default": "false",
+      "default": "true",
       "description": "If nonzero and there is a human on the team, the bots will not do the scenario tasks.",
       "accepted": "bool",
       "kind": "cvar",
@@ -2574,7 +2593,7 @@
         "sv",
         "release"
       ],
-      "default": "1",
+      "default": "2",
       "description": "Defines the skill of bots joining the game. Values are: 0=easy, 1=normal, 2=hard, 3=expert.",
       "accepted": "—",
       "kind": "cvar",
@@ -2776,8 +2795,8 @@
         "sv",
         "cheat"
       ],
-      "default": "bots",
-      "description": "are given these items at round start",
+      "default": "0",
+      "description": "bots are given these items at round start",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -2865,7 +2884,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "bot_place - Places a bot from the map at where the local player is pointing.",
+      "description": "`bot_place` - Places a bot from the map at where the local player is pointing.",
       "accepted": "command",
       "kind": "command",
       "category": "Server / Match"
@@ -2876,7 +2895,7 @@
         "sv",
         "release"
       ],
-      "default": "This",
+      "default": "0",
       "description": "string is prefixed to the name of all bots that join the game. <difficulty> will be replaced with the bot's difficulty. <weaponclass> will be replaced with the bot's desired weapon class. <skill> will be replaced with a 0-100 representation of the bot's skill.",
       "accepted": "—",
       "kind": "cvar",
@@ -2900,7 +2919,7 @@
         "sv",
         "release"
       ],
-      "default": "normal",
+      "default": "fill",
       "description": "Determines the type of quota. Allowed values: 'normal', 'fill', and 'match'. If 'fill', the server will adjust bots to keep N players in the game, where N is bot_quota. If 'match', the server will maintain a 1:N ratio of humans to bots, where N is bot_quota.",
       "accepted": "—",
       "kind": "cvar",
@@ -3129,10 +3148,10 @@
       "flags": [
         "a"
       ],
-      "default": "",
+      "default": "0",
       "description": "Default:",
       "accepted": "command",
-      "kind": "command",
+      "kind": "cvar",
       "category": "Other"
     },
     {
@@ -3611,6 +3630,78 @@
       "category": "Other"
     },
     {
+      "name": "camera_path_add",
+      "flags": [
+        "cl",
+        "cheat"
+      ],
+      "default": "",
+      "description": "",
+      "accepted": "command",
+      "kind": "command",
+      "category": "Other"
+    },
+    {
+      "name": "camera_path_clear_all",
+      "flags": [
+        "cl",
+        "cheat"
+      ],
+      "default": "",
+      "description": "",
+      "accepted": "command",
+      "kind": "command",
+      "category": "Other"
+    },
+    {
+      "name": "camera_path_delete",
+      "flags": [
+        "cl",
+        "cheat"
+      ],
+      "default": "",
+      "description": "",
+      "accepted": "command",
+      "kind": "command",
+      "category": "Other"
+    },
+    {
+      "name": "camera_path_edit_mode",
+      "flags": [
+        "cl",
+        "cheat"
+      ],
+      "default": "false",
+      "description": "",
+      "accepted": "bool",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
+      "name": "camera_path_load",
+      "flags": [
+        "cl",
+        "cheat"
+      ],
+      "default": "",
+      "description": "",
+      "accepted": "command",
+      "kind": "command",
+      "category": "Other"
+    },
+    {
+      "name": "camera_path_save",
+      "flags": [
+        "cl",
+        "cheat"
+      ],
+      "default": "",
+      "description": "",
+      "accepted": "command",
+      "kind": "command",
+      "category": "Other"
+    },
+    {
       "name": "camerazoomin",
       "flags": [
         "cl"
@@ -3953,6 +4044,21 @@
       "category": "Server / Match"
     },
     {
+      "name": "cash_team_per_dead_enemy",
+      "flags": [
+        "sv",
+        "cl",
+        "nf",
+        "rep",
+        "release"
+      ],
+      "default": "50",
+      "description": "",
+      "accepted": "—",
+      "kind": "cvar",
+      "category": "Server / Match"
+    },
+    {
       "name": "cash_team_planted_bomb_but_defused",
       "flags": [
         "sv",
@@ -4254,8 +4360,8 @@
         "cl",
         "a"
       ],
-      "default": "Current",
-      "description": "close caption language (emtpy = use game UI language)",
+      "default": "0",
+      "description": "Current close caption language (emtpy = use game UI language)",
       "accepted": "—",
       "kind": "cvar",
       "category": "Other"
@@ -4535,7 +4641,7 @@
         "a",
         "release"
       ],
-      "default": "true",
+      "default": "false",
       "description": "Whether or not to allow animated avatars",
       "accepted": "bool",
       "kind": "cvar",
@@ -4626,8 +4732,8 @@
         "cl",
         "release"
       ],
-      "default": "The",
-      "description": "order in which autobuy will attempt to purchase items",
+      "default": "vesthelm vest m4a1 ak47 famas galilar mp7 nova defuser",
+      "description": "The order in which autobuy will attempt to purchase items",
       "accepted": "—",
       "kind": "cvar",
       "category": "Other"
@@ -4747,6 +4853,17 @@
       "description": "Break in debugger when missing resource match is found. Format: cl_break_on_missing_resource <substring> /(empty to break on all) / 0 to turn off.",
       "accepted": "command",
       "kind": "command",
+      "category": "Other"
+    },
+    {
+      "name": "cl_buffer_incoming_net_messages",
+      "flags": [
+        "release"
+      ],
+      "default": "true",
+      "description": "",
+      "accepted": "bool",
+      "kind": "cvar",
       "category": "Other"
     },
     {
@@ -5064,7 +5181,7 @@
         "a",
         "user"
       ],
-      "default": "1",
+      "default": "3",
       "description": "Preferred teammate color",
       "accepted": "—",
       "kind": "cvar",
@@ -5110,7 +5227,7 @@
         "a",
         "per_user"
       ],
-      "default": "true",
+      "default": "false",
       "description": "Draws a black outline around the crosshair for better visibility",
       "accepted": "0 / 1",
       "kind": "cvar",
@@ -5123,7 +5240,7 @@
         "a",
         "per_user"
       ],
-      "default": "1",
+      "default": "0",
       "description": "If using cl_crosshairstyle 2, this is the ratio used to determine how long the inner and outer xhair pips will be. [inner = cl_crosshairsize*(1-cl_crosshair_dynamic_maxdist_splitratio), outer = cl_crosshairsize*cl_crosshair_dynamic_maxdist_splitratio] [0 - 1]",
       "accepted": "0 – 1 (step 0.05)",
       "kind": "cvar",
@@ -5136,7 +5253,7 @@
         "a",
         "per_user"
       ],
-      "default": "0",
+      "default": "1",
       "description": "If using cl_crosshairstyle 2, this is the alpha modification that will be used for the INNER crosshair pips once they've split. [0 - 1]",
       "accepted": "0 – 1 (step 0.05)",
       "kind": "cvar",
@@ -5149,7 +5266,7 @@
         "a",
         "per_user"
       ],
-      "default": "1",
+      "default": "0.3",
       "description": "If using cl_crosshairstyle 2, this is the alpha modification that will be used for the OUTER crosshair pips once they've split. [0.3 - 1]",
       "accepted": "0 – 1 (step 0.05)",
       "kind": "cvar",
@@ -5162,7 +5279,7 @@
         "a",
         "per_user"
       ],
-      "default": "3",
+      "default": "5",
       "description": "If using cl_crosshairstyle 2, this is the distance that the crosshair pips will split into 2. (default is 7)",
       "accepted": "0 – 20 (step 0.5)",
       "kind": "cvar",
@@ -5175,7 +5292,7 @@
         "a",
         "release"
       ],
-      "default": "1",
+      "default": "0",
       "description": "0: off, 1: on",
       "accepted": "0 / 1 / 2",
       "kind": "cvar",
@@ -5188,7 +5305,7 @@
         "a",
         "per_user"
       ],
-      "default": "1",
+      "default": "0",
       "description": "Set how thick you want your crosshair outline to draw (0-3)",
       "accepted": "0.1 – 3 (step 0.1)",
       "kind": "cvar",
@@ -5331,7 +5448,7 @@
         "a",
         "per_user"
       ],
-      "default": "true",
+      "default": "false",
       "description": "If set to 1, the gap will update dynamically based on which weapon is currently equipped",
       "accepted": "0 / 1",
       "kind": "cvar",
@@ -5357,7 +5474,7 @@
         "a",
         "per_user"
       ],
-      "default": "2",
+      "default": "4",
       "description": "0 = DEFAULT (DISABLED), 1 = DEFAULT STATIC (DISABLED), 2 = DEFAULT (accurate recoil/spread feedback with a fixed inner part), 3 = ACCURATE DYNAMIC (DISABLED) (accurate recoil/spread feedback), 4 = DEFAULT STATIC, 5 = LEGACY (fake recoil - inaccurate feedback)",
       "accepted": "0 / 1 / 2 / 3 / 4 / 5",
       "kind": "cvar",
@@ -5740,6 +5857,18 @@
       "category": "Other"
     },
     {
+      "name": "cl_demo_predict",
+      "flags": [
+        "cl",
+        "release"
+      ],
+      "default": "1",
+      "description": "Enable 'TrueView' when watching a demo, which attempts to recreate the client's experience more accurately. 0=disable, 1=only if demo version match, 2=always",
+      "accepted": "—",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
       "name": "cl_demo_steadycam_blendframes",
       "flags": [
         "cl"
@@ -5936,7 +6065,7 @@
         "a",
         "release"
       ],
-      "default": "true",
+      "default": "false",
       "description": "Player will automatically receive a random weapon on spawn in deathmatch if this is set to 1 (otherwise, they will receive the last weapon)",
       "accepted": "bool",
       "kind": "cvar",
@@ -6175,6 +6304,19 @@
       "category": "Other"
     },
     {
+      "name": "cl_enable_party_voice",
+      "flags": [
+        "cl",
+        "a",
+        "release"
+      ],
+      "default": "true",
+      "description": "",
+      "accepted": "bool",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
       "name": "cl_ent_absbox",
       "flags": [
         "cl",
@@ -6217,9 +6359,21 @@
         "cheat"
       ],
       "default": "",
-      "description": "Toggles recording of animgraph replay of the given entity(s) Arguments: {entity_name} / {class_name} / {entity_index} / {no argument = pick what player is looking at}",
+      "description": "Toggles recording of animgraph replay of the given entity(s) Arguments: entityName automaticallyOpenInAnimgraphEditor Arguments: {entity_name} / {class_name} / {entity_index} / {no argument = pick what player is looking at}",
       "accepted": "command",
       "kind": "command",
+      "category": "Other"
+    },
+    {
+      "name": "cl_ent_attachment_filter_substrings",
+      "flags": [
+        "cl",
+        "cheat"
+      ],
+      "default": "0",
+      "description": "If an attachment's name has any of the given substrings in it, it will be displayed. Substrings can be delimited by the ',' or ' | ' character.",
+      "accepted": "—",
+      "kind": "cvar",
       "category": "Other"
     },
     {
@@ -6353,12 +6507,37 @@
       "category": "Other"
     },
     {
-      "name": "cl_ent_joint_names",
+      "name": "cl_ent_joint_filter_substrings",
       "flags": [
-        "cl"
+        "cl",
+        "cheat"
+      ],
+      "default": "0",
+      "description": "If a joint's name has any of the given substrings in it, it will be displayed. Substrings can be delimited by the ',' or ' | ' character.",
+      "accepted": "—",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
+      "name": "cl_ent_joint_lines",
+      "flags": [
+        "cl",
+        "cheat"
       ],
       "default": "true",
-      "description": "",
+      "description": "Draw a line between a rendered joint and its parent.",
+      "accepted": "bool",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
+      "name": "cl_ent_joint_names",
+      "flags": [
+        "cl",
+        "cheat"
+      ],
+      "default": "true",
+      "description": "Draw the name of a rendered joint.",
       "accepted": "bool",
       "kind": "cvar",
       "category": "Other"
@@ -6596,10 +6775,10 @@
         "cl",
         "cheat"
       ],
-      "default": "",
+      "default": "0",
       "description": "Default:",
       "accepted": "command",
-      "kind": "command",
+      "kind": "cvar",
       "category": "Other"
     },
     {
@@ -6652,7 +6831,8 @@
       "name": "cl_ent_text",
       "flags": [
         "cl",
-        "cheat"
+        "cheat",
+        "vconsole_fuzzy"
       ],
       "default": "",
       "description": "Displays text debugging information about the given entity(ies) on top of the entity (See Overlay Text) Arguments: {entity_name} / {class_name} / {entity_index} / {no argument = pick what player is looking at}",
@@ -6821,7 +7001,8 @@
       "name": "cl_ent_visibility_traces",
       "flags": [
         "cl",
-        "cheat"
+        "cheat",
+        "vconsole_fuzzy"
       ],
       "default": "",
       "description": "Displays visibility traces for the given entity Arguments: {entity_name} / {class_name} / {entity_index} / {no argument = pick what player is looking at}",
@@ -6994,7 +7175,7 @@
         "a",
         "per_user"
       ],
-      "default": "3",
+      "default": "0",
       "description": "For crosshair style 1: How big to make the gap between the pips in the fixed crosshair",
       "accepted": "-10 – 10 (step 0.5)",
       "kind": "cvar",
@@ -7016,6 +7197,18 @@
       "flags": [],
       "default": "false",
       "description": "",
+      "accepted": "bool",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
+      "name": "cl_force_spec_hud_color_to_team",
+      "flags": [
+        "cl",
+        "a"
+      ],
+      "default": "true",
+      "description": "Spec hud color setting is always team/teammate",
       "accepted": "bool",
       "kind": "cvar",
       "category": "Other"
@@ -7242,7 +7435,7 @@
         "release"
       ],
       "default": "false",
-      "description": "",
+      "description": "Graphics driver recommendation (NVIDIA 581.80 / AMD 23.11.1)",
       "accepted": "bool",
       "kind": "cvar",
       "category": "Other"
@@ -7523,7 +7716,7 @@
         "a",
         "release"
       ],
-      "default": "0",
+      "default": "6",
       "description": "0 = team color, 1 = white, 2 = bright white, 3 = light blue, 4 = blue, 5 = purple, 6 = red, 7 = orange, 8 = yellow, 9 = green, 10 = aqua, 11 = pink, 12 = teammate color.",
       "accepted": "0 / 1 / 2 / 3 / 4 / 5 / 6 / 7 / 8 / 9 / 10 / 11",
       "kind": "cvar",
@@ -7539,6 +7732,19 @@
       "default": "0.627",
       "description": "",
       "accepted": "0 – 1 (step 0.01)",
+      "kind": "cvar",
+      "category": "Radar"
+    },
+    {
+      "name": "cl_hud_radar_blur_background",
+      "flags": [
+        "cl",
+        "a",
+        "release"
+      ],
+      "default": "false",
+      "description": "Blurs the radar background.",
+      "accepted": "0 / 1",
       "kind": "cvar",
       "category": "Radar"
     },
@@ -7588,7 +7794,7 @@
         "a",
         "release"
       ],
-      "default": "1",
+      "default": "2",
       "description": "Show frame time (FPS) in the HUD. 0=never, 1=only if poor, 2=always",
       "accepted": "0 / 1",
       "kind": "cvar",
@@ -7627,7 +7833,7 @@
         "a",
         "release"
       ],
-      "default": "1",
+      "default": "2",
       "description": "Show percentage of user commands & server snapshots that are missed due to network conditions. 0=never, 1=only in poor conditions, 2=always",
       "accepted": "0 / 1",
       "kind": "cvar",
@@ -7666,7 +7872,7 @@
         "a",
         "release"
       ],
-      "default": "1",
+      "default": "2",
       "description": "Show ping in the HUD. 0=never, 1=only in poor conditions, 2=always",
       "accepted": "0 / 1",
       "kind": "cvar",
@@ -8006,6 +8212,19 @@
       "category": "Other"
     },
     {
+      "name": "cl_ironsight_dot_scale",
+      "flags": [
+        "cl",
+        "a",
+        "per_user"
+      ],
+      "default": "1",
+      "description": "Ironsight dot scale",
+      "accepted": "—",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
       "name": "cl_ironsight_filter_alpha",
       "flags": [
         "cl"
@@ -8034,7 +8253,7 @@
         "a",
         "per_user"
       ],
-      "default": "false",
+      "default": "true",
       "description": "Should the scope dot match the user's crosshair color",
       "accepted": "bool",
       "kind": "cvar",
@@ -8111,7 +8330,7 @@
       "flags": [
         "user"
       ],
-      "default": "20",
+      "default": "10",
       "description": "When upstream packet jitter in a frame exceeds this threshold (ms), the frame is considered to have 'irregular delivery'. This is a derived value and should not be modified manually",
       "accepted": "—",
       "kind": "cvar",
@@ -8512,7 +8731,7 @@
         "a",
         "release"
       ],
-      "default": "0",
+      "default": "-1",
       "description": "0: Not Started, 1: Needs Training, 2: Training Complete, -1: Disabled",
       "accepted": "—",
       "kind": "cvar",
@@ -8609,6 +8828,18 @@
       "category": "Other"
     },
     {
+      "name": "cl_obs_interp_speed",
+      "flags": [
+        "cl",
+        "a"
+      ],
+      "default": "1",
+      "description": "Spectator camera interpolation speed",
+      "accepted": "—",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
       "name": "cl_obs_interp_turn_to_face_end_frac",
       "flags": [
         "cl"
@@ -8637,7 +8868,7 @@
         "a",
         "release"
       ],
-      "default": "2",
+      "default": "0",
       "description": "Control the crosshair shown when observing a bot. 0: Show player crosshair. 1: Show player crosshair only when bot can be taken over, otherwise show default.. 2: Always show default crosshair for bots.",
       "accepted": "—",
       "kind": "cvar",
@@ -8650,10 +8881,10 @@
         "cheat",
         "release"
       ],
-      "default": "",
+      "default": "0",
       "description": "Default:",
       "accepted": "command",
-      "kind": "command",
+      "kind": "cvar",
       "category": "Other"
     },
     {
@@ -8809,8 +9040,8 @@
         "cl",
         "cheat"
       ],
-      "default": "Dump",
-      "description": "entity by prediction classname.",
+      "default": "0",
+      "description": "Dump entity by prediction classname.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Other"
@@ -8996,15 +9227,27 @@
       "category": "Other"
     },
     {
+      "name": "cl_phys_sound_disable_impact_sounds_under_hard_threshold",
+      "flags": [
+        "cl",
+        "cheat"
+      ],
+      "default": "false",
+      "description": "if true, impact sounds wont play if no soft impact sound is present and the impact is below the hard velocity threshold.",
+      "accepted": "bool",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
       "name": "cl_phys_stop_at_collision",
       "flags": [
         "cl",
         "cheat"
       ],
-      "default": "",
+      "default": "0",
       "description": "Default:",
       "accepted": "command",
-      "kind": "command",
+      "kind": "cvar",
       "category": "Other"
     },
     {
@@ -9306,7 +9549,9 @@
     },
     {
       "name": "cl_poll_network_early",
-      "flags": [],
+      "flags": [
+        "release"
+      ],
       "default": "true",
       "description": "Enable polling for network messages every frame, instead of every tick",
       "accepted": "bool",
@@ -9483,6 +9728,18 @@
       "category": "Network"
     },
     {
+      "name": "cl_prediction_savedata_postentitypacketreceived",
+      "flags": [
+        "cl",
+        "release"
+      ],
+      "default": "false",
+      "description": "Experimental optimization. If you are reading this in 2026, please delete this convar.",
+      "accepted": "bool",
+      "kind": "cvar",
+      "category": "Network"
+    },
+    {
       "name": "cl_predictioncopy_describe",
       "flags": [
         "cl"
@@ -9523,7 +9780,7 @@
         "user",
         "per_user"
       ],
-      "default": "false",
+      "default": "true",
       "description": "Left handed preference",
       "accepted": "bool",
       "kind": "cvar",
@@ -9672,7 +9929,7 @@
         "a",
         "release"
       ],
-      "default": "0.7",
+      "default": "0.3",
       "description": "Sets the radar scale. Valid values are 0.25 to 1.0.",
       "accepted": "0.25 – 1 (step 0.05)",
       "kind": "cvar",
@@ -9705,13 +9962,26 @@
       "category": "Radar"
     },
     {
+      "name": "cl_radar_square_always",
+      "flags": [
+        "cl",
+        "a",
+        "release"
+      ],
+      "default": "false",
+      "description": "If set, the radar will always be square.",
+      "accepted": "0 / 1",
+      "kind": "cvar",
+      "category": "Radar"
+    },
+    {
       "name": "cl_radar_square_with_scoreboard",
       "flags": [
         "cl",
         "a",
         "release"
       ],
-      "default": "true",
+      "default": "false",
       "description": "If set, the radar will toggle to square when the scoreboard is visible.",
       "accepted": "0 / 1",
       "kind": "cvar",
@@ -10234,8 +10504,8 @@
         "cl",
         "release"
       ],
-      "default": "The",
-      "description": "order in which rebuy will attempt to repurchase items",
+      "default": "Armor PrimaryWeapon Flashbang SmokeGrenade Defuser HEGrenade Flashbang SecondaryWeapon Molotov IncGrenade Decoy Taser",
+      "description": "The order in which rebuy will attempt to repurchase items",
       "accepted": "—",
       "kind": "cvar",
       "category": "Other"
@@ -10368,6 +10638,18 @@
       "category": "Other"
     },
     {
+      "name": "cl_rr_dump_rules",
+      "flags": [
+        "cl",
+        "cheat"
+      ],
+      "default": "",
+      "description": "Print all response rules",
+      "accepted": "command",
+      "kind": "command",
+      "category": "Other"
+    },
+    {
       "name": "cl_rr_reloadresponsesystems",
       "flags": [
         "cl",
@@ -10410,7 +10692,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Saves all active animgraph recordings to disk",
+      "description": "Saves all active animgraph recordings to disk Arguments: automaticallyOpenInAnimgraphEditor",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -11091,6 +11373,18 @@
       "category": "Other"
     },
     {
+      "name": "cl_showtick",
+      "flags": [
+        "cl",
+        "release"
+      ],
+      "default": "0",
+      "description": "Show current tick/time values. Bitmask: 1='render time' 2='GameTime' 4=time of predicted entities 8=offset of predicted entities (-1 means 'everything')",
+      "accepted": "—",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
       "name": "cl_showusercmd",
       "flags": [
         "cl"
@@ -11297,9 +11591,82 @@
       "category": "Other"
     },
     {
+      "name": "cl_smooth_draw_debug",
+      "flags": [
+        "cl",
+        "cheat"
+      ],
+      "default": "false",
+      "description": "",
+      "accepted": "bool",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
+      "name": "cl_smooth_root_catchup_factor",
+      "flags": [
+        "cl",
+        "cheat"
+      ],
+      "default": "0.21",
+      "description": "",
+      "accepted": "—",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
+      "name": "cl_smooth_root_max_accel",
+      "flags": [
+        "cl",
+        "cheat"
+      ],
+      "default": "1000",
+      "description": "",
+      "accepted": "—",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
+      "name": "cl_smooth_root_origin_coeff",
+      "flags": [
+        "cl",
+        "cheat"
+      ],
+      "default": "100",
+      "description": "",
+      "accepted": "—",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
+      "name": "cl_smooth_root_timehorizon",
+      "flags": [
+        "cl",
+        "cheat"
+      ],
+      "default": "0.125",
+      "description": "",
+      "accepted": "—",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
+      "name": "cl_smooth_root_velocity_coeff",
+      "flags": [
+        "cl",
+        "cheat"
+      ],
+      "default": "20",
+      "description": "",
+      "accepted": "—",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
       "name": "cl_smooth_targetspeed",
       "flags": [
-        "cl"
+        "cl",
+        "release"
       ],
       "default": "150",
       "description": "",
@@ -11372,6 +11739,19 @@
       "default": "false",
       "description": "",
       "accepted": "bool",
+      "kind": "cvar",
+      "category": "Crosshair"
+    },
+    {
+      "name": "cl_sniper_show_inaccuracy",
+      "flags": [
+        "cl",
+        "a",
+        "release"
+      ],
+      "default": "false",
+      "description": "",
+      "accepted": "0 / 1",
       "kind": "cvar",
       "category": "Crosshair"
     },
@@ -11966,6 +12346,18 @@
       "category": "Other"
     },
     {
+      "name": "cl_trueview_show_status",
+      "flags": [
+        "cl",
+        "release"
+      ],
+      "default": "2",
+      "description": "0=Never; 1=Only if there is a problem; 2=always",
+      "accepted": "—",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
       "name": "cl_ui_particles_destroy_when_not_painting",
       "flags": [
         "cl"
@@ -11994,6 +12386,19 @@
       ],
       "default": "true",
       "description": "",
+      "accepted": "bool",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
+      "name": "cl_use_last_selected_weapon_slot_position",
+      "flags": [
+        "cl",
+        "a",
+        "release"
+      ],
+      "default": "false",
+      "description": "Use the last selected weapon slot position when switching back to a weapon slot.",
       "accepted": "bool",
       "kind": "cvar",
       "category": "Other"
@@ -12093,6 +12498,19 @@
       "default": "16",
       "description": "",
       "accepted": "—",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
+      "name": "cl_viewing_vanity_loadout",
+      "flags": [
+        "sv",
+        "cl",
+        "user"
+      ],
+      "default": "false",
+      "description": "",
+      "accepted": "bool",
       "kind": "cvar",
       "category": "Other"
     },
@@ -13117,7 +13535,7 @@
         "a",
         "per_user"
       ],
-      "default": "false",
+      "default": "true",
       "description": "Allows the console to be activated.",
       "accepted": "bool",
       "kind": "cvar",
@@ -13287,7 +13705,7 @@
         "sv",
         "release"
       ],
-      "default": "0",
+      "default": "1",
       "description": "extra requirements to earn contribution score for an assist",
       "accepted": "—",
       "kind": "cvar",
@@ -13431,7 +13849,7 @@
         "sv",
         "release"
       ],
-      "default": "0",
+      "default": "1",
       "description": "extra requirements to earn contribution score for a kill",
       "accepted": "—",
       "kind": "cvar",
@@ -13673,7 +14091,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Crash the client. Optional parameter -- type of crash: 0: read from NULL 1: write to NULL 2: force an Assert 3: infinite loop 4: stack buffer overrun 5: multiple asserts across multiple threads",
+      "description": "Crash the client. Optional parameter -- type of crash: 0: read from NULL 1: write to NULL 2: force an Assert 3: infinite loop 4: stack buffer overrun 5: multiple asserts across multiple threads. Optional number of threads (default 5) 6: looping memory leak until we're out of memory. Optional allocation size in bytes (default 1048576/1MB)",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -14665,6 +15083,20 @@
       "category": "Other"
     },
     {
+      "name": "debug_destructible_parts_enabled",
+      "flags": [
+        "sv",
+        "cl",
+        "rep",
+        "cheat"
+      ],
+      "default": "true",
+      "description": "Toggle enabling/disabling the destructible parts system for debug.",
+      "accepted": "bool",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
       "name": "debug_draw_enable",
       "flags": [
         "rep"
@@ -14679,6 +15111,20 @@
       "name": "debug_entity_outline_highlight",
       "flags": [
         "cl",
+        "cheat"
+      ],
+      "default": "false",
+      "description": "",
+      "accepted": "bool",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
+      "name": "debug_error_model",
+      "flags": [
+        "sv",
+        "cl",
+        "rep",
         "cheat"
       ],
       "default": "false",
@@ -14733,6 +15179,20 @@
       "description": "Purchase an item by defindex",
       "accepted": "command",
       "kind": "command",
+      "category": "Other"
+    },
+    {
+      "name": "debug_radial_damage",
+      "flags": [
+        "sv",
+        "cl",
+        "rep",
+        "cheat"
+      ],
+      "default": "false",
+      "description": "",
+      "accepted": "bool",
+      "kind": "cvar",
       "category": "Other"
     },
     {
@@ -15070,10 +15530,12 @@
     },
     {
       "name": "demo_pauseatservertick",
-      "flags": [],
+      "flags": [
+        "release"
+      ],
       "default": "0",
-      "description": "Pauses demo playback at server tick",
-      "accepted": "—",
+      "description": "Pauses when the 'render time' reaches the specified tick.",
+      "accepted": "command",
       "kind": "cvar",
       "category": "Demo / Replay"
     },
@@ -15131,6 +15593,17 @@
       "description": "How many seconds before the shot to skip to when skipping to a specific shot ID.",
       "accepted": "—",
       "kind": "cvar",
+      "category": "Demo / Replay"
+    },
+    {
+      "name": "demo_step_tick",
+      "flags": [
+        "release"
+      ],
+      "default": "",
+      "description": "Play for N ticks (default=1) and then pause.",
+      "accepted": "command",
+      "kind": "command",
       "category": "Demo / Replay"
     },
     {
@@ -16521,7 +16994,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Toggles recording of animgraph replay of the given entity(s) Arguments: {entity_name} / {class_name} / {entity_index} / {no argument = pick what player is looking at}",
+      "description": "Toggles recording of animgraph replay of the given entity(s) Arguments: entityName automaticallyOpenInAnimgraphEditor Arguments: {entity_name} / {class_name} / {entity_index} / {no argument = pick what player is looking at}",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -16536,6 +17009,18 @@
       "description": "Sets a variable on the animgraph of the given entity(s) Arguments: <varname>=<value> <{entity_name} / {class_name} / {entity_index} / {no argument = pick what player is looking at}>",
       "accepted": "command",
       "kind": "command",
+      "category": "Other"
+    },
+    {
+      "name": "ent_attachment_filter_substrings",
+      "flags": [
+        "sv",
+        "cheat"
+      ],
+      "default": "0",
+      "description": "If an attachment's name has any of the given substrings in it, it will be displayed. Substrings can be delimited by the ',' or ' | ' character.",
+      "accepted": "—",
+      "kind": "cvar",
       "category": "Other"
     },
     {
@@ -16583,6 +17068,18 @@
       "description": "",
       "accepted": "bool",
       "kind": "cvar",
+      "category": "Other"
+    },
+    {
+      "name": "ent_bonemergeplayer",
+      "flags": [
+        "sv",
+        "cheat"
+      ],
+      "default": "",
+      "description": "Bonemerge the player onto the entity under the crosshairs",
+      "accepted": "command",
+      "kind": "command",
       "category": "Other"
     },
     {
@@ -16635,7 +17132,8 @@
       "name": "ent_create",
       "flags": [
         "sv",
-        "cheat"
+        "cheat",
+        "vconsole_fuzzy"
       ],
       "default": "",
       "description": "Creates an entity of the given designer or subclass name where the player is looking.",
@@ -16706,7 +17204,8 @@
       "name": "ent_fire",
       "flags": [
         "sv",
-        "cheat"
+        "cheat",
+        "vconsole_fuzzy"
       ],
       "default": "",
       "description": "Usage: ent_fire <target> [action] [value] [delay]",
@@ -16718,10 +17217,23 @@
       "name": "ent_fire_output",
       "flags": [
         "sv",
-        "cheat"
+        "cheat",
+        "vconsole_fuzzy"
       ],
       "default": "",
       "description": "Usage: ent_fire_output <target> [output name] [value] [delay]",
+      "accepted": "command",
+      "kind": "command",
+      "category": "Other"
+    },
+    {
+      "name": "ent_gib",
+      "flags": [
+        "sv",
+        "cheat"
+      ],
+      "default": "",
+      "description": "Gibs the given entity(s) Arguments: {entity_name} / {class_name} / {entity_index} / {no argument = pick what player is looking at}",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -16797,12 +17309,37 @@
       "category": "Other"
     },
     {
-      "name": "ent_joint_names",
+      "name": "ent_joint_filter_substrings",
       "flags": [
-        "sv"
+        "sv",
+        "cheat"
+      ],
+      "default": "0",
+      "description": "If a joint's name has any of the given substrings in it, it will be displayed. Substrings can be delimited by the ',' or ' | ' character.",
+      "accepted": "—",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
+      "name": "ent_joint_lines",
+      "flags": [
+        "sv",
+        "cheat"
       ],
       "default": "true",
-      "description": "",
+      "description": "Draw a line between a rendered joint and its parent.",
+      "accepted": "bool",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
+      "name": "ent_joint_names",
+      "flags": [
+        "sv",
+        "cheat"
+      ],
+      "default": "true",
+      "description": "Draw the name of a rendered joint.",
       "accepted": "bool",
       "kind": "cvar",
       "category": "Other"
@@ -17136,10 +17673,10 @@
         "sv",
         "cheat"
       ],
-      "default": "",
+      "default": "0",
       "description": "Default:",
       "accepted": "command",
-      "kind": "command",
+      "kind": "cvar",
       "category": "Other"
     },
     {
@@ -17261,7 +17798,8 @@
       "name": "ent_text",
       "flags": [
         "sv",
-        "cheat"
+        "cheat",
+        "vconsole_fuzzy"
       ],
       "default": "",
       "description": "Displays text debugging information about the given entity(ies) on top of the entity (See Overlay Text) Arguments: {entity_name} / {class_name} / {entity_index} / {no argument = pick what player is looking at}",
@@ -17452,7 +17990,8 @@
       "name": "ent_visibility_traces",
       "flags": [
         "sv",
-        "cheat"
+        "cheat",
+        "vconsole_fuzzy"
       ],
       "default": "",
       "description": "Displays visibility traces for the given entity Arguments: {entity_name} / {class_name} / {entity_index} / {no argument = pick what player is looking at}",
@@ -17627,10 +18166,10 @@
       "flags": [
         "cheat"
       ],
-      "default": "",
+      "default": "0",
       "description": "Default:",
       "accepted": "command",
-      "kind": "command",
+      "kind": "cvar",
       "category": "Other"
     },
     {
@@ -17675,7 +18214,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "fadein {time r g b}: Fades the screen in from black or from the specified color over the given number of seconds.",
+      "description": "`fadein {time r g b}`: Fades the screen in from black or from the specified color over the given number of seconds.",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -17687,7 +18226,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "fadeout {time r g b}: Fades the screen to black or to the specified color over the given number of seconds.",
+      "description": "`fadeout {time r g b}`: Fades the screen to black or to the specified color over the given number of seconds.",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -17728,7 +18267,7 @@
         "rep",
         "release"
       ],
-      "default": "0.1",
+      "default": "0.33",
       "description": "How much to reduce damage done to teammates when shot. Range is from 0 - 1 (with 1 being damage equal to what is done to an enemy)",
       "accepted": "—",
       "kind": "cvar",
@@ -17742,7 +18281,7 @@
         "rep",
         "release"
       ],
-      "default": "0.25",
+      "default": "0.85",
       "description": "How much to reduce damage done to teammates by a thrown grenade. Range is from 0 - 1 (with 1 being damage equal to what is done to an enemy)",
       "accepted": "—",
       "kind": "cvar",
@@ -17770,7 +18309,7 @@
         "rep",
         "release"
       ],
-      "default": "0.25",
+      "default": "0.4",
       "description": "How much to reduce damage done to teammates by things other than bullets and grenades. Range is from 0 - 1 (with 1 being damage equal to what is done to an enemy)",
       "accepted": "—",
       "kind": "cvar",
@@ -18018,7 +18557,8 @@
       "flags": [
         "cl",
         "release",
-        "per_tick"
+        "per_tick",
+        "execute_per_tick"
       ],
       "default": "",
       "description": "Switch to firstperson camera.",
@@ -18456,7 +18996,7 @@
         "a",
         "release"
       ],
-      "default": "400",
+      "default": "0",
       "description": "Frame rate limiter. 0=no limit. Does not apply to dedicated server.",
       "accepted": "0 – 1000 (step 1)",
       "kind": "cvar",
@@ -18478,7 +19018,7 @@
       "flags": [
         "a"
       ],
-      "default": "200",
+      "default": "64",
       "description": "Frame rate limiter while the game UI is displayed. 0=no limit. Does not apply to dedicated server.",
       "accepted": "0 – 1000 (step 1)",
       "kind": "cvar",
@@ -18592,7 +19132,9 @@
     },
     {
       "name": "fs_fake_read_delay_ms",
-      "flags": [],
+      "flags": [
+        "release"
+      ],
       "default": "0",
       "description": "Add N ms of delay to every low-level read operation, to simulate a slow disk",
       "accepted": "—",
@@ -18851,7 +19393,7 @@
         "release"
       ],
       "default": "",
-      "description": "Set the configuration of game type and mode based on game alias like \"deathmatch\".",
+      "description": "Set the configuration of game type and mode based on game alias like 'deathmatch'.",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -19093,8 +19635,8 @@
         "cl",
         "cheat"
       ],
-      "default": "Display",
-      "description": "more verbose information for lessons have this name.",
+      "default": "0",
+      "description": "Display more verbose information for lessons have this name.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Other"
@@ -19252,9 +19794,34 @@
       "category": "Other"
     },
     {
+      "name": "getposcopy",
+      "flags": [
+        "cl",
+        "cheat"
+      ],
+      "default": "",
+      "description": "dump position and angles to the console and clipboard",
+      "accepted": "command",
+      "kind": "command",
+      "category": "Other"
+    },
+    {
+      "name": "getposcopy_exact",
+      "flags": [
+        "cl",
+        "cheat"
+      ],
+      "default": "",
+      "description": "dump origin and angles to the console and clipboard",
+      "accepted": "command",
+      "kind": "command",
+      "category": "Other"
+    },
+    {
       "name": "give",
       "flags": [
-        "sv"
+        "sv",
+        "vconsole_fuzzy"
       ],
       "default": "",
       "description": "Give item to player. Arguments: <item_name>",
@@ -19265,7 +19832,8 @@
     {
       "name": "give_oriented",
       "flags": [
-        "sv"
+        "sv",
+        "vconsole_fuzzy"
       ],
       "default": "",
       "description": "Give item oriented to player angles. Arguments: <item_name>",
@@ -19386,8 +19954,8 @@
         "cl",
         "release"
       ],
-      "default": "Enables",
-      "description": "GOTV theater mode for the specified container, setting it to 'live' will play top live matches",
+      "default": "0",
+      "description": "Enables GOTV theater mode for the specified container, setting it to 'live' will play top live matches",
       "accepted": "—",
       "kind": "cvar",
       "category": "Other"
@@ -19476,6 +20044,18 @@
       "description": "",
       "accepted": "bool",
       "kind": "cvar",
+      "category": "Other"
+    },
+    {
+      "name": "healme",
+      "flags": [
+        "sv",
+        "cheat"
+      ],
+      "default": "",
+      "description": "Heals the player. Arguments: ` `",
+      "accepted": "command",
+      "kind": "command",
       "category": "Other"
     },
     {
@@ -19792,8 +20372,8 @@
       "flags": [
         "release"
       ],
-      "default": "Hostname",
-      "description": "for server.",
+      "default": "Nihil",
+      "description": "Hostname for server.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Other"
@@ -19925,6 +20505,18 @@
       "category": "Other"
     },
     {
+      "name": "hurtthem",
+      "flags": [
+        "sv",
+        "cheat"
+      ],
+      "default": "",
+      "description": "Hurts the enemy in front of you. Arguments: ` `",
+      "accepted": "command",
+      "kind": "command",
+      "category": "Other"
+    },
+    {
       "name": "ic",
       "flags": [
         "cl"
@@ -19970,10 +20562,10 @@
         "rep",
         "cheat"
       ],
-      "default": "",
+      "default": "0",
       "description": "Default:",
       "accepted": "command",
-      "kind": "command",
+      "kind": "cvar",
       "category": "Other"
     },
     {
@@ -20095,7 +20687,8 @@
     {
       "name": "ik_enable",
       "flags": [
-        "cheat"
+        "cheat",
+        "rep"
       ],
       "default": "true",
       "description": "Enable IK.",
@@ -20276,7 +20869,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Shows the entity browswer, focused on the entity you specify. Arguments: {entity_name} / {class_name} / {entity_index} / {no argument = pick what player is looking at}",
+      "description": "Shows the entity browser, focused on the entity you specify. Arguments: `{entity_name} / {class_name} / {entity_index} / {no argument = pick what player is looking at}`",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -20975,6 +21568,32 @@
       "category": "Other"
     },
     {
+      "name": "inferno_spread_speed_mult",
+      "flags": [
+        "sv",
+        "rep",
+        "release"
+      ],
+      "default": "1",
+      "description": "Speed up the spreadrate of the Molotov until max number of nodes are created. slowdown Speedup",
+      "accepted": "—",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
+      "name": "inferno_spread_speed_mult_ct",
+      "flags": [
+        "sv",
+        "rep",
+        "release"
+      ],
+      "default": "10",
+      "description": "Speed up the spread rate of the Incendiary until max number of nodes are created. slowdown Speedup",
+      "accepted": "—",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
       "name": "inferno_surface_offset",
       "flags": [
         "sv",
@@ -21000,6 +21619,18 @@
     },
     {
       "name": "inferno_velocity_factor",
+      "flags": [
+        "sv",
+        "cheat"
+      ],
+      "default": "0.003",
+      "description": "",
+      "accepted": "—",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
+      "name": "inferno_velocity_factor_ct",
       "flags": [
         "sv",
         "cheat"
@@ -21094,7 +21725,7 @@
         "cl",
         "release"
       ],
-      "default": "-1",
+      "default": "0",
       "description": "DLC Install Status",
       "accepted": "—",
       "kind": "cvar",
@@ -21261,8 +21892,8 @@
       "flags": [
         "release"
       ],
-      "default": "Overrides",
-      "description": "IP for multihomed hosts",
+      "default": "0",
+      "description": "Overrides IP for multihomed hosts",
       "accepted": "—",
       "kind": "cvar",
       "category": "Other"
@@ -21283,8 +21914,8 @@
       "flags": [
         "release"
       ],
-      "default": "Debug",
-      "description": "bone name for interpolation spew of CAnimationState.",
+      "default": "0",
+      "description": "Debug bone name for interpolation spew of CAnimationState.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Other"
@@ -22259,7 +22890,7 @@
       "flags": [
         "release"
       ],
-      "default": "1",
+      "default": "0.5",
       "description": "Scale for computed barnlight shadowmap size",
       "accepted": "—",
       "kind": "cvar",
@@ -23050,7 +23681,8 @@
       "flags": [
         "sv",
         "unlogged",
-        "release"
+        "release",
+        "nolog"
       ],
       "default": "",
       "description": "Set URI of a listener to receive logs via http post. Wrap URI in double quotes.",
@@ -23063,7 +23695,8 @@
       "flags": [
         "sv",
         "unlogged",
-        "release"
+        "release",
+        "nolog"
       ],
       "default": "",
       "description": "Set a delay and URI of a listener to receive logs via http post. Wrap URI in double quotes.",
@@ -23076,7 +23709,8 @@
       "flags": [
         "sv",
         "unlogged",
-        "release"
+        "release",
+        "nolog"
       ],
       "default": "",
       "description": "Remove http listener by URI. Wrap URI in double quotes.",
@@ -23089,7 +23723,8 @@
       "flags": [
         "sv",
         "unlogged",
-        "release"
+        "release",
+        "nolog"
       ],
       "default": "",
       "description": "Remove all http listeners from the dispatch list.",
@@ -23102,7 +23737,8 @@
       "flags": [
         "sv",
         "unlogged",
-        "release"
+        "release",
+        "nolog"
       ],
       "default": "",
       "description": "List all URIs currently receiving server logs",
@@ -23116,8 +23752,8 @@
         "sv",
         "release"
       ],
-      "default": "Set",
-      "description": "a secret string that will be hashed when using logaddress with explicit token hash.",
+      "default": "0",
+      "description": "Set a secret string that will be hashed when using logaddress with explicit token hash.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Other"
@@ -23240,7 +23876,9 @@
     {
       "name": "map",
       "flags": [
-        "release"
+        "release",
+        "vconsole_fuzzy",
+        "vconsole_set_focus"
       ],
       "default": "",
       "description": "map <mapname> :Load a new map.",
@@ -23299,7 +23937,9 @@
       "name": "map_workshop",
       "flags": [
         "cl",
-        "release"
+        "release",
+        "vconsole_fuzzy",
+        "vconsole_set_focus"
       ],
       "default": "",
       "description": "Launch a workshop map",
@@ -24325,8 +24965,8 @@
       "flags": [
         "release"
       ],
-      "default": "Comma",
-      "description": "delimited list of ip:port of servers used to search for dedicated servers instead of searching for public servers. Use syntax `publicip1:port | privateip1:port,publicip2:port | privateip2:port` if your server is behind NAT. If the server is behind NAT, you can specify `0.0.0.0 | privateip:port` and if server port is in the list of `mm_server_search_lan_ports` its public address should be automatically detected.",
+      "default": "0",
+      "description": "Comma delimited list of ip:port of servers used to search for dedicated servers instead of searching for public servers. Use syntax `publicip1:port | privateip1:port,publicip2:port | privateip2:port` if your server is behind NAT. If the server is behind NAT, you can specify `0.0.0.0 | privateip:port` and if server port is in the list of `mm_server_search_lan_ports` its public address should be automatically detected.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Network"
@@ -24345,7 +24985,7 @@
       "flags": [
         "a"
       ],
-      "default": "150",
+      "default": "80",
       "description": "Longest preferred ping to dedicated servers for games",
       "accepted": "—",
       "kind": "cvar",
@@ -24648,10 +25288,10 @@
       "flags": [
         "release"
       ],
-      "default": "",
+      "default": "0",
       "description": "Default:",
       "accepted": "command",
-      "kind": "command",
+      "kind": "cvar",
       "category": "Network"
     },
     {
@@ -24794,10 +25434,10 @@
         "a",
         "rep"
       ],
-      "default": "",
+      "default": "0",
       "description": "Default:",
       "accepted": "command",
-      "kind": "command",
+      "kind": "cvar",
       "category": "Other"
     },
     {
@@ -24865,6 +25505,30 @@
         "cl",
         "a",
         "user"
+      ],
+      "default": "false",
+      "description": "",
+      "accepted": "bool",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
+      "name": "movement_stats_debug_draw",
+      "flags": [
+        "sv",
+        "cheat"
+      ],
+      "default": "false",
+      "description": "",
+      "accepted": "bool",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
+      "name": "movement_stats_force_calculate",
+      "flags": [
+        "sv",
+        "cheat"
       ],
       "default": "false",
       "description": "",
@@ -25014,8 +25678,8 @@
         "sv",
         "release"
       ],
-      "default": "Every",
-      "description": "time a backup file is written the value of this convar gets updated to hold the name of the backup file.",
+      "default": "0",
+      "description": "Every time a backup file is written the value of this convar gets updated to hold the name of the backup file.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -25038,8 +25702,8 @@
         "sv",
         "release"
       ],
-      "default": "Use",
-      "description": "the specified behavior tree file to drive the bot behavior.",
+      "default": "0",
+      "description": "Use the specified behavior tree file to drive the bot behavior.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -25122,7 +25786,7 @@
         "rep",
         "release"
       ],
-      "default": "90",
+      "default": "20",
       "description": "How many seconds after round start players can buy items for.",
       "accepted": "—",
       "kind": "cvar",
@@ -25231,8 +25895,8 @@
         "rep",
         "release"
       ],
-      "default": "The",
-      "description": "default grenades that the CTs will spawn with. To give multiple grenades, separate each weapon class with a space like this: 'weapon_molotov weapon_hegrenade'",
+      "default": "0",
+      "description": "The default grenades that the CTs will spawn with. To give multiple grenades, separate each weapon class with a space like this: 'weapon_molotov weapon_hegrenade'",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -25259,8 +25923,8 @@
         "rep",
         "release"
       ],
-      "default": "The",
-      "description": "default primary (rifle) weapon that the CTs will spawn with",
+      "default": "0",
+      "description": "The default primary (rifle) weapon that the CTs will spawn with",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -25647,6 +26311,20 @@
       "category": "Server / Match"
     },
     {
+      "name": "mp_dm_taser_bonus_streak_max",
+      "flags": [
+        "sv",
+        "cl",
+        "rep",
+        "release"
+      ],
+      "default": "2",
+      "description": "Maximum times to multiply the score for getting a streak of taser kills in a single life.",
+      "accepted": "—",
+      "kind": "cvar",
+      "category": "Server / Match"
+    },
+    {
       "name": "mp_dm_teammode",
       "flags": [
         "sv",
@@ -25868,8 +26546,8 @@
         "sv",
         "release"
       ],
-      "default": "Modes",
-      "description": "available for endmatch voting during War Games. Separate names with spaces.",
+      "default": "0",
+      "description": "Modes available for endmatch voting during War Games. Separate names with spaces.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -25988,7 +26666,7 @@
         "rep",
         "release"
       ],
-      "default": "0",
+      "default": "1",
       "description": "Restricts spectator modes for dead players",
       "accepted": "—",
       "kind": "cvar",
@@ -26041,7 +26719,7 @@
         "rep",
         "release"
       ],
-      "default": "6",
+      "default": "15",
       "description": "how many seconds to keep players frozen when the round starts",
       "accepted": "—",
       "kind": "cvar",
@@ -26056,7 +26734,7 @@
         "rep",
         "release"
       ],
-      "default": "false",
+      "default": "true",
       "description": "Allows team members to injure other members of their team",
       "accepted": "bool",
       "kind": "cvar",
@@ -26097,8 +26775,8 @@
         "rep",
         "release"
       ],
-      "default": "x,y,z",
-      "description": "to display an X for the bomb plant in guardian missions with custom bomb plant boundaries.",
+      "default": "0",
+      "description": "x,y,z to display an X for the bomb plant in guardian missions with custom bomb plant boundaries.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -26135,7 +26813,7 @@
         "rep",
         "release"
       ],
-      "default": "false",
+      "default": "true",
       "description": "Determines whether the match switches sides in a halftime event.",
       "accepted": "bool",
       "kind": "cvar",
@@ -26326,8 +27004,8 @@
         "rep",
         "release"
       ],
-      "default": "Comma",
-      "description": "separated list of zero based indices to force spawn positions, e.g. '0,2' or '1,6'",
+      "default": "0",
+      "description": "Comma separated list of zero based indices to force spawn positions, e.g. '0,2' or '1,6'",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -26339,8 +27017,8 @@
         "rep",
         "release"
       ],
-      "default": "Comma",
-      "description": "separated list of xyz locations to force spawn positions, e.g. 'x1 y1 z1,x2 y2 z2'",
+      "default": "0",
+      "description": "Comma separated list of xyz locations to force spawn positions, e.g. 'x1 y1 z1,x2 y2 z2'",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -26406,8 +27084,8 @@
         "rep",
         "release"
       ],
-      "default": "Set",
-      "description": "this convar to a comma-delimited list of definition indices of weapons that should be prohibited from use.",
+      "default": "0",
+      "description": "Set this convar to a comma-delimited list of definition indices of weapons that should be prohibited from use.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -26569,7 +27247,7 @@
         "rep",
         "release"
       ],
-      "default": "0",
+      "default": "24",
       "description": "max number of rounds to play before server changes maps",
       "accepted": "—",
       "kind": "cvar",
@@ -26818,7 +27496,7 @@
         "rep",
         "release"
       ],
-      "default": "true",
+      "default": "false",
       "description": "If using mp_randomspawn, determines whether to test Line of Sight when spawning.",
       "accepted": "bool",
       "kind": "cvar",
@@ -26844,7 +27522,7 @@
         "rep",
         "release"
       ],
-      "default": "4",
+      "default": "-1",
       "description": "How many seconds after respawn immunity lasts. Set to negative value to disable warmup immunity.",
       "accepted": "—",
       "kind": "cvar",
@@ -26940,7 +27618,7 @@
         "rep",
         "release"
       ],
-      "default": "#GameUI_Retake_Card_TheAWPortunity,1,1,rifle4",
+      "default": "#GameUI_Retake_Card_TheAWPortunity,1,1,weapon_awp",
       "description": "CT bonus card for full buy round when playing bomb site retake.",
       "accepted": "—",
       "kind": "cvar",
@@ -26966,9 +27644,13 @@
         "sv",
         "cl",
         "rep",
-        "release"
+        "release",
+        "3;#GameUI_Retake_Card_4v3",
+        "1",
+        "0",
+        "secondary0\\"
       ],
-      "default": "1",
+      "default": "1\\",
       "description": "| 3;#GameUI_Retake_Card_4v3,0,0,secondary0 | 1;#GameUI_Retake_Card_FlashOut,0,0,secondary0,grenade2;#GameUI_Retake_Card_HideAndPeek,0,0,secondary0,grenade4 CT Loadouts for default pistol round when playing bomb site retake.",
       "accepted": "—",
       "kind": "cvar",
@@ -26994,9 +27676,13 @@
         "sv",
         "cl",
         "rep",
-        "release"
+        "release",
+        "2;#GameUI_Retake_Card_LightEmUp",
+        "1",
+        "rifle1",
+        "grenade0\\"
       ],
-      "default": "4",
+      "default": "4\\",
       "description": "| 2;#GameUI_Retake_Card_LightEmUp,1,1,rifle1,grenade2 | 2;#GameUI_Retake_Card_Kobe,1,1,rifle1,grenade3 | 1;#GameUI_Retake_Card_1g,1,1,rifle1,grenade0 | 1;#GameUI_Retake_Card_DisappearingAct,1,1,rifle1,grenade4 | 1;#GameUI_Retake_Card_EyesOnTarget,1,1,rifle3 CT Loadouts for full buy round when playing bomb site retake.",
       "accepted": "—",
       "kind": "cvar",
@@ -27008,9 +27694,13 @@
         "sv",
         "cl",
         "rep",
-        "release"
+        "release",
+        "2;#GameUI_Retake_Card_UmpInSmoke",
+        "1",
+        "weapon_ump45",
+        "grenade1\\"
       ],
-      "default": "3",
+      "default": "3\\",
       "description": "| 2;#GameUI_Retake_Card_UmpInSmoke,1,1,smg2,grenade4 | 2;#GameUI_Retake_Card_FunNGun,1,1,smg0,grenade3 | 2;#GameUI_Retake_Card_Sharpshooter,1,1,rifle2,grenade2 | 2;#GameUI_Retake_Card_BurstBullpup,1,1,rifle0 CT Loadouts for force buy round when playing bomb site retake.",
       "accepted": "—",
       "kind": "cvar",
@@ -27022,9 +27712,12 @@
         "sv",
         "cl",
         "rep",
-        "release"
+        "release",
+        "2;#GameUI_Retake_Card_TakeFive",
+        "0",
+        "weapon_fiveseven\\"
       ],
-      "default": "2",
+      "default": "2\\",
       "description": "| 2;#GameUI_Retake_Card_TakeFive,0,0,secondary3 | 2;#GameUI_Retake_Card_BlindFire,0,0,secondary2,grenade2 | 2;#GameUI_Retake_Card_OnlyTakesOne,0,0,secondary4 | 2;#GameUI_Retake_Card_SneakyBeakyLike,0,0,secondary2,grenade4 CT Loadouts for upgraded pistol round when playing bomb site retake.",
       "accepted": "—",
       "kind": "cvar",
@@ -27066,7 +27759,7 @@
         "rep",
         "release"
       ],
-      "default": "#GameUI_Retake_Card_TheAWPortunity,1,1,rifle4",
+      "default": "#GameUI_Retake_Card_TheAWPortunity,1,1,weapon_awp",
       "description": "T bonus card for full buy round when playing bomb site retake.",
       "accepted": "—",
       "kind": "cvar",
@@ -27092,9 +27785,13 @@
         "sv",
         "cl",
         "rep",
-        "release"
+        "release",
+        "3;#GameUI_Retake_Card_4BadGuysLeft",
+        "1",
+        "0",
+        "secondary0\\"
       ],
-      "default": "0",
+      "default": "0\\",
       "description": "| 3;#GameUI_Retake_Card_4BadGuysLeft,0,0,secondary0 | 1;#GameUI_Retake_Card_LookAway,0,0,secondary0,grenade2;#GameUI_Retake_Card_WhenThereIsSmoke,0,0,secondary0,grenade4 T Loadouts for default pistol round when playing bomb site retake.",
       "accepted": "—",
       "kind": "cvar",
@@ -27108,7 +27805,7 @@
         "rep",
         "release"
       ],
-      "default": "#GameUI_Retake_Card_FindersKeepers,1,1,rifle1,grenade2",
+      "default": "#GameUI_Retake_Card_FindersKeepers,1,1,rifle1,grenade0",
       "description": "T enemy card for full buy round when playing bomb site retake.",
       "accepted": "—",
       "kind": "cvar",
@@ -27120,9 +27817,13 @@
         "sv",
         "cl",
         "rep",
-        "release"
+        "release",
+        "2;#GameUI_Retake_Card_OlReliable",
+        "1",
+        "rifle1",
+        "grenade0\\"
       ],
-      "default": "0",
+      "default": "0\\",
       "description": "| 2;#GameUI_Retake_Card_OlReliable,1,1,rifle1,grenade2 | 1;#GameUI_Retake_Card_SmokeShow,1,1,rifle1,grenade4 | 1;#GameUI_Retake_Card_HotShot,1,1,rifle1,grenade0 | 1;#GameUI_Retake_Card_EyeSpy,1,1,rifle3,grenade3 T Loadouts for full buy round when playing bomb site retake.",
       "accepted": "—",
       "kind": "cvar",
@@ -27134,9 +27835,13 @@
         "sv",
         "cl",
         "rep",
-        "release"
+        "release",
+        "2;#GameUI_Retake_Card_BackInAFlash",
+        "1",
+        "weapon_ump45",
+        "grenade0\\"
       ],
-      "default": "0",
+      "default": "0\\",
       "description": "| 2;#GameUI_Retake_Card_BackInAFlash,1,1,smg2,grenade2 | 2;#GameUI_Retake_Card_AllIn,1,1,rifle0 | 1;#GameUI_Retake_Card_BoomBox,1,1,smg0,grenade3,grenade4 | 1;#GameUI_Retake_Card_SetThemFree,1,1,rifle2,grenade2 T Loadouts for force buy round when playing bomb site retake.",
       "accepted": "—",
       "kind": "cvar",
@@ -27148,9 +27853,14 @@
         "sv",
         "cl",
         "rep",
-        "release"
+        "release",
+        "2;#GameUI_Retake_Card_BlindFire",
+        "1",
+        "0",
+        "weapon_elite",
+        "grenade0\\"
       ],
-      "default": "0",
+      "default": "0\\",
       "description": "| 2;#GameUI_Retake_Card_BlindFire,0,0,secondary2,grenade2 | 2;#GameUI_Retake_Card_QueOta,0,0,secondary4 | 1;#GameUI_Retake_Card_SmokeScreen,0,0,secondary2,grenade4 | 1;#GameUI_Retake_Card_TecTecBoom,0,0,secondary3,grenade3 T Loadouts for upgraded pistol round when playing bomb site retake.",
       "accepted": "—",
       "kind": "cvar",
@@ -27178,7 +27888,7 @@
         "rep",
         "release"
       ],
-      "default": "5",
+      "default": "1.92",
       "description": "How many minutes each round takes.",
       "accepted": "—",
       "kind": "cvar",
@@ -27192,7 +27902,7 @@
         "rep",
         "release"
       ],
-      "default": "0",
+      "default": "1.92",
       "description": "How many minutes each round of Bomb Defuse takes. If 0 then use mp_roundtime instead.",
       "accepted": "—",
       "kind": "cvar",
@@ -27206,7 +27916,7 @@
         "rep",
         "release"
       ],
-      "default": "0",
+      "default": "1.92",
       "description": "How many minutes each round of Hostage Rescue takes. If 0 then use mp_roundtime instead.",
       "accepted": "—",
       "kind": "cvar",
@@ -27248,6 +27958,20 @@
       ],
       "default": "2",
       "description": "number of previous rounds that a team needs to have been shorthanded before they are eligible for the short-handed bonus",
+      "accepted": "—",
+      "kind": "cvar",
+      "category": "Server / Match"
+    },
+    {
+      "name": "mp_solid_enemies",
+      "flags": [
+        "sv",
+        "cl",
+        "rep",
+        "release"
+      ],
+      "default": "1",
+      "description": "How solid are enemies: 0 = transparent; 1 = fully solid",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -27301,7 +28025,7 @@
         "rep",
         "release"
       ],
-      "default": "0",
+      "default": "1",
       "description": "Determines what the initial loss streak is.",
       "accepted": "—",
       "kind": "cvar",
@@ -27353,8 +28077,8 @@
         "rep",
         "release"
       ],
-      "default": "The",
-      "description": "default grenades that the Ts will spawn with. To give multiple grenades, separate each weapon class with a space like this: 'weapon_molotov weapon_hegrenade'",
+      "default": "0",
+      "description": "The default grenades that the Ts will spawn with. To give multiple grenades, separate each weapon class with a space like this: 'weapon_molotov weapon_hegrenade'",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -27381,8 +28105,8 @@
         "rep",
         "release"
       ],
-      "default": "The",
-      "description": "default primary (rifle) weapon that the Ts will spawn with",
+      "default": "0",
+      "description": "The default primary (rifle) weapon that the Ts will spawn with",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -27572,8 +28296,8 @@
         "sv",
         "release"
       ],
-      "default": "Enter",
-      "description": "a country's alpha 2 code to show that flag next to team 1's name in the spectator scoreboard.",
+      "default": "0",
+      "description": "Enter a country's alpha 2 code to show that flag next to team 1's name in the spectator scoreboard.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -27584,8 +28308,8 @@
         "sv",
         "release"
       ],
-      "default": "Enter",
-      "description": "a country's alpha 2 code to show that flag next to team 2's name in the spectator scoreboard.",
+      "default": "0",
+      "description": "Enter a country's alpha 2 code to show that flag next to team 2's name in the spectator scoreboard.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -27596,8 +28320,8 @@
         "sv",
         "release"
       ],
-      "default": "Enter",
-      "description": "a team's shorthand image name to display their logo. Images can be found here: 'resource/flash/econ/tournaments/teams'",
+      "default": "0",
+      "description": "Enter a team's shorthand image name to display their logo. Images can be found here: 'resource/flash/econ/tournaments/teams'",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -27608,8 +28332,8 @@
         "sv",
         "release"
       ],
-      "default": "Enter",
-      "description": "a team's shorthand image name to display their logo. Images can be found here: 'resource/flash/econ/tournaments/teams'",
+      "default": "0",
+      "description": "Enter a team's shorthand image name to display their logo. Images can be found here: 'resource/flash/econ/tournaments/teams'",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -27620,8 +28344,8 @@
         "sv",
         "release"
       ],
-      "default": "A",
-      "description": "non-empty string sets first team's match stat.",
+      "default": "0",
+      "description": "A non-empty string sets first team's match stat.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -27632,8 +28356,8 @@
         "sv",
         "release"
       ],
-      "default": "A",
-      "description": "non-empty string sets second team's match stat.",
+      "default": "0",
+      "description": "A non-empty string sets second team's match stat.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -27668,8 +28392,8 @@
         "sv",
         "release"
       ],
-      "default": "A",
-      "description": "non-empty string sets the match stat description, e.g. 'Match 2 of 3'.",
+      "default": "0",
+      "description": "A non-empty string sets the match stat description, e.g. 'Match 2 of 3'.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -27695,8 +28419,8 @@
         "sv",
         "release"
       ],
-      "default": "A",
-      "description": "non-empty string overrides the first team's name.",
+      "default": "0",
+      "description": "A non-empty string overrides the first team's name.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -27707,8 +28431,8 @@
         "sv",
         "release"
       ],
-      "default": "A",
-      "description": "non-empty string overrides the second team's name.",
+      "default": "0",
+      "description": "A non-empty string overrides the second team's name.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -27793,7 +28517,7 @@
         "rep",
         "release"
       ],
-      "default": "0",
+      "default": "120",
       "description": "How many seconds is a full technical timeout?",
       "accepted": "—",
       "kind": "cvar",
@@ -27807,7 +28531,7 @@
         "rep",
         "release"
       ],
-      "default": "0",
+      "default": "1",
       "description": "How many technical timeouts are there per team?",
       "accepted": "—",
       "kind": "cvar",
@@ -28033,7 +28757,7 @@
         "rep",
         "release"
       ],
-      "default": "30",
+      "default": "120",
       "description": "How long the warmup period lasts. Changing this value resets warmup.",
       "accepted": "—",
       "kind": "cvar",
@@ -28047,7 +28771,7 @@
         "rep",
         "release"
       ],
-      "default": "0",
+      "default": "15",
       "description": "Warmup time to use when all players have connected. 0 to disable.",
       "accepted": "—",
       "kind": "cvar",
@@ -28144,7 +28868,7 @@
         "rep",
         "release"
       ],
-      "default": "false",
+      "default": "true",
       "description": "If this convar is set, when a match starts, the game will not delete weapons placed in the map.",
       "accepted": "bool",
       "kind": "cvar",
@@ -28214,7 +28938,7 @@
         "rep",
         "release"
       ],
-      "default": "1",
+      "default": "5",
       "description": "Determines how many Zeus purchases a player can make per round (0 to disallow, -1 to have no limit).",
       "accepted": "—",
       "kind": "cvar",
@@ -28513,6 +29237,66 @@
       ],
       "default": "",
       "description": "Create a connection between the selected area and the area pointed at by the crosshair.",
+      "accepted": "command",
+      "kind": "command",
+      "category": "Other"
+    },
+    {
+      "name": "nav_create_indirect_connection_from_to",
+      "flags": [
+        "sv",
+        "cheat"
+      ],
+      "default": "",
+      "description": "Create a connection between the current 'from' and 'to' locations.",
+      "accepted": "command",
+      "kind": "command",
+      "category": "Other"
+    },
+    {
+      "name": "nav_create_indirect_connection_set_from",
+      "flags": [
+        "sv",
+        "cheat"
+      ],
+      "default": "0.000000 0.000000 0.000000",
+      "description": "Set the 'from' location of an indirect connection.",
+      "accepted": "—",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
+      "name": "nav_create_indirect_connection_set_from_using_editpos",
+      "flags": [
+        "sv",
+        "cheat"
+      ],
+      "default": "",
+      "description": "Set the 'from' location of an indirect connection to be the current edit pos of nav_edit.",
+      "accepted": "command",
+      "kind": "command",
+      "category": "Other"
+    },
+    {
+      "name": "nav_create_indirect_connection_set_to",
+      "flags": [
+        "sv",
+        "cheat"
+      ],
+      "default": "0.000000 0.000000 0.000000",
+      "description": "Set the 'to' location of an indirect connection.",
+      "accepted": "—",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
+      "name": "nav_create_indirect_connection_set_to_using_editpos",
+      "flags": [
+        "sv",
+        "cheat"
+      ],
+      "default": "",
+      "description": "Set the 'to' location of an indirect connection to be the current edit pos of nav_edit.",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -28866,6 +29650,18 @@
       "category": "Other"
     },
     {
+      "name": "nav_draw_boundary_areas",
+      "flags": [
+        "sv",
+        "cheat"
+      ],
+      "default": "false",
+      "description": "",
+      "accepted": "bool",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
       "name": "nav_draw_connected_area_radius",
       "flags": [
         "sv",
@@ -28885,6 +29681,18 @@
       ],
       "default": "false",
       "description": "",
+      "accepted": "bool",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
+      "name": "nav_draw_dormant_movable_meshes",
+      "flags": [
+        "sv",
+        "cheat"
+      ],
+      "default": "false",
+      "description": "Draw dormant movable meshes.",
       "accepted": "bool",
       "kind": "cvar",
       "category": "Other"
@@ -29022,6 +29830,18 @@
       "category": "Other"
     },
     {
+      "name": "nav_draw_space_boundary",
+      "flags": [
+        "sv",
+        "cheat"
+      ],
+      "default": "false",
+      "description": "",
+      "accepted": "bool",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
       "name": "nav_draw_space_cells",
       "flags": [
         "sv",
@@ -29106,6 +29926,18 @@
       "category": "Other"
     },
     {
+      "name": "nav_draw_space_transitions",
+      "flags": [
+        "sv",
+        "cheat"
+      ],
+      "default": "true",
+      "description": "",
+      "accepted": "bool",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
       "name": "nav_edit",
       "flags": [
         "sv",
@@ -29114,6 +29946,18 @@
       "default": "0",
       "description": "Set to one to interactively edit the Navigation Mesh. Set to zero to leave edit mode.",
       "accepted": "—",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
+      "name": "nav_edit_use_camera",
+      "flags": [
+        "sv",
+        "cheat"
+      ],
+      "default": "true",
+      "description": "",
+      "accepted": "bool",
       "kind": "cvar",
       "category": "Other"
     },
@@ -29203,7 +30047,8 @@
     {
       "name": "nav_gen_add_jumps",
       "flags": [
-        "cheat"
+        "cheat",
+        "sv"
       ],
       "default": "true",
       "description": "",
@@ -29214,7 +30059,8 @@
     {
       "name": "nav_gen_agent_radius_buffer",
       "flags": [
-        "cheat"
+        "cheat",
+        "sv"
       ],
       "default": "0.75",
       "description": "Buffer to add to agent radius before passing to nav gen",
@@ -29225,7 +30071,8 @@
     {
       "name": "nav_gen_clip_polys_to_clearance",
       "flags": [
-        "cheat"
+        "cheat",
+        "sv"
       ],
       "default": "true",
       "description": "",
@@ -29236,7 +30083,8 @@
     {
       "name": "nav_gen_clip_polys_to_clearance_debug",
       "flags": [
-        "cheat"
+        "cheat",
+        "sv"
       ],
       "default": "false",
       "description": "",
@@ -29247,7 +30095,8 @@
     {
       "name": "nav_gen_connect_allow_multiple",
       "flags": [
-        "cheat"
+        "cheat",
+        "sv"
       ],
       "default": "true",
       "description": "",
@@ -29258,7 +30107,8 @@
     {
       "name": "nav_gen_connect_angle",
       "flags": [
-        "cheat"
+        "cheat",
+        "sv"
       ],
       "default": "0.75",
       "description": "",
@@ -29269,7 +30119,8 @@
     {
       "name": "nav_gen_connect_angle_ignore_z",
       "flags": [
-        "cheat"
+        "cheat",
+        "sv"
       ],
       "default": "true",
       "description": "",
@@ -29280,7 +30131,8 @@
     {
       "name": "nav_gen_connect_dist_a",
       "flags": [
-        "cheat"
+        "cheat",
+        "sv"
       ],
       "default": "1",
       "description": "",
@@ -29291,7 +30143,8 @@
     {
       "name": "nav_gen_connect_dist_b",
       "flags": [
-        "cheat"
+        "cheat",
+        "sv"
       ],
       "default": "1.5",
       "description": "",
@@ -29302,7 +30155,8 @@
     {
       "name": "nav_gen_connect_dist_z_mult",
       "flags": [
-        "cheat"
+        "cheat",
+        "sv"
       ],
       "default": "0.5",
       "description": "",
@@ -29313,7 +30167,8 @@
     {
       "name": "nav_gen_connect_overlap",
       "flags": [
-        "cheat"
+        "cheat",
+        "sv"
       ],
       "default": "0.5",
       "description": "",
@@ -29324,7 +30179,8 @@
     {
       "name": "nav_gen_degen_limit",
       "flags": [
-        "cheat"
+        "cheat",
+        "sv"
       ],
       "default": "0.001",
       "description": "",
@@ -29335,7 +30191,8 @@
     {
       "name": "nav_gen_false",
       "flags": [
-        "cheat"
+        "cheat",
+        "sv"
       ],
       "default": "false",
       "description": "Always false",
@@ -29346,7 +30203,8 @@
     {
       "name": "nav_gen_island_removal",
       "flags": [
-        "cheat"
+        "cheat",
+        "sv"
       ],
       "default": "false",
       "description": "",
@@ -29357,7 +30215,8 @@
     {
       "name": "nav_gen_island_removal_all_hulls",
       "flags": [
-        "cheat"
+        "cheat",
+        "sv"
       ],
       "default": "true",
       "description": "",
@@ -29368,7 +30227,8 @@
     {
       "name": "nav_gen_join_nonzup",
       "flags": [
-        "cheat"
+        "cheat",
+        "sv"
       ],
       "default": "true",
       "description": "",
@@ -29379,7 +30239,8 @@
     {
       "name": "nav_gen_jump_connection_min_overlap_ratio",
       "flags": [
-        "cheat"
+        "cheat",
+        "sv"
       ],
       "default": "0.1",
       "description": "Minimum edge overlap required for jump connection consideration as a percentage of agent radius",
@@ -29390,7 +30251,8 @@
     {
       "name": "nav_gen_markup_split_expand",
       "flags": [
-        "cheat"
+        "cheat",
+        "sv"
       ],
       "default": "2",
       "description": "",
@@ -29401,7 +30263,8 @@
     {
       "name": "nav_gen_markup_split_tol_base",
       "flags": [
-        "cheat"
+        "cheat",
+        "sv"
       ],
       "default": "1",
       "description": "",
@@ -29412,7 +30275,8 @@
     {
       "name": "nav_gen_markup_split_tol_nonav",
       "flags": [
-        "cheat"
+        "cheat",
+        "sv"
       ],
       "default": "1",
       "description": "",
@@ -29423,7 +30287,8 @@
     {
       "name": "nav_gen_markup_split_tol_nonentity",
       "flags": [
-        "cheat"
+        "cheat",
+        "sv"
       ],
       "default": "8",
       "description": "",
@@ -29445,7 +30310,8 @@
     {
       "name": "nav_gen_max_bottleneck_width",
       "flags": [
-        "cheat"
+        "cheat",
+        "sv"
       ],
       "default": "128",
       "description": "",
@@ -29456,7 +30322,8 @@
     {
       "name": "nav_gen_max_bottleneck_width_do_clip",
       "flags": [
-        "cheat"
+        "cheat",
+        "sv"
       ],
       "default": "true",
       "description": "",
@@ -29467,7 +30334,8 @@
     {
       "name": "nav_gen_max_edge_len",
       "flags": [
-        "cheat"
+        "cheat",
+        "sv"
       ],
       "default": "512",
       "description": "",
@@ -29478,7 +30346,8 @@
     {
       "name": "nav_gen_max_edge_len_do_clip",
       "flags": [
-        "cheat"
+        "cheat",
+        "sv"
       ],
       "default": "true",
       "description": "",
@@ -29489,7 +30358,8 @@
     {
       "name": "nav_gen_max_edge_len_split_tol",
       "flags": [
-        "cheat"
+        "cheat",
+        "sv"
       ],
       "default": "24",
       "description": "",
@@ -29500,7 +30370,8 @@
     {
       "name": "nav_gen_opt_to_quads",
       "flags": [
-        "cheat"
+        "cheat",
+        "sv"
       ],
       "default": "true",
       "description": "",
@@ -29511,7 +30382,8 @@
     {
       "name": "nav_gen_opt_to_quads_angle_limit",
       "flags": [
-        "cheat"
+        "cheat",
+        "sv"
       ],
       "default": "8",
       "description": "",
@@ -29522,7 +30394,8 @@
     {
       "name": "nav_gen_opt_to_quads_num_steps",
       "flags": [
-        "cheat"
+        "cheat",
+        "sv"
       ],
       "default": "6",
       "description": "",
@@ -29533,7 +30406,8 @@
     {
       "name": "nav_gen_opt_to_quads_planar_deviation_limit",
       "flags": [
-        "cheat"
+        "cheat",
+        "sv"
       ],
       "default": "4",
       "description": "",
@@ -29544,7 +30418,8 @@
     {
       "name": "nav_gen_opt_to_quads_se_limit_end",
       "flags": [
-        "cheat"
+        "cheat",
+        "sv"
       ],
       "default": "0.1",
       "description": "",
@@ -29555,7 +30430,8 @@
     {
       "name": "nav_gen_opt_to_quads_se_limit_start",
       "flags": [
-        "cheat"
+        "cheat",
+        "sv"
       ],
       "default": "1e-05",
       "description": "",
@@ -29566,7 +30442,8 @@
     {
       "name": "nav_gen_opt_to_quads_weld_limit_end",
       "flags": [
-        "cheat"
+        "cheat",
+        "sv"
       ],
       "default": "0.01",
       "description": "",
@@ -29577,7 +30454,8 @@
     {
       "name": "nav_gen_opt_to_quads_weld_limit_start",
       "flags": [
-        "cheat"
+        "cheat",
+        "sv"
       ],
       "default": "1e-07",
       "description": "",
@@ -29588,7 +30466,8 @@
     {
       "name": "nav_gen_oriented_angle_tol",
       "flags": [
-        "cheat"
+        "cheat",
+        "sv"
       ],
       "default": "15",
       "description": "Max abrupt orientation difference an NPC can tolerate when moving through the mesh (degrees).",
@@ -29599,9 +30478,10 @@
     {
       "name": "nav_gen_oriented_max_region_range",
       "flags": [
-        "cheat"
+        "cheat",
+        "sv"
       ],
-      "default": "30",
+      "default": "15",
       "description": "Max orientation range allowed within a region before it gets further split.",
       "accepted": "—",
       "kind": "cvar",
@@ -29610,7 +30490,8 @@
     {
       "name": "nav_gen_remove_vertical_polys",
       "flags": [
-        "cheat"
+        "cheat",
+        "sv"
       ],
       "default": "true",
       "description": "",
@@ -29621,7 +30502,8 @@
     {
       "name": "nav_gen_split_boundary_polys",
       "flags": [
-        "cheat"
+        "cheat",
+        "sv"
       ],
       "default": "false",
       "description": "",
@@ -29632,7 +30514,8 @@
     {
       "name": "nav_gen_split_multi_connection_polys",
       "flags": [
-        "cheat"
+        "cheat",
+        "sv"
       ],
       "default": "true",
       "description": "",
@@ -29643,7 +30526,8 @@
     {
       "name": "nav_gen_split_multi_connection_polys_tol",
       "flags": [
-        "cheat"
+        "cheat",
+        "sv"
       ],
       "default": "0.01",
       "description": "",
@@ -29654,7 +30538,8 @@
     {
       "name": "nav_gen_true",
       "flags": [
-        "cheat"
+        "cheat",
+        "sv"
       ],
       "default": "true",
       "description": "Always true",
@@ -29665,7 +30550,8 @@
     {
       "name": "nav_gen_vertical_limit",
       "flags": [
-        "cheat"
+        "cheat",
+        "sv"
       ],
       "default": "88",
       "description": "",
@@ -29719,6 +30605,18 @@
       "description": "",
       "accepted": "—",
       "kind": "cvar",
+      "category": "Other"
+    },
+    {
+      "name": "nav_list_movable_meshes",
+      "flags": [
+        "sv",
+        "cheat"
+      ],
+      "default": "",
+      "description": "List the movable meshes registered with the movable meshes manager.",
+      "accepted": "command",
+      "kind": "command",
       "category": "Other"
     },
     {
@@ -29789,6 +30687,42 @@
       "default": "64",
       "description": "",
       "accepted": "—",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
+      "name": "nav_navlink_enable_splits",
+      "flags": [
+        "sv",
+        "cheat"
+      ],
+      "default": "true",
+      "description": "Split wide nav links into narrower ones to increase lanes and alleviate 'crossing' effect.",
+      "accepted": "bool",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
+      "name": "nav_navlink_split_max_width",
+      "flags": [
+        "sv",
+        "cheat"
+      ],
+      "default": "144",
+      "description": "The maximum desired width of a nav link split.",
+      "accepted": "—",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
+      "name": "nav_navlink_split_scale_with_length",
+      "flags": [
+        "sv",
+        "cheat"
+      ],
+      "default": "true",
+      "description": "Nav link splits' widths are proportional to the nav link's length.",
+      "accepted": "bool",
       "kind": "cvar",
       "category": "Other"
     },
@@ -30273,6 +31207,18 @@
       "category": "Other"
     },
     {
+      "name": "nav_recorder_enabled",
+      "flags": [
+        "sv",
+        "cheat"
+      ],
+      "default": "true",
+      "description": "",
+      "accepted": "bool",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
       "name": "nav_remove_from_selected_set",
       "flags": [
         "sv",
@@ -30357,6 +31303,18 @@
       "category": "Other"
     },
     {
+      "name": "nav_set_movable_mesh_dormant_flag",
+      "flags": [
+        "sv",
+        "cheat"
+      ],
+      "default": "",
+      "description": "Set the movable mesh dormant flag (0=active, 1=dormant)",
+      "accepted": "command",
+      "kind": "command",
+      "category": "Other"
+    },
+    {
       "name": "nav_show_area_connections",
       "flags": [
         "sv",
@@ -30425,6 +31383,54 @@
       "default": "true",
       "description": "",
       "accepted": "bool",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
+      "name": "nav_show_elem_info",
+      "flags": [
+        "sv",
+        "cheat"
+      ],
+      "default": "true",
+      "description": "",
+      "accepted": "bool",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
+      "name": "nav_show_elem_info_font",
+      "flags": [
+        "sv",
+        "cheat"
+      ],
+      "default": "Consolas",
+      "description": "",
+      "accepted": "—",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
+      "name": "nav_show_elem_info_font_size",
+      "flags": [
+        "sv",
+        "cheat"
+      ],
+      "default": "-1",
+      "description": "",
+      "accepted": "—",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
+      "name": "nav_show_elem_info_font_voffset",
+      "flags": [
+        "sv",
+        "cheat"
+      ],
+      "default": "-11",
+      "description": "",
+      "accepted": "—",
       "kind": "cvar",
       "category": "Other"
     },
@@ -31207,6 +32213,30 @@
       "category": "Other"
     },
     {
+      "name": "nav_test_genrt_tile_removal_extent",
+      "flags": [
+        "sv",
+        "cheat"
+      ],
+      "default": "50",
+      "description": "",
+      "accepted": "—",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
+      "name": "nav_test_genrt_tile_removal_place",
+      "flags": [
+        "sv",
+        "cheat"
+      ],
+      "default": "false",
+      "description": "",
+      "accepted": "bool",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
       "name": "nav_test_getareaoverlapping_gravity",
       "flags": [
         "sv",
@@ -31816,6 +32846,30 @@
       "category": "Other"
     },
     {
+      "name": "navspace_draw_changes_blocks",
+      "flags": [
+        "sv",
+        "cheat"
+      ],
+      "default": "0",
+      "description": "Draw blocks when they change",
+      "accepted": "—",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
+      "name": "navspace_draw_changes_waters",
+      "flags": [
+        "sv",
+        "cheat"
+      ],
+      "default": "0",
+      "description": "Draw water volumes when they change",
+      "accepted": "—",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
       "name": "navspace_draw_water_changes",
       "flags": [
         "sv",
@@ -32161,8 +33215,8 @@
       "flags": [
         "release"
       ],
-      "default": "For",
-      "description": "servers behind NAT/DHCP meant to be exposed to the public internet, this is the public facing ip address string: (\"x.x.x.x\" )",
+      "default": "0",
+      "description": "For servers behind NAT/DHCP meant to be exposed to the public internet, this is the public facing ip address string: ('x.x.x.x' )",
       "accepted": "—",
       "kind": "cvar",
       "category": "Network"
@@ -32406,8 +33460,8 @@
         "nf",
         "release"
       ],
-      "default": "If",
-      "description": "set to a valid map name, will trigger a changelevel to the specified map at the end of the round",
+      "default": "0",
+      "description": "If set to a valid map name, will trigger a changelevel to the specified map at the end of the round",
       "accepted": "—",
       "kind": "cvar",
       "category": "Other"
@@ -32432,8 +33486,8 @@
         "rep",
         "release"
       ],
-      "default": "Sets",
-      "description": "the game mode to be played when the next level loads",
+      "default": "0",
+      "description": "Sets the game mode to be played when the next level loads",
       "accepted": "—",
       "kind": "cvar",
       "category": "Other"
@@ -33842,8 +34896,8 @@
         "sv",
         "cheat"
       ],
-      "default": "Name",
-      "description": "of the particle system to dynamically spawn",
+      "default": "0",
+      "description": "Name of the particle system to dynamically spawn",
       "accepted": "—",
       "kind": "cvar",
       "category": "Other"
@@ -33910,10 +34964,11 @@
       "flags": [
         "a",
         "norecord",
-        "server_cannot_query"
+        "server_cannot_query",
+        "server_cant_query"
       ],
-      "default": "Current",
-      "description": "server access password",
+      "default": "nq93bd",
+      "description": "Current server access password",
       "accepted": "—",
       "kind": "cvar",
       "category": "Other"
@@ -35106,12 +36161,36 @@
       "category": "Other"
     },
     {
+      "name": "player_competitive_maplist_2v2_10_0_BCB8668D",
+      "flags": [
+        "cl",
+        "a"
+      ],
+      "default": "mg_de_inferno",
+      "description": "",
+      "accepted": "—",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
       "name": "player_competitive_maplist_2v2_10_0_E7739BAE",
       "flags": [
         "cl",
         "a"
       ],
       "default": "mg_de_inferno,mg_de_nuke,mg_de_vertigo,mg_de_brewery,mg_de_dogtown,mg_de_overpass",
+      "description": "",
+      "accepted": "—",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
+      "name": "player_competitive_maplist_8_10_0_C951FF02",
+      "flags": [
+        "cl",
+        "a"
+      ],
+      "default": "mg_de_dust2,mg_de_mirage,mg_de_inferno,mg_de_ancient,mg_de_nuke,mg_de_train,mg_de_overpass,mg_de_anubis,mg_de_vertigo,mg_de_palacio,mg_de_golden,mg_cs_agency,mg_cs_office,mg_cs_italy",
       "description": "",
       "accepted": "—",
       "kind": "cvar",
@@ -35235,10 +36314,10 @@
         "cl",
         "a"
       ],
-      "default": "",
+      "default": "0",
       "description": "Default:",
       "accepted": "command",
-      "kind": "command",
+      "kind": "cvar",
       "category": "Other"
     },
     {
@@ -35658,7 +36737,8 @@
       "name": "pulse_debug_entity",
       "flags": [
         "sv",
-        "cheat"
+        "cheat",
+        "vconsole_fuzzy"
       ],
       "default": "",
       "description": "Opens a graph referencing the selected entity. If it is referenced by more than 1 graph, list all the active pulse graph instances referring to that entity so you can pick which one you want.",
@@ -35671,6 +36751,18 @@
       "flags": [],
       "default": "",
       "description": "Usage: pulse_debug_print <vpulse_resource>",
+      "accepted": "command",
+      "kind": "command",
+      "category": "Other"
+    },
+    {
+      "name": "pulse_list_game_blackboards",
+      "flags": [
+        "sv",
+        "cheat"
+      ],
+      "default": "",
+      "description": "List all the active pulse graph instances",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -35785,8 +36877,8 @@
         "cl",
         "cheat"
       ],
-      "default": "Entity",
-      "description": "variable to watch in prediction system for changes.",
+      "default": "0",
+      "description": "Entity variable to watch in prediction system for changes.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Other"
@@ -35794,7 +36886,8 @@
     {
       "name": "quit",
       "flags": [
-        "release"
+        "release",
+        "vconsole_set_focus"
       ],
       "default": "",
       "description": "Quit the game",
@@ -36549,6 +37642,18 @@
       "category": "Graphics"
     },
     {
+      "name": "r_csgo_merge_resolve_with_histogram",
+      "flags": [
+        "cl",
+        "cheat"
+      ],
+      "default": "true",
+      "description": "",
+      "accepted": "bool",
+      "kind": "cvar",
+      "category": "Graphics"
+    },
+    {
       "name": "r_csgo_microshadowing",
       "flags": [
         "cl"
@@ -37084,6 +38189,18 @@
       "category": "Graphics"
     },
     {
+      "name": "r_csgo_test1",
+      "flags": [
+        "cl",
+        "release"
+      ],
+      "default": "false",
+      "description": "",
+      "accepted": "bool",
+      "kind": "cvar",
+      "category": "Graphics"
+    },
+    {
       "name": "r_csgo_tools_vis_cubemap_roughness",
       "flags": [
         "cl",
@@ -37238,6 +38355,18 @@
         "cl"
       ],
       "default": "true",
+      "description": "",
+      "accepted": "bool",
+      "kind": "cvar",
+      "category": "Graphics"
+    },
+    {
+      "name": "r_debug_depth_holes",
+      "flags": [
+        "cl",
+        "cheat"
+      ],
+      "default": "false",
       "description": "",
       "accepted": "bool",
       "kind": "cvar",
@@ -37728,7 +38857,7 @@
         "a",
         "release"
       ],
-      "default": "true",
+      "default": "false",
       "description": "Toggle visibility of first person weapon tracers",
       "accepted": "bool",
       "kind": "cvar",
@@ -37753,6 +38882,17 @@
       ],
       "default": "true",
       "description": "Render the world.",
+      "accepted": "bool",
+      "kind": "cvar",
+      "category": "Graphics"
+    },
+    {
+      "name": "r_dx11_debug_clean",
+      "flags": [
+        "release"
+      ],
+      "default": "false",
+      "description": "Aggressively unbind bound resources to cleanup DX11 debug warnings.",
       "accepted": "bool",
       "kind": "cvar",
       "category": "Graphics"
@@ -38184,7 +39324,7 @@
       "flags": [
         "a"
       ],
-      "default": "2.2",
+      "default": "3.5",
       "description": "Screen Gamma (only in fullscreen modes)",
       "accepted": "—",
       "kind": "cvar",
@@ -38600,7 +39740,7 @@
       ],
       "default": "0",
       "description": "",
-      "accepted": "—",
+      "accepted": "bool",
       "kind": "cvar",
       "category": "Graphics"
     },
@@ -38609,7 +39749,7 @@
       "flags": [
         "cheat"
       ],
-      "default": "false",
+      "default": "0",
       "description": "Show LPV debug grid, 0: off, 1: closest only 2: closest and keep 3: all",
       "accepted": "bool",
       "kind": "cvar",
@@ -38620,7 +39760,7 @@
       "flags": [
         "cheat"
       ],
-      "default": "128",
+      "default": "128 128 128",
       "description": "128 128 255 albedo for LPV debug grid",
       "accepted": "—",
       "kind": "cvar",
@@ -38863,6 +40003,20 @@
       "category": "Graphics"
     },
     {
+      "name": "r_new_character_decals",
+      "flags": [
+        "sv",
+        "cl",
+        "rep",
+        "cheat"
+      ],
+      "default": "false",
+      "description": "",
+      "accepted": "bool",
+      "kind": "cvar",
+      "category": "Graphics"
+    },
+    {
       "name": "r_particle_cables_cast_shadows",
       "flags": [],
       "default": "true",
@@ -38984,7 +40138,7 @@
       "flags": [
         "cheat"
       ],
-      "default": "1e+06",
+      "default": "1000000.000000",
       "description": "The maximum distance that particles will render",
       "accepted": "—",
       "kind": "cvar",
@@ -39040,6 +40194,17 @@
       "flags": [],
       "default": "32",
       "description": "",
+      "accepted": "—",
+      "kind": "cvar",
+      "category": "Graphics"
+    },
+    {
+      "name": "r_particle_multiplier",
+      "flags": [
+        "cheat"
+      ],
+      "default": "1",
+      "description": "Render each particle system N times for perf testing",
       "accepted": "—",
       "kind": "cvar",
       "category": "Graphics"
@@ -39526,7 +40691,7 @@
         "a",
         "release"
       ],
-      "default": "true",
+      "default": "false",
       "description": "Build information. Leave this enabled when submitting bug screenshots and videos, please!",
       "accepted": "0 / 1",
       "kind": "cvar",
@@ -39732,6 +40897,18 @@
       "default": "true",
       "description": "",
       "accepted": "bool",
+      "kind": "cvar",
+      "category": "Graphics"
+    },
+    {
+      "name": "r_test1_maximum_wait_ms",
+      "flags": [
+        "cl",
+        "release"
+      ],
+      "default": "10",
+      "description": "",
+      "accepted": "—",
       "kind": "cvar",
       "category": "Graphics"
     },
@@ -40229,6 +41406,20 @@
       "category": "Other"
     },
     {
+      "name": "ragdoll_cleanup_all",
+      "flags": [
+        "sv",
+        "cl",
+        "cheat",
+        "linked"
+      ],
+      "default": "",
+      "description": "Cleans up all ragdolls.",
+      "accepted": "command",
+      "kind": "command",
+      "category": "Other"
+    },
+    {
       "name": "ragdoll_debug_item_detachment",
       "flags": [
         "sv",
@@ -40514,7 +41705,7 @@
         "a",
         "user"
       ],
-      "default": "786432",
+      "default": "1000000",
       "description": "Min bytes/sec the host can receive data",
       "accepted": "—",
       "kind": "cvar",
@@ -40548,10 +41739,11 @@
       "flags": [
         "norecord",
         "release",
-        "server_cannot_query"
+        "server_cannot_query",
+        "server_cant_query"
       ],
-      "default": "Address",
-      "description": "of remote server if sending unconnected rcon commands (format x.x.x.x:p)",
+      "default": "0",
+      "description": "Address of remote server if sending unconnected rcon commands (format x.x.x.x:p)",
       "accepted": "—",
       "kind": "cvar",
       "category": "Other"
@@ -40573,10 +41765,11 @@
       "flags": [
         "norecord",
         "release",
-        "server_cannot_query"
+        "server_cannot_query",
+        "server_cant_query"
       ],
-      "default": "remote",
-      "description": "console password.",
+      "default": "0",
+      "description": "remote console password.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Other"
@@ -40597,9 +41790,10 @@
       "name": "recast_mark_overhang",
       "flags": [
         "rep",
-        "cheat"
+        "cheat",
+        "sv"
       ],
-      "default": "true",
+      "default": "false",
       "description": "Enable/disable overhang detection",
       "accepted": "bool",
       "kind": "cvar",
@@ -40609,7 +41803,8 @@
       "name": "recast_partitioning",
       "flags": [
         "rep",
-        "cheat"
+        "cheat",
+        "sv"
       ],
       "default": "0",
       "description": "0 = watershed, 1 = monotone, 2 = layers",
@@ -40698,7 +41893,8 @@
     {
       "name": "reloadgame",
       "flags": [
-        "cheat"
+        "cheat",
+        "vconsole_set_focus"
       ],
       "default": "",
       "description": "Reload the most recent saved game.",
@@ -40961,7 +42157,8 @@
     {
       "name": "restart",
       "flags": [
-        "cheat"
+        "cheat",
+        "vconsole_set_focus"
       ],
       "default": "",
       "description": "Poor man's restart: reload the current map from disk.",
@@ -41013,6 +42210,42 @@
       ],
       "default": "",
       "description": "Restart",
+      "accepted": "command",
+      "kind": "command",
+      "category": "Other"
+    },
+    {
+      "name": "retake_barrier_clear",
+      "flags": [
+        "sv",
+        "cheat"
+      ],
+      "default": "",
+      "description": "",
+      "accepted": "command",
+      "kind": "command",
+      "category": "Other"
+    },
+    {
+      "name": "retake_barrier_point",
+      "flags": [
+        "sv",
+        "cheat"
+      ],
+      "default": "",
+      "description": "",
+      "accepted": "command",
+      "kind": "command",
+      "category": "Other"
+    },
+    {
+      "name": "retake_barrier_spawn",
+      "flags": [
+        "sv",
+        "cheat"
+      ],
+      "default": "",
+      "description": "",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -41193,6 +42426,18 @@
       "category": "Other"
     },
     {
+      "name": "rr_dump_rules",
+      "flags": [
+        "sv",
+        "cheat"
+      ],
+      "default": "",
+      "description": "Print all response rules",
+      "accepted": "command",
+      "kind": "command",
+      "category": "Other"
+    },
+    {
       "name": "rr_followup_maxdist",
       "flags": [
         "sv",
@@ -41325,7 +42570,7 @@
         "cl",
         "a"
       ],
-      "default": "1",
+      "default": "0.99",
       "description": "The percentage of the screen height that is considered safe from overscan",
       "accepted": "0.85 – 1 (step 0.01)",
       "kind": "cvar",
@@ -41350,7 +42595,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Saves all active animgraph recordings to disk",
+      "description": "Saves all active animgraph recordings to disk Arguments: automaticallyOpenInAnimgraphEditor",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -42941,11 +44186,25 @@
         "user",
         "per_user"
       ],
-      "default": "1.25",
+      "default": "1.3",
       "description": "Mouse sensitivity.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Mouse / Input"
+    },
+    {
+      "name": "sensitivity_y_scale",
+      "flags": [
+        "cl",
+        "a",
+        "user",
+        "per_user"
+      ],
+      "default": "1",
+      "description": "Multiplies the mouse Y axis for finer pitch vs yaw aim",
+      "accepted": "—",
+      "kind": "cvar",
+      "category": "Other"
     },
     {
       "name": "server_game_time",
@@ -43288,6 +44547,18 @@
       "category": "Other"
     },
     {
+      "name": "showents",
+      "flags": [
+        "sv",
+        "cheat"
+      ],
+      "default": "",
+      "description": "Dump entity list to console.",
+      "accepted": "command",
+      "kind": "command",
+      "category": "Other"
+    },
+    {
       "name": "ShowSteamStatsSessionID",
       "flags": [
         "cl"
@@ -43317,7 +44588,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Displays the movement bounding box for the triggers in orange. Some entites will also display entity specific overlays. Arguments: {entity_name} / {class_name} / {entity_index} / {no argument = pick what player is looking at}",
+      "description": "Displays the movement bounding box for the triggers in orange. Some entites will also display entity specific overlays. Arguments: `{entity_name} / {class_name} / {entity_index} / {no argument = pick what player is looking at}`",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -43967,8 +45238,8 @@
         "rep",
         "cheat"
       ],
-      "default": "Use",
-      "description": "to debug break on any soundevent that is started matching this name",
+      "default": "0",
+      "description": "Use to debug break on any soundevent that is started matching this name",
       "accepted": "—",
       "kind": "cvar",
       "category": "Audio"
@@ -44022,7 +45293,7 @@
         "a",
         "release"
       ],
-      "default": "0.16",
+      "default": "0",
       "description": "Volume of Deathcam Timers",
       "accepted": "—",
       "kind": "cvar",
@@ -44288,10 +45559,10 @@
       "flags": [
         "cheat"
       ],
-      "default": "",
+      "default": "0",
       "description": "Default:",
       "accepted": "command",
-      "kind": "command",
+      "kind": "cvar",
       "category": "Audio"
     },
     {
@@ -44492,10 +45763,10 @@
       "flags": [
         "cheat"
       ],
-      "default": "",
+      "default": "0",
       "description": "Default:",
       "accepted": "command",
-      "kind": "command",
+      "kind": "cvar",
       "category": "Audio"
     },
     {
@@ -44574,7 +45845,7 @@
         "a",
         "release"
       ],
-      "default": "0.04",
+      "default": "0",
       "description": "Volume of Map Objective Music",
       "accepted": "—",
       "kind": "cvar",
@@ -44613,7 +45884,7 @@
         "a",
         "release"
       ],
-      "default": "0.04",
+      "default": "0",
       "description": "Volume of Menu / Non-gameplay music",
       "accepted": "—",
       "kind": "cvar",
@@ -44714,7 +45985,7 @@
         "a",
         "release"
       ],
-      "default": "0.16",
+      "default": "0",
       "description": "Volume of MVP Music",
       "accepted": "—",
       "kind": "cvar",
@@ -45031,6 +46302,18 @@
       "category": "Audio"
     },
     {
+      "name": "snd_refresh_ui_audio_state",
+      "flags": [
+        "cl",
+        "cheat"
+      ],
+      "default": "",
+      "description": "Restores audio DSP state for the UI.",
+      "accepted": "command",
+      "kind": "command",
+      "category": "Audio"
+    },
+    {
       "name": "snd_remove_all_soundevents",
       "flags": [
         "cheat"
@@ -45050,6 +46333,17 @@
       "description": "Remove the specified soundevent",
       "accepted": "command",
       "kind": "command",
+      "category": "Audio"
+    },
+    {
+      "name": "snd_report_audio_nan",
+      "flags": [
+        "release"
+      ],
+      "default": "false",
+      "description": "",
+      "accepted": "bool",
+      "kind": "cvar",
       "category": "Audio"
     },
     {
@@ -45095,7 +46389,7 @@
         "a",
         "release"
       ],
-      "default": "0.16",
+      "default": "0",
       "description": "Volume of Won/Lost Music",
       "accepted": "—",
       "kind": "cvar",
@@ -45749,10 +47043,10 @@
       "flags": [
         "cheat"
       ],
-      "default": "",
+      "default": "0",
       "description": "Default:",
       "accepted": "command",
-      "kind": "command",
+      "kind": "cvar",
       "category": "Audio"
     },
     {
@@ -45760,10 +47054,10 @@
       "flags": [
         "cheat"
       ],
-      "default": "",
+      "default": "0",
       "description": "Default:",
       "accepted": "command",
-      "kind": "command",
+      "kind": "cvar",
       "category": "Audio"
     },
     {
@@ -45793,10 +47087,10 @@
       "flags": [
         "cheat"
       ],
-      "default": "",
+      "default": "0",
       "description": "Default:",
       "accepted": "command",
-      "kind": "command",
+      "kind": "cvar",
       "category": "Audio"
     },
     {
@@ -45859,10 +47153,10 @@
       "flags": [
         "cheat"
       ],
-      "default": "",
+      "default": "0",
       "description": "Default:",
       "accepted": "command",
-      "kind": "command",
+      "kind": "cvar",
       "category": "Audio"
     },
     {
@@ -45948,10 +47242,10 @@
       "flags": [
         "cheat"
       ],
-      "default": "",
+      "default": "0",
       "description": "Default:",
       "accepted": "command",
-      "kind": "command",
+      "kind": "cvar",
       "category": "Audio"
     },
     {
@@ -46276,6 +47570,17 @@
       "description": "Display baked data stats for the current mod.",
       "accepted": "command",
       "kind": "command",
+      "category": "Audio"
+    },
+    {
+      "name": "snd_steamaudio_baked_occlusion_mode",
+      "flags": [
+        "cheat"
+      ],
+      "default": "0",
+      "description": "0: distance ratio only. 1: deviation only (1/r). 2: deviation only (linear). 3: Mode 0 and Mode 1, 4: Mode 0 and Mode 2",
+      "accepted": "—",
+      "kind": "cvar",
       "category": "Audio"
     },
     {
@@ -46731,6 +48036,45 @@
       "category": "Audio"
     },
     {
+      "name": "snd_surf_volume_inair",
+      "flags": [
+        "cl",
+        "a",
+        "release"
+      ],
+      "default": "0.5",
+      "description": "The volume of the wind when surfing.",
+      "accepted": "—",
+      "kind": "cvar",
+      "category": "Audio"
+    },
+    {
+      "name": "snd_surf_volume_map",
+      "flags": [
+        "cl",
+        "a",
+        "release"
+      ],
+      "default": "0.3",
+      "description": "The volume of ambient sounds when surfing is enabled.",
+      "accepted": "—",
+      "kind": "cvar",
+      "category": "Audio"
+    },
+    {
+      "name": "snd_surf_volume_slide",
+      "flags": [
+        "cl",
+        "a",
+        "release"
+      ],
+      "default": "0.5",
+      "description": "The volume of sliding along surfaces when surfing.",
+      "accepted": "—",
+      "kind": "cvar",
+      "category": "Audio"
+    },
+    {
       "name": "snd_surround_speaker_pan_exponent",
       "flags": [],
       "default": "",
@@ -46755,7 +48099,7 @@
         "a",
         "release"
       ],
-      "default": "0.04",
+      "default": "0",
       "description": "Volume of Ten Second Warnings",
       "accepted": "—",
       "kind": "cvar",
@@ -46954,8 +48298,8 @@
         "a",
         "release"
       ],
-      "default": "ID",
-      "description": "of the sound device to use",
+      "default": "{0.0.0.00000000}.{87871754-60e5-49e7-9bd2-ce778c31843c}",
+      "description": "ID of the sound device to use",
       "accepted": "—",
       "kind": "cvar",
       "category": "Other"
@@ -47534,7 +48878,7 @@
         "rep",
         "release"
       ],
-      "default": "3",
+      "default": "2",
       "description": "Time spend frozen in observer freeze cam.",
       "accepted": "—",
       "kind": "cvar",
@@ -47990,7 +49334,7 @@
         "a",
         "release"
       ],
-      "default": "1",
+      "default": "0",
       "description": "If set to 1, you can see player outlines and name IDs through walls - who you can see depends on your team and mode",
       "accepted": "—",
       "kind": "cvar",
@@ -48319,7 +49663,8 @@
       "name": "subclass_change",
       "flags": [
         "sv",
-        "cheat"
+        "cheat",
+        "vconsole_fuzzy"
       ],
       "default": "",
       "description": "Changes the subclass of the given entity. Arguments: <new_subclass> {entity_name} / {class_name} / {entity_index} / {no argument = pick what player is looking at}",
@@ -48331,12 +49676,55 @@
       "name": "subclass_create",
       "flags": [
         "sv",
-        "cheat"
+        "cheat",
+        "vconsole_fuzzy"
       ],
       "default": "",
       "description": "Creates an entity of the given subclass where the player is looking.",
       "accepted": "command",
       "kind": "command",
+      "category": "Other"
+    },
+    {
+      "name": "surf_speed_fast",
+      "flags": [
+        "sv",
+        "cl",
+        "rep",
+        "release"
+      ],
+      "default": "3000",
+      "description": "Speed above which a player is considered to be going fast.",
+      "accepted": "—",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
+      "name": "surf_speed_med",
+      "flags": [
+        "sv",
+        "cl",
+        "rep",
+        "release"
+      ],
+      "default": "2000",
+      "description": "Speed above which a player is considered to be going medium.",
+      "accepted": "—",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
+      "name": "surf_speed_slow",
+      "flags": [
+        "sv",
+        "cl",
+        "rep",
+        "release"
+      ],
+      "default": "50",
+      "description": "Speed above which a player is considered to be going slow.",
+      "accepted": "—",
+      "kind": "cvar",
       "category": "Other"
     },
     {
@@ -48688,7 +50076,7 @@
         "sv",
         "release"
       ],
-      "default": "true",
+      "default": "false",
       "description": "When enabled will automatically turn on full all talk mode in warmup, at halftime and at the end of the match",
       "accepted": "bool",
       "kind": "cvar",
@@ -49335,7 +50723,7 @@
         "rep",
         "release"
       ],
-      "default": "false",
+      "default": "true",
       "description": "Dead players can speak (voice, text) to the living",
       "accepted": "bool",
       "kind": "cvar",
@@ -49701,6 +51089,17 @@
       "name": "sv_enable_pvs_vis_bits",
       "flags": [
         "sv"
+      ],
+      "default": "false",
+      "description": "",
+      "accepted": "bool",
+      "kind": "cvar",
+      "category": "Server / Match"
+    },
+    {
+      "name": "sv_enable_removearrayelementsoutsidemetadatabounds",
+      "flags": [
+        "release"
       ],
       "default": "false",
       "description": "",
@@ -50145,7 +51544,7 @@
         "rep",
         "release"
       ],
-      "default": "0",
+      "default": "4",
       "description": "Length of time grenade trajectory remains visible as a spectator.",
       "accepted": "—",
       "kind": "cvar",
@@ -50157,8 +51556,8 @@
         "sv",
         "release"
       ],
-      "default": "Extra",
-      "description": "starting equipment for CT players in guardian modes",
+      "default": "0",
+      "description": "Extra starting equipment for CT players in guardian modes",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -50169,8 +51568,8 @@
         "sv",
         "release"
       ],
-      "default": "Extra",
-      "description": "starting equipment for Terrorist players in guardian modes",
+      "default": "0",
+      "description": "Extra starting equipment for Terrorist players in guardian modes",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -50241,8 +51640,8 @@
         "sv",
         "release"
       ],
-      "default": "List",
-      "description": "of additional weapons to refill ammo on waves.",
+      "default": "0",
+      "description": "List of additional weapons to refill ammo on waves.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -50592,6 +51991,18 @@
       "category": "Server / Match"
     },
     {
+      "name": "sv_kill_players_at_coord_min",
+      "flags": [
+        "sv",
+        "release"
+      ],
+      "default": "true",
+      "description": "Kill players with fall damage at negative coord min",
+      "accepted": "bool",
+      "kind": "cvar",
+      "category": "Server / Match"
+    },
+    {
       "name": "sv_kill_smokegrenade",
       "flags": [
         "sv",
@@ -50658,6 +52069,18 @@
       "category": "Server / Match"
     },
     {
+      "name": "sv_lagcomp_filterbyviewangle",
+      "flags": [
+        "sv",
+        "cheat"
+      ],
+      "default": "true",
+      "description": "If true, player pawn will filter lag compensation targets by their view angle.",
+      "accepted": "bool",
+      "kind": "cvar",
+      "category": "Server / Match"
+    },
+    {
       "name": "sv_lagcompensationforcerestore",
       "flags": [
         "sv",
@@ -50712,6 +52135,17 @@
       ],
       "default": "true",
       "description": "Enable to limit buyrandom command to only run once per player life",
+      "accepted": "bool",
+      "kind": "cvar",
+      "category": "Server / Match"
+    },
+    {
+      "name": "sv_listen_directudp",
+      "flags": [
+        "release"
+      ],
+      "default": "true",
+      "description": "Server will listen for direct UDP connections on the configured port. This can be turned off to only listen for P2P/SDR connections.",
       "accepted": "bool",
       "kind": "cvar",
       "category": "Server / Match"
@@ -50828,7 +52262,7 @@
         "a",
         "release"
       ],
-      "default": "false",
+      "default": "true",
       "description": "Log server information in the log file.",
       "accepted": "bool",
       "kind": "cvar",
@@ -50873,7 +52307,7 @@
         "sv",
         "release"
       ],
-      "default": "de_anubis,de_inferno,de_mirage,de_train,de_dust2,de_nuke,de_ancient",
+      "default": "de_inferno,de_mirage,de_train,de_dust2,de_nuke,de_ancient,de_overpass",
       "description": "Which maps are used for map veto pick sequence",
       "accepted": "—",
       "kind": "cvar",
@@ -51073,6 +52507,18 @@
       ],
       "default": "0.2",
       "description": "Maximum lag compensation in seconds",
+      "accepted": "—",
+      "kind": "cvar",
+      "category": "Server / Match"
+    },
+    {
+      "name": "sv_maxunlag_player",
+      "flags": [
+        "sv",
+        "release"
+      ],
+      "default": "-1",
+      "description": "If >0, maximumum lag compensation used for other human pawns. Applied after sv_maxunlag!",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -51478,8 +52924,8 @@
         "norecord",
         "release"
       ],
-      "default": "Server",
-      "description": "password for entry into multiplayer games",
+      "default": "0",
+      "description": "Server password for entry into multiplayer games",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -51585,15 +53031,27 @@
       "category": "Server / Match"
     },
     {
+      "name": "sv_phys_sound_disable_impact_sounds_under_hard_threshold",
+      "flags": [
+        "sv",
+        "cheat"
+      ],
+      "default": "false",
+      "description": "if true, impact sounds wont play if no soft impact sound is present and the impact is below the hard velocity threshold.",
+      "accepted": "bool",
+      "kind": "cvar",
+      "category": "Server / Match"
+    },
+    {
       "name": "sv_phys_stop_at_collision",
       "flags": [
         "sv",
         "cheat"
       ],
-      "default": "",
+      "default": "0",
       "description": "Default:",
       "accepted": "command",
-      "kind": "command",
+      "kind": "cvar",
       "category": "Server / Match"
     },
     {
@@ -51854,6 +53312,19 @@
       "category": "Server / Match"
     },
     {
+      "name": "sv_pvs_shadows_include_env",
+      "flags": [
+        "sv",
+        "rep",
+        "release"
+      ],
+      "default": "false",
+      "description": "",
+      "accepted": "bool",
+      "kind": "cvar",
+      "category": "Server / Match"
+    },
+    {
       "name": "sv_quantize_movement_input",
       "flags": [
         "sv",
@@ -51945,6 +53416,17 @@
       "default": "30",
       "description": "Number of seconds to track failed rcon authentications",
       "accepted": "—",
+      "kind": "cvar",
+      "category": "Server / Match"
+    },
+    {
+      "name": "sv_recipients_check",
+      "flags": [
+        "release"
+      ],
+      "default": "true",
+      "description": "When packing entities, check that recipient bits match for fast path packing.",
+      "accepted": "bool",
       "kind": "cvar",
       "category": "Server / Match"
     },
@@ -52056,6 +53538,17 @@
       "category": "Server / Match"
     },
     {
+      "name": "sv_replay_group_id",
+      "flags": [
+        "release"
+      ],
+      "default": "0",
+      "description": "The replay group that this server will be uploading files to",
+      "accepted": "—",
+      "kind": "cvar",
+      "category": "Server / Match"
+    },
+    {
       "name": "sv_replaysdir",
       "flags": [],
       "default": "replays",
@@ -52142,10 +53635,10 @@
       "flags": [
         "release"
       ],
-      "default": "",
+      "default": "0",
       "description": "Default:",
       "accepted": "command",
-      "kind": "command",
+      "kind": "cvar",
       "category": "Server / Match"
     },
     {
@@ -52209,8 +53702,8 @@
         "rep",
         "release"
       ],
-      "default": "A",
-      "description": "360x60 (<16kb) image file in /csgo/ that will be displayed to spectators.",
+      "default": "0",
+      "description": "A 360x60 (<16kb) image file in /csgo/ that will be displayed to spectators.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -52223,8 +53716,8 @@
         "rep",
         "release"
       ],
-      "default": "A",
-      "description": "220x45 (<16kb) image file in /csgo/ that will be displayed to spectators.",
+      "default": "0",
+      "description": "A 220x45 (<16kb) image file in /csgo/ that will be displayed to spectators.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -52829,8 +54322,8 @@
         "nf",
         "release"
       ],
-      "default": "The",
-      "description": "ID of the steam group that this server belongs to. You can find your group's ID on the admin profile page in the steam community.",
+      "default": "0",
+      "description": "The ID of the steam group that this server belongs to. You can find your group's ID on the admin profile page in the steam community.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -52957,6 +54450,20 @@
       "category": "Server / Match"
     },
     {
+      "name": "sv_subtick_movement_view_angles",
+      "flags": [
+        "sv",
+        "cl",
+        "rep",
+        "release"
+      ],
+      "default": "true",
+      "description": "Whether or not subtick view angles are taken into account during movement.",
+      "accepted": "bool",
+      "kind": "cvar",
+      "category": "Server / Match"
+    },
+    {
       "name": "sv_suppress_friendlyfire_decals",
       "flags": [
         "sv"
@@ -52982,13 +54489,27 @@
       "category": "Server / Match"
     },
     {
+      "name": "sv_surf_sounds",
+      "flags": [
+        "sv",
+        "cl",
+        "rep",
+        "release"
+      ],
+      "default": "false",
+      "description": "Should we try to play sounds for surf?",
+      "accepted": "bool",
+      "kind": "cvar",
+      "category": "Server / Match"
+    },
+    {
       "name": "sv_tags",
       "flags": [
         "nf",
         "release"
       ],
-      "default": "Server",
-      "description": "tags. Used to provide extra information to clients when they're browsing for servers. Separate tags with a comma.",
+      "default": "0",
+      "description": "Server tags. Used to provide extra information to clients when they're browsing for servers. Separate tags with a comma.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -53327,6 +54848,20 @@
       "category": "Server / Match"
     },
     {
+      "name": "sv_use_playercache",
+      "flags": [
+        "sv",
+        "cl",
+        "rep",
+        "cheat"
+      ],
+      "default": "true",
+      "description": "Cache off player bounds for traces.",
+      "accepted": "bool",
+      "kind": "cvar",
+      "category": "Server / Match"
+    },
+    {
       "name": "sv_use_pvs_cache",
       "flags": [
         "sv"
@@ -53376,8 +54911,8 @@
         "sv",
         "release"
       ],
-      "default": "Key",
-      "description": "for when posting to vac related webapis.",
+      "default": "0",
+      "description": "Key for when posting to vac related webapis.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -54207,6 +55742,17 @@
       "category": "Other"
     },
     {
+      "name": "test_shipping_assert",
+      "flags": [
+        "release"
+      ],
+      "default": "",
+      "description": "Generate an assert to test shipping assertion code",
+      "accepted": "command",
+      "kind": "command",
+      "category": "Other"
+    },
+    {
       "name": "Test_StartLoop",
       "flags": [],
       "default": "",
@@ -54259,7 +55805,7 @@
         "rep",
         "release"
       ],
-      "default": "10",
+      "default": "0",
       "description": "Maximum think time in milliseconds, warning is printed if this is exceeded.",
       "accepted": "—",
       "kind": "cvar",
@@ -54270,7 +55816,8 @@
       "flags": [
         "cl",
         "cheat",
-        "per_tick"
+        "per_tick",
+        "execute_per_tick"
       ],
       "default": "",
       "description": "Switch to thirdperson camera.",
@@ -54483,7 +56030,7 @@
         "cl",
         "a"
       ],
-      "default": "0",
+      "default": "1",
       "description": "Trusted launch status",
       "accepted": "—",
       "kind": "cvar",
@@ -54704,6 +56251,17 @@
       "category": "Server / Match"
     },
     {
+      "name": "tv_broadcast_spew_threshold",
+      "flags": [
+        "release"
+      ],
+      "default": "0.1",
+      "description": "The threshold, in seconds, that we'll spew about the snapshot tick",
+      "accepted": "—",
+      "kind": "cvar",
+      "category": "Server / Match"
+    },
+    {
       "name": "tv_broadcast_startup_resend_interval",
       "flags": [
         "release"
@@ -54808,7 +56366,7 @@
         "sv",
         "release"
       ],
-      "default": "120",
+      "default": "105",
       "description": "SourceTV broadcast delay in seconds",
       "accepted": "—",
       "kind": "cvar",
@@ -55065,7 +56623,7 @@
         "release"
       ],
       "default": "",
-      "description": "hltv memory statistics. Use with \"ent 10\" (dump entity 10 memory usage) or \"top 8\" (dump top 8 memory users) or \"class\" CWorld (dump CWorld class)",
+      "description": "hltv memory statistics. Use with 'ent 10' (dump entity 10 memory usage) or 'top 8' (dump top 8 memory users) or 'class' CWorld (dump CWorld class)",
       "accepted": "command",
       "kind": "command",
       "category": "Server / Match"
@@ -55123,8 +56681,8 @@
         "norecord",
         "release"
       ],
-      "default": "SourceTV",
-      "description": "password for all clients of CSTV[0]",
+      "default": "0",
+      "description": "SourceTV password for all clients of CSTV[0]",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -55137,8 +56695,8 @@
         "norecord",
         "release"
       ],
-      "default": "SourceTV",
-      "description": "password for all clients of CSTV[1]. If empty, tv_password is used",
+      "default": "0",
+      "description": "SourceTV password for all clients of CSTV[1]. If empty, tv_password is used",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -55161,6 +56719,17 @@
       ],
       "default": "0",
       "description": "To alleviate intermittent network connectivity problems, this is the number of seconds to wait before actually re-syncing the stream after failure",
+      "accepted": "—",
+      "kind": "cvar",
+      "category": "Server / Match"
+    },
+    {
+      "name": "tv_playcast_fragment_cache_history_length",
+      "flags": [
+        "release"
+      ],
+      "default": "120",
+      "description": "How far back before our current playback head in seconds to hold onto fragments.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -55328,8 +56897,8 @@
         "norecord",
         "release"
       ],
-      "default": "SourceTV",
-      "description": "password for relay proxies",
+      "default": "0",
+      "description": "SourceTV password for relay proxies",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -55573,6 +57142,19 @@
       "category": "Other"
     },
     {
+      "name": "ui_inspect_bkgnd_map_539CD0B9",
+      "flags": [
+        "cl",
+        "a",
+        "release"
+      ],
+      "default": "warehouse",
+      "description": "Inspect background map",
+      "accepted": "—",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
       "name": "ui_inspect_bkgnd_map_9CA40421",
       "flags": [
         "cl",
@@ -55592,10 +57174,10 @@
         "a",
         "release"
       ],
-      "default": "",
+      "default": "0",
       "description": "Default:",
       "accepted": "command",
-      "kind": "command",
+      "kind": "cvar",
       "category": "Other"
     },
     {
@@ -55619,6 +57201,19 @@
       "default": "false",
       "description": "",
       "accepted": "bool",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
+      "name": "ui_mainmenu_bkgnd_movie_539CD0B9",
+      "flags": [
+        "cl",
+        "a",
+        "release"
+      ],
+      "default": "de_inferno",
+      "description": "Main menu background movie",
+      "accepted": "—",
       "kind": "cvar",
       "category": "Other"
     },
@@ -55655,10 +57250,10 @@
         "a",
         "release"
       ],
-      "default": "",
+      "default": "https://www.counter-strike.net/newsentry/578276333072682038",
       "description": "Default:",
       "accepted": "command",
-      "kind": "command",
+      "kind": "cvar",
       "category": "Other"
     },
     {
@@ -55668,10 +57263,10 @@
         "a",
         "release"
       ],
-      "default": "",
+      "default": "0",
       "description": "Default:",
       "accepted": "command",
-      "kind": "command",
+      "kind": "cvar",
       "category": "Other"
     },
     {
@@ -55693,10 +57288,10 @@
         "a",
         "release"
       ],
-      "default": "",
+      "default": "mg_de_inferno,mg_de_nuke,mg_de_overpass,mg_de_vertigo",
       "description": "Default:",
       "accepted": "command",
-      "kind": "command",
+      "kind": "cvar",
       "category": "Other"
     },
     {
@@ -55706,10 +57301,10 @@
         "a",
         "release"
       ],
-      "default": "",
+      "default": "S56JT-9KTN-SM4UL-T2HL",
       "description": "Default:",
       "accepted": "command",
-      "kind": "command",
+      "kind": "cvar",
       "category": "Other"
     },
     {
@@ -55759,6 +57354,19 @@
         "release"
       ],
       "default": "32",
+      "description": "",
+      "accepted": "—",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
+      "name": "ui_playsettings_flags_listen_retakes",
+      "flags": [
+        "cl",
+        "a",
+        "release"
+      ],
+      "default": "0",
       "description": "",
       "accepted": "—",
       "kind": "cvar",
@@ -55850,6 +57458,19 @@
         "release"
       ],
       "default": "32",
+      "description": "",
+      "accepted": "—",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
+      "name": "ui_playsettings_flags_official_retakes",
+      "flags": [
+        "cl",
+        "a",
+        "release"
+      ],
+      "default": "0",
       "description": "",
       "accepted": "—",
       "kind": "cvar",
@@ -55986,6 +57607,32 @@
       "category": "Other"
     },
     {
+      "name": "ui_playsettings_maps_listen_gungameprogressive",
+      "flags": [
+        "cl",
+        "a",
+        "release"
+      ],
+      "default": "mg_ar_baggage",
+      "description": "",
+      "accepted": "—",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
+      "name": "ui_playsettings_maps_listen_retakes",
+      "flags": [
+        "cl",
+        "a",
+        "release"
+      ],
+      "default": "mg_de_dust2",
+      "description": "",
+      "accepted": "—",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
       "name": "ui_playsettings_maps_listen_scrimcomp2v2",
       "flags": [
         "cl",
@@ -56051,16 +57698,29 @@
       "category": "Other"
     },
     {
+      "name": "ui_playsettings_maps_official_retakes",
+      "flags": [
+        "cl",
+        "a",
+        "release"
+      ],
+      "default": "mg_casualalpha",
+      "description": "",
+      "accepted": "—",
+      "kind": "cvar",
+      "category": "Other"
+    },
+    {
       "name": "ui_playsettings_maps_workshop",
       "flags": [
         "cl",
         "a",
         "release"
       ],
-      "default": "",
+      "default": "@workshop/682407953/avik_d",
       "description": "Default:",
       "accepted": "command",
-      "kind": "command",
+      "kind": "cvar",
       "category": "Other"
     },
     {
@@ -56222,10 +57882,10 @@
         "a",
         "release"
       ],
-      "default": "",
+      "default": "0",
       "description": "Default:",
       "accepted": "command",
-      "kind": "command",
+      "kind": "cvar",
       "category": "Other"
     },
     {
@@ -56271,10 +57931,10 @@
         "a",
         "release"
       ],
-      "default": "",
+      "default": "rifle4",
       "description": "Default:",
       "accepted": "command",
-      "kind": "command",
+      "kind": "cvar",
       "category": "Other"
     },
     {
@@ -56284,10 +57944,10 @@
         "a",
         "release"
       ],
-      "default": "",
+      "default": "rifle4",
       "description": "Default:",
       "accepted": "command",
-      "kind": "command",
+      "kind": "cvar",
       "category": "Other"
     },
     {
@@ -56297,10 +57957,10 @@
         "a",
         "release"
       ],
-      "default": "",
+      "default": "ct",
       "description": "Default:",
       "accepted": "command",
-      "kind": "command",
+      "kind": "cvar",
       "category": "Other"
     },
     {
@@ -56419,10 +58079,11 @@
       "flags": [
         "norecord",
         "release",
-        "server_cannot_query"
+        "server_cannot_query",
+        "server_cant_query"
       ],
-      "default": "when",
-      "description": "non-empty allows for easy vconsole connection to the dedicated server.",
+      "default": "0",
+      "description": "when non-empty allows for easy vconsole connection to the dedicated server.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Other"
@@ -56527,7 +58188,7 @@
         "user",
         "per_user"
       ],
-      "default": "60",
+      "default": "68",
       "description": "Viewmodel FOV",
       "accepted": "60 – 68 (step 1)",
       "kind": "cvar",
@@ -56541,7 +58202,7 @@
         "user",
         "per_user"
       ],
-      "default": "1",
+      "default": "2",
       "description": "viewmodel_offset_x",
       "accepted": "-2 – 2.5 (step 0.1)",
       "kind": "cvar",
@@ -56555,7 +58216,7 @@
         "user",
         "per_user"
       ],
-      "default": "1",
+      "default": "2",
       "description": "viewmodel_offset_y",
       "accepted": "-2 – 2 (step 0.1)",
       "kind": "cvar",
@@ -56581,8 +58242,8 @@
         "cl",
         "a"
       ],
-      "default": "1",
-      "description": "1:\"Desktop\", 2:\"Classic\"",
+      "default": "0",
+      "description": "1:'Desktop', 2:'Classic'",
       "accepted": "1 / 2",
       "kind": "cvar",
       "category": "Viewmodel"
@@ -56960,8 +58621,8 @@
         "a",
         "release"
       ],
-      "default": "Default",
-      "description": "device used for voice capture.",
+      "default": "0",
+      "description": "Default device used for voice capture.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Audio"
@@ -57166,7 +58827,7 @@
         "cl",
         "a"
       ],
-      "default": "-120",
+      "default": "0",
       "description": "decibel threshold for how loud the talker's input signal is before we think they are talking.",
       "accepted": "—",
       "kind": "cvar",
@@ -57206,6 +58867,18 @@
       "description": "A dB floor of when to stop transmitting packets, the volume between this and voice_threshold will still transmit packets to allow for volume ramping.",
       "accepted": "—",
       "kind": "cvar",
+      "category": "Audio"
+    },
+    {
+      "name": "voice_toggle_open_mic",
+      "flags": [
+        "cl",
+        "release"
+      ],
+      "default": "",
+      "description": "Toggles between open-mic and push-to-talk",
+      "accepted": "command",
+      "kind": "command",
       "category": "Audio"
     },
     {

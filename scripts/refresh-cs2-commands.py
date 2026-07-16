@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-"""Fetch/parse ArminC CS2 cvarlist and write data/cs2-commands.json."""
+"""Fetch/parse a CS2 cvar dump and write data/cs2-commands.json.
+
+Supported input formats:
+  - Nihilnia markdown tables (| Command | Default | Flags | Description |)
+  - ArminC markdown (| Name | Flags | Description | with Default: in help)
+  - Native console cvarlist text (name : default : flags : help)
+"""
 
 from __future__ import annotations
 
@@ -13,9 +19,15 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_URL = (
+# Fresher public dump (~2.7k) + older unhide dump (~5k) merged by default.
+NIHILNIA_URL = (
+    "https://raw.githubusercontent.com/Nihilnia/CounterStrike/main/"
+    "Counter%20Strike%202/List%20of%20console%20commands%20and%20variables.md"
+)
+ARMINC_URL = (
     "https://raw.githubusercontent.com/ArmynC/ArminC-CS2-Cvars/main/cvars/cvarlist.md"
 )
+DEFAULT_URLS = (NIHILNIA_URL, ARMINC_URL)
 OUT_PATH = ROOT / "data" / "cs2-commands.json"
 SECTION_GLOBS = [
     ROOT / "js" / "crosshair-settings.js",
@@ -328,7 +340,72 @@ def _num(raw: str):
     return int(raw)
 
 
-def parse_cvarlist(md: str) -> list[dict]:
+def parse_cvarlist(text: str) -> list[dict]:
+    """Auto-detect dump format and return command dicts (may include dupes)."""
+    if "| Command |" in text or "|Command|" in text:
+        return _parse_nihilnia_md(text)
+    if "| Name |" in text or text.lstrip().startswith("Name |"):
+        return _parse_arminc_md(text)
+    return _parse_native_cvarlist(text)
+
+
+def _strip_name(raw: str) -> str:
+    return raw.strip().strip("`").strip()
+
+
+def _parse_nihilnia_md(md: str) -> list[dict]:
+    """| Command | Default Value | Flags | Description |"""
+    commands: list[dict] = []
+    for line in md.splitlines():
+        line = line.strip()
+        if "|" not in line:
+            continue
+        parts = [p.strip() for p in line.split("|")]
+        while parts and parts[0] == "":
+            parts.pop(0)
+        while parts and parts[-1] == "":
+            parts.pop()
+        if len(parts) < 3:
+            continue
+        name = _strip_name(parts[0])
+        if not name or name in {"Command", "----"} or set(name) <= {"-", ":", " "}:
+            continue
+        if name.startswith("---") or name.startswith(":--"):
+            continue
+        default_raw = parts[1].strip() if len(parts) > 1 else ""
+        flags_raw = parts[2] if len(parts) > 2 else ""
+        description = parts[3] if len(parts) > 3 else ""
+        if len(parts) > 4:
+            description = " | ".join(parts[3:])
+
+        description = clean_help_text(description)
+        flags = parse_flags(flags_raw)
+        default_raw = default_raw.strip()
+        if default_raw.lower() == "cmd":
+            default = ""
+            kind, accepted = "command", "command"
+        else:
+            default = default_raw
+            kind, accepted = infer_kind_and_accepted(
+                default if default else None, description, flags
+            )
+
+        commands.append(
+            {
+                "name": name,
+                "flags": flags,
+                "default": default,
+                "description": description,
+                "accepted": accepted,
+                "kind": kind,
+                "category": categorize_command(name),
+            }
+        )
+    return commands
+
+
+def _parse_arminc_md(md: str) -> list[dict]:
+    """Name | Flags | Description (Default: embedded in help)."""
     commands: list[dict] = []
     for line in md.splitlines():
         line = line.strip()
@@ -337,19 +414,17 @@ def parse_cvarlist(md: str) -> list[dict]:
         if "|" not in line:
             continue
         parts = [p.strip() for p in line.split("|")]
-        # Tolerate trailing empty from trailing pipe
         while parts and parts[-1] == "":
             parts.pop()
         if len(parts) < 2:
             continue
-        name = parts[0]
+        name = _strip_name(parts[0])
         if name in {"Name", "----"} or set(name) <= {"-", " "}:
             continue
         if name.startswith("---"):
             continue
         flags_raw = parts[1] if len(parts) > 1 else ""
         help_raw = parts[2] if len(parts) > 2 else ""
-        # Rejoin description if extra pipes appear in help text
         if len(parts) > 3:
             help_raw = " | ".join(parts[2:])
 
@@ -370,8 +445,112 @@ def parse_cvarlist(md: str) -> list[dict]:
     return commands
 
 
-def build_catalog(md: str, enrichments: dict[str, str], source: str) -> dict:
-    commands = parse_cvarlist(md)
+NATIVE_LINE_RE = re.compile(
+    r"^(\S+)\s+:\s+(.*?)\s+:\s+(.*?)\s+:\s*(.*)$"
+)
+
+
+def _parse_native_cvarlist(text: str) -> list[dict]:
+    """Console `cvarlist` lines: name : default : flags : description."""
+    commands: list[dict] = []
+    for line in text.splitlines():
+        line = line.strip()
+        if not line or line.startswith("cvar list") or set(line) <= {"-"}:
+            continue
+        # Strip optional [Console] prefix from pasted logs
+        if line.startswith("[Console]"):
+            line = line[len("[Console]") :].strip()
+        match = NATIVE_LINE_RE.match(line)
+        if not match:
+            continue
+        name, default_raw, flags_raw, description = match.groups()
+        name = _strip_name(name)
+        description = clean_help_text(description)
+        flags = parse_flags(flags_raw)
+        default_raw = default_raw.strip()
+        if default_raw.lower() == "cmd":
+            default = ""
+            kind, accepted = "command", "command"
+        else:
+            default = default_raw
+            kind, accepted = infer_kind_and_accepted(default or None, description, flags)
+        commands.append(
+            {
+                "name": name,
+                "flags": flags,
+                "default": default,
+                "description": description,
+                "accepted": accepted,
+                "kind": kind,
+                "category": categorize_command(name),
+            }
+        )
+    return commands
+
+
+def merge_entry(base: dict, overlay: dict) -> dict:
+    """Merge two records for the same cvar. Overlay fills gaps and updates fields."""
+    b_flags = base.get("flags") or []
+    o_flags = overlay.get("flags") or []
+    b_desc = (base.get("description") or "").strip()
+    o_desc = (overlay.get("description") or "").strip()
+    b_default = base.get("default") or ""
+    o_default = overlay.get("default") or ""
+    b_accepted = base.get("accepted") or "—"
+    o_accepted = overlay.get("accepted") or "—"
+
+    # Prefer overlay default when it has real help text, or when base has none.
+    # Avoid sparse newer dumps overwriting a known default with a bare "0".
+    if o_default and (o_desc or not b_default):
+        default = o_default
+    else:
+        default = b_default
+    description = o_desc if (o_desc and (not b_desc or len(o_desc) >= len(b_desc))) else b_desc
+    if o_accepted not in ("", "—"):
+        accepted = o_accepted
+    elif b_accepted not in ("", "—"):
+        accepted = b_accepted
+    else:
+        accepted = "—"
+
+    kind = overlay.get("kind") or base.get("kind") or "cvar"
+    if accepted == "command" and not default:
+        kind = "command"
+    elif default or accepted == "bool":
+        kind = "cvar"
+
+    name = base["name"]
+    return {
+        "name": name,
+        "flags": list(dict.fromkeys([*b_flags, *o_flags])),
+        "default": default,
+        "description": description,
+        "accepted": accepted,
+        "kind": kind,
+        "category": categorize_command(name),
+    }
+
+
+def merge_command_lists(*lists: list[dict]) -> list[dict]:
+    """Union by name. Earlier lists are the base; later lists overlay."""
+    by_name: dict[str, dict] = {}
+    for entries in lists:
+        for entry in entries:
+            name = entry["name"]
+            if name not in by_name:
+                by_name[name] = dict(entry)
+                by_name[name]["category"] = categorize_command(name)
+            else:
+                by_name[name] = merge_entry(by_name[name], entry)
+    return list(by_name.values())
+
+
+def build_catalog(
+    command_lists: list[list[dict]],
+    enrichments: dict[str, str],
+    sources: list[str],
+) -> dict:
+    commands = merge_command_lists(*command_lists)
     for entry in commands:
         enriched = enrichments.get(entry["name"])
         if enriched:
@@ -380,7 +559,8 @@ def build_catalog(md: str, enrichments: dict[str, str], source: str) -> dict:
     categories = sorted({c["category"] for c in commands}, key=str.lower)
     return {
         "meta": {
-            "source": source,
+            "source": " + ".join(sources) if len(sources) > 1 else (sources[0] if sources else ""),
+            "sources": sources,
             "fetchedAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "count": len(commands),
             "enrichmentCount": sum(1 for c in commands if c["name"] in enrichments),
@@ -394,13 +574,16 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--url",
-        default=DEFAULT_URL,
-        help="Raw markdown URL (default: ArminC cvarlist.md)",
+        action="append",
+        dest="urls",
+        help="Dump URL (repeatable). Default: Nihilnia + ArminC merged",
     )
     parser.add_argument(
         "--input",
+        action="append",
         type=Path,
-        help="Local cvarlist.md path (skips download)",
+        dest="inputs",
+        help="Local dump path (repeatable): .md or native cvarlist .txt",
     )
     parser.add_argument(
         "--output",
@@ -410,16 +593,33 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    if args.input:
-        source = str(args.input)
-        md = args.input.read_text(encoding="utf-8")
+    sources: list[str] = []
+    command_lists: list[list[dict]] = []
+
+    if args.inputs:
+        for path in args.inputs:
+            print(f"Reading {path} …", file=sys.stderr)
+            text = path.read_text(encoding="utf-8")
+            sources.append(str(path))
+            command_lists.append(parse_cvarlist(text))
     else:
-        source = args.url
-        print(f"Fetching {source} …", file=sys.stderr)
-        md = fetch_text(args.url)
+        urls = args.urls if args.urls else list(DEFAULT_URLS)
+        for url in urls:
+            print(f"Fetching {url} …", file=sys.stderr)
+            text = fetch_text(url)
+            sources.append(url)
+            command_lists.append(parse_cvarlist(text))
+
+    # Overlay order: first list is base, later lists win on non-empty fields.
+    # Put ArminC first (broader), Nihilnia second (fresher public values) when using defaults.
+    if not args.inputs and not args.urls:
+        # DEFAULT_URLS is (Nihilnia, ArminC) — reorder to ArminC base + Nihilnia overlay
+        if len(command_lists) == 2 and sources[0] == NIHILNIA_URL and sources[1] == ARMINC_URL:
+            command_lists = [command_lists[1], command_lists[0]]
+            sources = [sources[1], sources[0]]
 
     enrichments = extract_section_enrichments(SECTION_GLOBS)
-    catalog = build_catalog(md, enrichments, source)
+    catalog = build_catalog(command_lists, enrichments, sources)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(
         json.dumps(catalog, ensure_ascii=False, indent=2) + "\n",
@@ -428,7 +628,7 @@ def main() -> int:
     meta = catalog["meta"]
     print(
         f"Wrote {args.output} ({meta['count']} commands, "
-        f"{meta['enrichmentCount']} enriched)",
+        f"{meta['enrichmentCount']} enriched, {len(sources)} source(s))",
         file=sys.stderr,
     )
     return 0
