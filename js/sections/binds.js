@@ -246,18 +246,30 @@ const BindSection = (() => {
     return [formatBind(key, entry.bindCommand)];
   }
 
+  function entryAliasLines(entry) {
+    return (entry.aliases || []).flatMap((aliasId) => ALIAS_DEFS[aliasId] || []);
+  }
+
+  /** Preview / export body for one bind (aliases + bind lines). */
+  function entryBodyLines(entry, entryState) {
+    return [...entryAliasLines(entry), ...entryBindLines(entry, entryState)];
+  }
+
   function entryPreviewLines(entry, entryState) {
-    const aliases = (entry.aliases || []).flatMap((aliasId) => ALIAS_DEFS[aliasId] || []);
-    return [...aliases, ...entryBindLines(entry, entryState)];
+    const body = entryBodyLines(entry, entryState);
+    if (!body.length) return [];
+    return [`// ${entry.label}`, ...body];
   }
 
   /**
    * Serialize enabled binds to cfg / console lines.
    * @param {object} state
-   * @param {{ minimal?: boolean }} [options]
+   * @param {{ minimal?: boolean, annotate?: boolean }} [options]
+   *   annotate (default true) — `// Label` before each bind and a blank line between blocks
    */
   function toCommandLines(state, options = {}) {
     const minimal = Boolean(options.minimal);
+    const annotate = options.annotate !== false;
     const lines = [];
     const emittedAliases = new Set();
 
@@ -271,13 +283,20 @@ const BindSection = (() => {
         if (!isValidKey(key)) continue;
       }
 
+      const block = [];
       for (const aliasId of entry.aliases || []) {
         if (emittedAliases.has(aliasId)) continue;
         emittedAliases.add(aliasId);
-        lines.push(...(ALIAS_DEFS[aliasId] || []));
+        block.push(...(ALIAS_DEFS[aliasId] || []));
       }
+      block.push(...entryBindLines(entry, entryState));
+      if (!block.length) continue;
 
-      lines.push(...entryBindLines(entry, entryState));
+      if (annotate) {
+        if (lines.length) lines.push('');
+        lines.push(`// ${entry.label}`);
+      }
+      lines.push(...block);
     }
 
     return lines;

@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Bind export and editor previews label each bind with a `//` comment and separate blocks with a blank line
 - Wider config export column; long cvar lines scroll horizontally instead of wrapping
 - Wider inline preview column for crosshair / viewmodel / radar canvases
 

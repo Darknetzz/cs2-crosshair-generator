@@ -52,7 +52,11 @@ const ConfigCommands = (() => {
       : ConfigSections.ALL;
 
     return sections
-      .flatMap((section) => toSectionLines(section, sectionsState[section.id] || {}, options))
+      .flatMap((section) => toSectionLines(section, sectionsState[section.id] || {}, {
+        ...options,
+        // Semicolon paste must stay executable — skip // labels / blank lines.
+        annotate: false,
+      }))
       .join('; ');
   }
 
