@@ -2,6 +2,8 @@
 
 A lightweight web app for building Counter-Strike 2 configs. Design your crosshair with a live preview, tweak viewmodel / HUD / radar / FPS settings with live viewmodel and radar previews, pick useful binds, then copy console commands or download modular and combined `.cfg` files.
 
+**Repository:** [github.com/Darknetzz/cs2-config-generator](https://github.com/Darknetzz/cs2-config-generator)
+
 ![CS2 Config Generator screenshot](docs/screenshot.png)
 
 ## Features

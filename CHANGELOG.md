@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- GitHub repository link in the site header nav
 - Commands reference page (`commands.html`) with searchable/sortable CS2 console command and cvar catalog
 - Prefix-based category filters on the Commands page (Crosshair, HUD, Radar, etc.)
 - ConVar flag legend and tooltips explaining engine metadata under each command name
