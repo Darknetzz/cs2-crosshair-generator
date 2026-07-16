@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import html
 import json
 import re
 import sys
@@ -174,10 +175,16 @@ def fetch_text(url: str) -> str:
         return resp.read().decode("utf-8")
 
 
+# Drop markdown / dump escapes like \[ \] \| and "\ " before punctuation/whitespace.
+MD_ESCAPE_RE = re.compile(r"\\([^A-Za-z0-9]|$)")
+
+
 def clean_help_text(raw: str) -> str:
-    """Normalize ArminC help text (often uses <br> instead of spaces)."""
+    """Normalize ArminC help text (<br>, HTML entities, markdown escapes)."""
     text = raw.replace("<br>", " ").replace("<br/>", " ").replace("<br />", " ")
     text = HTML_TAG_RE.sub(" ", text)
+    text = html.unescape(text)
+    text = MD_ESCAPE_RE.sub(r"\1", text)
     return re.sub(r"\s+", " ", text).strip()
 
 

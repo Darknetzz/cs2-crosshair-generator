@@ -22,6 +22,8 @@ A lightweight web app for building Counter-Strike 2 configs. Design your crossha
 - **Share links** — delta-encoded settings in the URL (all sections + preview options)
 - **Themes** — auto (system), dark, or light page theme
 
+See [CHANGELOG.md](CHANGELOG.md) for release history. To cut a release locally: `./scripts/release.sh` (see [AGENTS.md](AGENTS.md)).
+
 ## Usage
 
 Open `index.html` in a browser, or serve the folder locally:
@@ -83,6 +85,8 @@ The page defaults to **Auto**, which follows your system light/dark preference. 
 ```
 ├── index.html
 ├── commands.html              # Full CS2 command / cvar browser
+├── CHANGELOG.md               # Keep a Changelog ([Unreleased] + releases)
+├── cliff.toml                 # git-cliff config (draft notes / bump hints)
 ├── AGENTS.md                  # Guidance for coding agents
 ├── css/style.css
 ├── js/
@@ -112,7 +116,8 @@ The page defaults to **Auto**, which follows your system light/dark preference. 
 ├── data/
 │   └── cs2-commands.json      # Generated command catalog (ArminC + enrichments)
 ├── scripts/
-│   └── refresh-cs2-commands.py  # Refresh data/cs2-commands.json
+│   ├── refresh-cs2-commands.py  # Refresh data/cs2-commands.json
+│   └── release.sh               # Rotate CHANGELOG, commit, tag (no push)
 └── docs/screenshot.png
 ```
 

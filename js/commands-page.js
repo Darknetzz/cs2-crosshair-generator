@@ -150,14 +150,25 @@
           const flags = (cmd.flags || []).length
             ? `<span class="commands-flags" title="${escapeHtml(FLAGS_TITLE)}">${escapeHtml(cmd.flags.join(', '))}</span>`
             : '';
-          const category = cmd.category
-            ? `<span class="commands-category-tag">${escapeHtml(cmd.category)}</span>`
+          const tags = [];
+          if (cmd.category) {
+            tags.push(
+              `<span class="commands-category-tag">${escapeHtml(cmd.category)}</span>`
+            );
+          }
+          if ((cmd.flags || []).includes('cheat')) {
+            tags.push(
+              '<span class="commands-cheat-tag" title="Requires sv_cheats 1">sv_cheats</span>'
+            );
+          }
+          const tagRow = tags.length
+            ? `<span class="commands-tags">${tags.join('')}</span>`
             : '';
           return `<tr>
             <td class="commands-col-name">
               <code>${escapeHtml(cmd.name)}</code>
               ${flags}
-              ${category}
+              ${tagRow}
             </td>
             <td class="commands-col-default"><code>${escapeHtml(displayValue(cmd.default))}</code></td>
             <td class="commands-col-accepted">${escapeHtml(displayValue(cmd.accepted))}</td>

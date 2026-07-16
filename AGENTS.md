@@ -24,6 +24,37 @@ python3 scripts/refresh-cs2-commands.py
 
 There is no lint, format, or test command. Verify changes in the browser.
 
+## Releases & changelog
+
+This project uses [Keep a Changelog](https://keepachangelog.com/) + [SemVer](https://semver.org/). Version tags are `vX.Y.Z`. There is **no GitHub Actions** release workflow.
+
+### While developing
+
+- Prefer [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, `docs:`, `chore:`; breaking with `!`) so `git cliff` stays useful for drafts.
+- For any **user-facing** change, add a bullet under the matching subsection of `## [Unreleased]` in [`CHANGELOG.md`](CHANGELOG.md) in the same change set (along with README updates when needed).
+- Optional draft from commits: `git cliff --unreleased`
+- Optional SemVer hint from conventional commits: `git cliff --bumped-version` or `./scripts/release.sh --suggest`
+
+### Cutting a release (only when the user asks)
+
+Working tree must be clean. `[Unreleased]` must contain at least one bullet.
+
+```bash
+./scripts/release.sh
+# Version [0.1.1]:    # Enter = patch bump from latest tag (or 0.1.0 if none)
+# Or skip the prompt: VERSION=0.2.0 ./scripts/release.sh
+# Preview only:       ./scripts/release.sh --dry-run
+```
+
+The script rotates `[Unreleased]` into `## [X.Y.Z] - YYYY-MM-DD`, restores empty Unreleased stubs, commits `chore(release): vX.Y.Z`, and creates an annotated tag `vX.Y.Z`. It does **not** push.
+
+```bash
+git push origin HEAD
+git push origin vX.Y.Z   # only if the user asks to push tags
+```
+
+Do not rewrite published version sections; put follow-ups under `[Unreleased]` or cut a new patch release.
+
 ## Architecture
 
 | Area | Role |
@@ -36,6 +67,9 @@ There is no lint, format, or test command. Verify changes in the browser.
 | `js/commands-page.js` | Commands reference UI (search/sort/paginate) |
 | `data/cs2-commands.json` | Generated full cvar/command catalog |
 | `scripts/refresh-cs2-commands.py` | Rebuild catalog from ArminC dump + section enrichments |
+| `scripts/release.sh` | Rotate CHANGELOG, commit, annotated SemVer tag (no push) |
+| `CHANGELOG.md` | Keep a Changelog (`[Unreleased]` + released sections) |
+| `cliff.toml` | git-cliff config for draft notes / bump suggestions |
 | `js/*-renderer.js` | Canvas previews (crosshair, viewmodel, radar) |
 | `js/app.js` | UI, state, persistence (`localStorage`), share URLs |
 | `js/presets.js` / `custom-presets.js` | Pro + user crosshair presets |
@@ -75,6 +109,7 @@ Cvar names and value ranges should match real CS2 console commands.
 - Update both UI metadata and command serialization when changing a setting.
 - Manually check section tabs, preview, copy/download, import, and share after UI/state changes.
 - **Keep `README.md` up to date** whenever you change user-facing features, usage, project structure, scripts, or assets. Update it in the same change set — do not leave docs stale.
+- **Update `CHANGELOG.md` `[Unreleased]`** for user-facing changes; cut releases only with `./scripts/release.sh` when the user asks.
 
 **Don’t**
 
@@ -82,3 +117,5 @@ Cvar names and value ranges should match real CS2 console commands.
 - Convert to ES modules without updating every script tag and load order.
 - Commit or invent secrets; this app has no backend.
 - Put large binary assets in chat; edit or add files under `assets/` instead.
+- Add GitHub Actions (or other CI) release workflows for changelog/versioning.
+- Push release tags unless the user explicitly asks.

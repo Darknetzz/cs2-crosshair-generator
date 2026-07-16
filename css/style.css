@@ -1787,16 +1787,31 @@ th[aria-sort="descending"] .sort-btn::after {
   font-family: var(--mono);
 }
 
-.commands-category-tag {
-  display: inline-block;
+.commands-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
   margin-top: 0.25rem;
+}
+
+.commands-category-tag,
+.commands-cheat-tag {
+  display: inline-block;
   padding: 0.1rem 0.4rem;
   font-size: 0.7rem;
   font-weight: 500;
-  color: var(--muted);
   border: 1px solid var(--border);
   border-radius: 4px;
   background: var(--surface-raised);
+}
+
+.commands-category-tag {
+  color: var(--muted);
+}
+
+.commands-cheat-tag {
+  color: var(--danger);
+  border-color: var(--danger);
 }
 
 .commands-empty {

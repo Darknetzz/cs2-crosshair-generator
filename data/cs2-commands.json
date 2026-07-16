@@ -1,7 +1,7 @@
 {
   "meta": {
     "source": "https://raw.githubusercontent.com/ArmynC/ArminC-CS2-Cvars/main/cvars/cvarlist.md",
-    "fetchedAt": "2026-07-16T02:31:42Z",
+    "fetchedAt": "2026-07-16T03:26:51Z",
     "count": 5071,
     "enrichmentCount": 64,
     "categories": [
@@ -687,7 +687,7 @@
         "sv"
       ],
       "default": "1",
-      "description": "Sets whether or not NPCs can cache their Visibility checks against other entities. If set to 2, also tests to make sure that NPC-&gt;Target results match that of Target-&gt;NPC.",
+      "description": "Sets whether or not NPCs can cache their Visibility checks against other entities. If set to 2, also tests to make sure that NPC->Target results match that of Target->NPC.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Other"
@@ -1422,7 +1422,7 @@
         "rep"
       ],
       "default": "0",
-      "description": "Filter setting for animgraph_debug_variables output. If set to -1, show debug for all entities. If set to 0, show debug for any NPCs that have been npc_selected. If set to &gt;0, something other than 0, show debug for the entity with the matching entindex.",
+      "description": "Filter setting for animgraph_debug_variables output. If set to -1, show debug for all entities. If set to 0, show debug for any NPCs that have been npc_selected. If set to >0, something other than 0, show debug for the entity with the matching entindex.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Other"
@@ -1795,7 +1795,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Specified entities will have the specified bool parameter set to the value specified. Useful for animators to test. Arguments: &lt;entity&gt; &lt;parameter name&gt; &lt;value you want to send to animgraph for the entity&gt;",
+      "description": "Specified entities will have the specified bool parameter set to the value specified. Useful for animators to test. Arguments: <entity> <parameter name> <value you want to send to animgraph for the entity>",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -1807,7 +1807,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Specified entities will have the specified enum parameter set to the value specified. Useful for animators to test. Arguments: &lt;entity&gt; &lt;parameter name&gt; &lt;value you want to send to animgraph for the entity&gt;",
+      "description": "Specified entities will have the specified enum parameter set to the value specified. Useful for animators to test. Arguments: <entity> <parameter name> <value you want to send to animgraph for the entity>",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -1819,7 +1819,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Specified entities will have the specified float parameter set to the value specified. Useful for animators to test. Arguments: &lt;entity&gt; &lt;parameter name&gt; &lt;value you want to send to animgraph for the entity&gt;",
+      "description": "Specified entities will have the specified float parameter set to the value specified. Useful for animators to test. Arguments: <entity> <parameter name> <value you want to send to animgraph for the entity>",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -1831,7 +1831,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Specified entities will have the specified int parameter set to the value specified. Useful for animators to test. Arguments: &lt;entity&gt; &lt;parameter name&gt; &lt;value you want to send to animgraph for the entity&gt;",
+      "description": "Specified entities will have the specified int parameter set to the value specified. Useful for animators to test. Arguments: <entity> <parameter name> <value you want to send to animgraph for the entity>",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -1843,7 +1843,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Specified entities will have the specified bool parameter set to the value specified. Useful for animators to test. Arguments: &lt;entity&gt; &lt;parameter name&gt; &lt;value you want to send to animgraph for the entity&gt;",
+      "description": "Specified entities will have the specified bool parameter set to the value specified. Useful for animators to test. Arguments: <entity> <parameter name> <value you want to send to animgraph for the entity>",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -1855,7 +1855,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Specified entities will have the specified vector parameter set to the value specified. Useful for animators to test. Arguments: &lt;entity&gt; &lt;parameter name&gt; &lt;value you want to send to animgraph for the entity&gt;",
+      "description": "Specified entities will have the specified vector parameter set to the value specified. Useful for animators to test. Arguments: <entity> <parameter name> <value you want to send to animgraph for the entity>",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -2155,7 +2155,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Draw an axis Arguments: x y z pitch yaw roll &lt;lifetime = 10.0&gt; &lt;r g b a&gt;",
+      "description": "Draw an axis Arguments: x y z pitch yaw roll <lifetime = 10.0> <r g b a>",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -2237,7 +2237,7 @@
       "name": "bindtoggle",
       "flags": [],
       "default": "",
-      "description": "Performs a bind &lt;key&gt; \"increment var &lt;cvar&gt; 0 1 1\".",
+      "description": "Performs a bind <key> \"increment var <cvar> 0 1 1\".",
       "accepted": "command",
       "kind": "command",
       "category": "Binds / Input actions"
@@ -2271,7 +2271,7 @@
         "release"
       ],
       "default": "",
-      "description": "bot_add &lt;t\\ | ct&gt; &lt;type&gt; &lt;difficulty&gt; &lt;name&gt; - Adds a bot matching the given criteria.",
+      "description": "bot_add <t | ct> <type> <difficulty> <name> - Adds a bot matching the given criteria.",
       "accepted": "command",
       "kind": "command",
       "category": "Server / Match"
@@ -2283,7 +2283,7 @@
         "release"
       ],
       "default": "",
-      "description": "bot_add_ct &lt;type&gt; &lt;difficulty&gt; &lt;name&gt; - Adds a Counter-Terrorist bot matching the given criteria.",
+      "description": "bot_add_ct <type> <difficulty> <name> - Adds a Counter-Terrorist bot matching the given criteria.",
       "accepted": "command",
       "kind": "command",
       "category": "Server / Match"
@@ -2295,7 +2295,7 @@
         "release"
       ],
       "default": "",
-      "description": "bot_add_t &lt;type&gt; &lt;difficulty&gt; &lt;name&gt; - Adds a terrorist bot matching the given criteria.",
+      "description": "bot_add_t <type> <difficulty> <name> - Adds a terrorist bot matching the given criteria.",
       "accepted": "command",
       "kind": "command",
       "category": "Server / Match"
@@ -2741,7 +2741,7 @@
         "release"
       ],
       "default": "",
-      "description": "bot_kick &lt;all&gt; &lt;t\\ | ct&gt; &lt;type&gt; &lt;difficulty&gt; &lt;name&gt; - Kicks a specific bot, or all bots, matching the given criteria.",
+      "description": "bot_kick <all> <t | ct> <type> <difficulty> <name> - Kicks a specific bot, or all bots, matching the given criteria.",
       "accepted": "command",
       "kind": "command",
       "category": "Server / Match"
@@ -2753,7 +2753,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "bot_kill &lt;all&gt; &lt;t\\ | ct&gt; &lt;type&gt; &lt;difficulty&gt; &lt;name&gt; - Kills a specific bot, or all bots, matching the given criteria.",
+      "description": "bot_kill <all> <t | ct> <type> <difficulty> <name> - Kills a specific bot, or all bots, matching the given criteria.",
       "accepted": "command",
       "kind": "command",
       "category": "Server / Match"
@@ -2877,7 +2877,7 @@
         "release"
       ],
       "default": "This",
-      "description": "string is prefixed to the name of all bots that join the game. &lt;difficulty&gt; will be replaced with the bot's difficulty. &lt;weaponclass&gt; will be replaced with the bot's desired weapon class. &lt;skill&gt; will be replaced with a 0-100 representation of the bot's skill.",
+      "description": "string is prefixed to the name of all bots that join the game. <difficulty> will be replaced with the bot's difficulty. <weaponclass> will be replaced with the bot's desired weapon class. <skill> will be replaced with a 0-100 representation of the bot's skill.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -2973,7 +2973,7 @@
         "cheat"
       ],
       "default": "0",
-      "description": "bot_stop &lt;1\\ | all&gt; \\ | &lt;not_bomber&gt; \\ | &lt;t&gt; \\ | &lt;ct&gt;",
+      "description": "bot_stop <1 | all> | <not_bomber> | <t> | <ct>",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -3021,7 +3021,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Draw a bbox Arguments: minx miny miny maxx maxy maxz &lt;lifetime = 10.0&gt; &lt;r g b a&gt;",
+      "description": "Draw a bbox Arguments: minx miny miny maxx maxy maxz <lifetime = 10.0> <r g b a>",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -3119,7 +3119,7 @@
         "norecord"
       ],
       "default": "",
-      "description": "bug \\[auto_fill_tokens\\] \\[-title &lt;text&gt;\\] \\[-noscreenshot\\] : Activate the bug reporter.",
+      "description": "bug [auto_fill_tokens] [-title <text>] [-noscreenshot] : Activate the bug reporter.",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -4460,7 +4460,7 @@
         "release"
       ],
       "default": "",
-      "description": "changelevel &lt;mapname&gt; :Multiplayer change level.",
+      "description": "changelevel <mapname> :Multiplayer change level.",
       "accepted": "command",
       "kind": "command",
       "category": "Server / Match"
@@ -4678,7 +4678,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Draw an axis Arguments: x y z pitch yaw roll &lt;lifetime = 10.0&gt; &lt;r g b a&gt;",
+      "description": "Draw an axis Arguments: x y z pitch yaw roll <lifetime = 10.0> <r g b a>",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -4713,7 +4713,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Draw a bbox Arguments: minx miny miny maxx maxy maxz &lt;lifetime = 10.0&gt; &lt;r g b a&gt;",
+      "description": "Draw a bbox Arguments: minx miny miny maxx maxy maxz <lifetime = 10.0> <r g b a>",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -4744,7 +4744,7 @@
       "name": "cl_break_on_missing_resource",
       "flags": [],
       "default": "",
-      "description": "Break in debugger when missing resource match is found. Format: cl_break_on_missing_resource &lt;substring&gt; /(empty to break on all) / 0 to turn off.",
+      "description": "Break in debugger when missing resource match is found. Format: cl_break_on_missing_resource <substring> /(empty to break on all) / 0 to turn off.",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -5124,7 +5124,7 @@
         "per_user"
       ],
       "default": "1",
-      "description": "If using cl_crosshairstyle 2, this is the ratio used to determine how long the inner and outer xhair pips will be. \\[inner = cl_crosshairsize*(1-cl_crosshair_dynamic_maxdist_splitratio), outer = cl_crosshairsize*cl_crosshair_dynamic_maxdist_splitratio\\] \\[0 - 1\\]",
+      "description": "If using cl_crosshairstyle 2, this is the ratio used to determine how long the inner and outer xhair pips will be. [inner = cl_crosshairsize*(1-cl_crosshair_dynamic_maxdist_splitratio), outer = cl_crosshairsize*cl_crosshair_dynamic_maxdist_splitratio] [0 - 1]",
       "accepted": "0 – 1 (step 0.05)",
       "kind": "cvar",
       "category": "Crosshair"
@@ -5137,7 +5137,7 @@
         "per_user"
       ],
       "default": "0",
-      "description": "If using cl_crosshairstyle 2, this is the alpha modification that will be used for the INNER crosshair pips once they've split. \\[0 - 1\\]",
+      "description": "If using cl_crosshairstyle 2, this is the alpha modification that will be used for the INNER crosshair pips once they've split. [0 - 1]",
       "accepted": "0 – 1 (step 0.05)",
       "kind": "cvar",
       "category": "Crosshair"
@@ -5150,7 +5150,7 @@
         "per_user"
       ],
       "default": "1",
-      "description": "If using cl_crosshairstyle 2, this is the alpha modification that will be used for the OUTER crosshair pips once they've split. \\[0.3 - 1\\]",
+      "description": "If using cl_crosshairstyle 2, this is the alpha modification that will be used for the OUTER crosshair pips once they've split. [0.3 - 1]",
       "accepted": "0 – 1 (step 0.05)",
       "kind": "cvar",
       "category": "Crosshair"
@@ -5215,7 +5215,7 @@
         "per_user"
       ],
       "default": "1",
-      "description": "If &gt;1 sniper scope cross lines gain extra width (1 for single-pixel hairline)",
+      "description": "If >1 sniper scope cross lines gain extra width (1 for single-pixel hairline)",
       "accepted": "1 – 5 (step 1)",
       "kind": "cvar",
       "category": "Crosshair"
@@ -6253,7 +6253,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "ent_call &lt;funcname&gt; &lt;option:entname&gt; calls function on current look target or filtername, checks on ent, then root, then mode, then map scope",
+      "description": "ent_call <funcname> <option:entname> calls function on current look target or filtername, checks on ent, then root, then mode, then map scope",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -6277,7 +6277,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Find and list all entities with classnames or targetnames that contain the specified substrings. Format: find_ent &lt;substring&gt;",
+      "description": "Find and list all entities with classnames or targetnames that contain the specified substrings. Format: find_ent <substring>",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -6289,7 +6289,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Display data for entity matching specified index. Format: find_ent_index &lt;index&gt;",
+      "description": "Display data for entity matching specified index. Format: find_ent_index <index>",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -6489,7 +6489,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Scales entities. Arguments: &lt;scale factor&gt; &lt;{entity_name} / {class_name} / {entity_index} / {no argument = pick what player is looking at}&gt;",
+      "description": "Scales entities. Arguments: <scale factor> <{entity_name} / {class_name} / {entity_index} / {no argument = pick what player is looking at}>",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -6549,7 +6549,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Sets the targetname of the given entity(s) Arguments: &lt;new entity name&gt; &lt;{entity_name} / {class_name} / {entity_index} / {no argument = pick what player is looking at}&gt;",
+      "description": "Sets the targetname of the given entity(s) Arguments: <new entity name> <{entity_name} / {class_name} / {entity_index} / {no argument = pick what player is looking at}>",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -6667,7 +6667,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Displays text debugging information about the given entity(ies) \\[within 256 units of the player\\] on top of the entity (See Overlay Text) Arguments: {entity_name} / {class_name} / {entity_index} / {no argument = pick what player is looking at}",
+      "description": "Displays text debugging information about the given entity(ies) [within 256 units of the player] on top of the entity (See Overlay Text) Arguments: {entity_name} / {class_name} / {entity_index} / {no argument = pick what player is looking at}",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -6728,7 +6728,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Displays text debugging information about the given entity(ies) \\[near the player\\] on top of the entity (See Overlay Text) 2 Arguments: &lt;Radius&gt; &lt;{entity_name} / {class_name} / {entity_index} / {no argument = pick what player is looking at}&gt;",
+      "description": "Displays text debugging information about the given entity(ies) [near the player] on top of the entity (See Overlay Text) 2 Arguments: <Radius> <{entity_name} / {class_name} / {entity_index} / {no argument = pick what player is looking at}>",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -8245,7 +8245,7 @@
       "name": "cl_log_tick_skips",
       "flags": [],
       "default": "0",
-      "description": "Log when the tick delta &gt;= this",
+      "description": "Log when the tick delta >= this",
       "accepted": "—",
       "kind": "cvar",
       "category": "Other"
@@ -8934,7 +8934,7 @@
         "cl"
       ],
       "default": "",
-      "description": "List all physics component contents of every entity in the game; -stream \\[1\\ | 0\\] : initiate\\ | terminate streaming to physics debugger -allents: include non-physical entities -classes: print class names -sdk : Rubikon build -world : current state of the world -world -touch: list body pairs (bodies in contact) -world -save &lt;name&gt;: save world to a file -world -mem: memory dump -world -snapshots: Start/Stop dumping snapshots of the world into the current directory -world -profiletraces: ProfileRecordedTraces -world -agg: current aggregate data registry (loaded resources)",
+      "description": "List all physics component contents of every entity in the game; -stream [1 | 0] : initiate | terminate streaming to physics debugger -allents: include non-physical entities -classes: print class names -sdk : Rubikon build -world : current state of the world -world -touch: list body pairs (bodies in contact) -world -save <name>: save world to a file -world -mem: memory dump -world -snapshots: Start/Stop dumping snapshots of the world into the current directory -world -profiletraces: ProfileRecordedTraces -world -agg: current aggregate data registry (loaded resources)",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -9396,7 +9396,7 @@
         "cl"
       ],
       "default": "",
-      "description": "&lt;entindex&gt; &lt;fieldname&gt;: Track changes to entity index entindex, for field fieldname.",
+      "description": "<entindex> <fieldname>: Track changes to entity index entindex, for field fieldname.",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -10831,7 +10831,7 @@
         "release"
       ],
       "default": "true",
-      "description": "When enabled, 360x60 (&lt;16kb) image file will be displayed to on-server spectators.",
+      "description": "When enabled, 360x60 (<16kb) image file will be displayed to on-server spectators.",
       "accepted": "bool",
       "kind": "cvar",
       "category": "Other"
@@ -10843,7 +10843,7 @@
         "release"
       ],
       "default": "true",
-      "description": "When enabled, 220x45 (&lt;16kb) image file will be displayed to on-server spectators.",
+      "description": "When enabled, 220x45 (<16kb) image file will be displayed to on-server spectators.",
       "accepted": "bool",
       "kind": "cvar",
       "category": "Other"
@@ -11860,7 +11860,7 @@
         "release"
       ],
       "default": "",
-      "description": "{print\\ | &lt;interval&gt;} \\[summary\\ | detail\\] Print timing stats now, or set report interval",
+      "description": "{print | <interval>} [summary | detail] Print timing stats now, or set report interval",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -13845,7 +13845,7 @@
         "cheat"
       ],
       "default": "-2",
-      "description": "cs_logtouchexpansion &lt;ent index or -1 for all&gt;. Log player touch expansion component.",
+      "description": "cs_logtouchexpansion <ent index or -1 for all>. Log player touch expansion component.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Other"
@@ -13905,7 +13905,7 @@
         "cheat"
       ],
       "default": "-2",
-      "description": "cs_ShowStateTransitions &lt;ent index or -1 for all&gt;. Show player state transitions.",
+      "description": "cs_ShowStateTransitions <ent index or -1 for all>. Show player state transitions.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Other"
@@ -14526,7 +14526,7 @@
       "name": "cvarlist_md",
       "flags": [],
       "default": "",
-      "description": "List all convars/concmds in Markdown format. Format: \\[hidden\\]",
+      "description": "List all convars/concmds in Markdown format. Format: [hidden]",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -14546,8 +14546,8 @@
     {
       "name": "d3d_max_feature_level",
       "flags": [],
-      "default": "&lt;Not",
-      "description": "set&gt; Report the maximum D3D feature level available.",
+      "default": "<Not",
+      "description": "set> Report the maximum D3D feature level available.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Other"
@@ -14580,7 +14580,7 @@
         "sv"
       ],
       "default": "",
-      "description": "Add a line to the debug history. Format: &lt;category id&gt; &lt;line&gt;",
+      "description": "Add a line to the debug history. Format: <category id> <line>",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -14591,7 +14591,7 @@
         "sv"
       ],
       "default": "",
-      "description": "Dump the debug history to the console. Format: &lt;category id&gt; Categories: 0: Entity I/O 1: AI Decisions 2: Scene Print 3: Alyx Blind 4: Log of damage done to player 5: Player Teleport 6: Blind Zombie Sounds 7: Player Continuous",
+      "description": "Dump the debug history to the console. Format: <category id> Categories: 0: Entity I/O 1: AI Decisions 2: Scene Print 3: Alyx Blind 4: Log of damage done to player 5: Player Teleport 6: Blind Zombie Sounds 7: Player Continuous",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -14905,7 +14905,7 @@
       "name": "demo_allow_game_mismatch",
       "flags": [],
       "default": "false",
-      "description": "Allow playback of demo even if game directories are not matched \\[may crash or fail to load\\].",
+      "description": "Allow playback of demo even if game directories are not matched [may crash or fail to load].",
       "accepted": "bool",
       "kind": "cvar",
       "category": "Demo / Replay"
@@ -15191,7 +15191,7 @@
         "norecord"
       ],
       "default": "",
-      "description": "save current meta file demo_&lt;version&gt;.meta file for use in demo upconversion.",
+      "description": "save current meta file demo_<version>.meta file for use in demo upconversion.",
       "accepted": "command",
       "kind": "command",
       "category": "Demo / Replay"
@@ -15442,7 +15442,7 @@
         "cl"
       ],
       "default": "",
-      "description": "&lt;msgid&gt; Send a blank body message with a given ID to gc for routing tests",
+      "description": "<msgid> Send a blank body message with a given ID to gc for routing tests",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -15453,7 +15453,7 @@
         "sv"
       ],
       "default": "",
-      "description": "&lt;msgid&gt; Send a blank body message with a given ID to gc for routing tests",
+      "description": "<msgid> Send a blank body message with a given ID to gc for routing tests",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -15464,7 +15464,7 @@
         "cl"
       ],
       "default": "",
-      "description": "&lt;state&gt; Turn on/off simulated GC communications failure (GC is down in a way that we know it is down)",
+      "description": "<state> Turn on/off simulated GC communications failure (GC is down in a way that we know it is down)",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -16065,7 +16065,7 @@
       "name": "dumpstringtable",
       "flags": [],
       "default": "",
-      "description": "Usage: dumpstringtable &lt;tablename \\ | all&gt; &lt;sv \\ | cl&gt; &lt;verbose \\ | simple&gt; &lt;element&gt; Print string tables to console, verbose to dump data, simple to show name and count only, can specifiy a single numeric element index to restrict spew.",
+      "description": "Usage: dumpstringtable <tablename | all> <sv | cl> <verbose | simple> <element> Print string tables to console, verbose to dump data, simple to show name and count only, can specifiy a single numeric element index to restrict spew.",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -16533,7 +16533,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Sets a variable on the animgraph of the given entity(s) Arguments: &lt;varname&gt;=&lt;value&gt; &lt;{entity_name} / {class_name} / {entity_index} / {no argument = pick what player is looking at}&gt;",
+      "description": "Sets a variable on the animgraph of the given entity(s) Arguments: <varname>=<value> <{entity_name} / {class_name} / {entity_index} / {no argument = pick what player is looking at}>",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -16592,7 +16592,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "ent_call &lt;funcname&gt; &lt;option:entname&gt; calls function on current look target or filtername, checks on ent, then root, then mode, then map scope",
+      "description": "ent_call <funcname> <option:entname> calls function on current look target or filtername, checks on ent, then root, then mode, then map scope",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -16685,7 +16685,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Find and list all entities with classnames or targetnames that contain the specified substrings. Format: find_ent &lt;substring&gt;",
+      "description": "Find and list all entities with classnames or targetnames that contain the specified substrings. Format: find_ent <substring>",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -16697,7 +16697,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Display data for entity matching specified index. Format: find_ent_index &lt;index&gt;",
+      "description": "Display data for entity matching specified index. Format: find_ent_index <index>",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -16709,7 +16709,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Usage: ent_fire &lt;target&gt; \\[action\\] \\[value\\] \\[delay\\]",
+      "description": "Usage: ent_fire <target> [action] [value] [delay]",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -16721,7 +16721,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Usage: ent_fire_output &lt;target&gt; \\[output name\\] \\[value\\] \\[delay\\]",
+      "description": "Usage: ent_fire_output <target> [output name] [value] [delay]",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -16769,7 +16769,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Usage: ent_info &lt;class name&gt;",
+      "description": "Usage: ent_info <class name>",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -16909,7 +16909,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Orient the specified entity to match the player's angles. By default, only orients target entity's YAW. Use the 'allangles' option to orient on all axis. Format: ent_orient &lt;entity name&gt; &lt;optional: allangles&gt;",
+      "description": "Orient the specified entity to match the player's angles. By default, only orients target entity's YAW. Use the 'allangles' option to orient on all axis. Format: ent_orient <entity name> <optional: allangles>",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -17017,7 +17017,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Scales entities. Arguments: &lt;scale factor&gt; &lt;{entity_name} / {class_name} / {entity_index} / {no argument = pick what player is looking at}&gt;",
+      "description": "Scales entities. Arguments: <scale factor> <{entity_name} / {class_name} / {entity_index} / {no argument = pick what player is looking at}>",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -17077,7 +17077,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Sets the targetname of the given entity(s) Arguments: &lt;new entity name&gt; &lt;{entity_name} / {class_name} / {entity_index} / {no argument = pick what player is looking at}&gt;",
+      "description": "Sets the targetname of the given entity(s) Arguments: <new entity name> <{entity_name} / {class_name} / {entity_index} / {no argument = pick what player is looking at}>",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -17241,7 +17241,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Teleport the specified entity to where the player is looking. Format: ent_teleport &lt;entity name&gt;",
+      "description": "Teleport the specified entity to where the player is looking. Format: ent_teleport <entity name>",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -17276,7 +17276,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Displays text debugging information about the given entity(ies) \\[within 256 units of the player\\] on top of the entity (See Overlay Text) Arguments: {entity_name} / {class_name} / {entity_index} / {no argument = pick what player is looking at}",
+      "description": "Displays text debugging information about the given entity(ies) [within 256 units of the player] on top of the entity (See Overlay Text) Arguments: {entity_name} / {class_name} / {entity_index} / {no argument = pick what player is looking at}",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -17337,7 +17337,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Displays text debugging information about the given entity(ies) \\[near the player\\] on top of the entity (See Overlay Text) 2 Arguments: &lt;Radius&gt; &lt;{entity_name} / {class_name} / {entity_index} / {no argument = pick what player is looking at}&gt;",
+      "description": "Displays text debugging information about the given entity(ies) [near the player] on top of the entity (See Overlay Text) 2 Arguments: <Radius> <{entity_name} / {class_name} / {entity_index} / {no argument = pick what player is looking at}>",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -17652,7 +17652,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Kills a player applying an explosive force. Usage: explodevector &lt;player&gt; &lt;x value&gt; &lt;y value&gt; &lt;z value&gt;",
+      "description": "Kills a player applying an explosive force. Usage: explodevector <player> <x value> <y value> <z value>",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -18612,7 +18612,7 @@
       "name": "fs_report_long_reads",
       "flags": [],
       "default": "0",
-      "description": "0:Off, 1:All (for tracking accumulated duplicate read times), &gt;1:Microsecond threashold",
+      "description": "0:Off, 1:All (for tracking accumulated duplicate read times), >1:Microsecond threashold",
       "accepted": "—",
       "kind": "cvar",
       "category": "Other"
@@ -18634,7 +18634,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "index &lt;threshold bytes&gt;: spew changes to ent index, optionally only spewing if update is &gt; than threshold bytes",
+      "description": "index <threshold bytes>: spew changes to ent index, optionally only spewing if update is > than threshold bytes",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -18960,7 +18960,7 @@
         "sv"
       ],
       "default": "",
-      "description": "write gameevents keyvalues (sorted by name) to gameevents_&lt;modname&gt;.txt",
+      "description": "write gameevents keyvalues (sorted by name) to gameevents_<modname>.txt",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -19222,7 +19222,7 @@
       "name": "generate_trash_synth",
       "flags": [],
       "default": "",
-      "description": "Args: \\[Asset directory Path\\]",
+      "description": "Args: [Asset directory Path]",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -19257,7 +19257,7 @@
         "sv"
       ],
       "default": "",
-      "description": "Give item to player. Arguments: &lt;item_name&gt;",
+      "description": "Give item to player. Arguments: <item_name>",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -19268,7 +19268,7 @@
         "sv"
       ],
       "default": "",
-      "description": "Give item oriented to player angles. Arguments: &lt;item_name&gt;",
+      "description": "Give item oriented to player angles. Arguments: <item_name>",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -19327,7 +19327,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "global_set &lt;globalname&gt; &lt;state&gt;: Sets the state of the given env_global (0 = OFF, 1 = ON, 2 = DEAD).",
+      "description": "global_set <globalname> <state>: Sets the state of the given env_global (0 = OFF, 1 = ON, 2 = DEAD).",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -19443,7 +19443,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Display ground entity list &lt;index&gt;",
+      "description": "Display ground entity list <index>",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -19919,7 +19919,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Hurts the player. Arguments: &lt;health to lose&gt;",
+      "description": "Hurts the player. Arguments: <health to lose>",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -21954,7 +21954,7 @@
       "name": "jpeg_quality",
       "flags": [],
       "default": "90",
-      "description": "Set jpeg screenshot quality. \\[1..100\\]",
+      "description": "Set jpeg screenshot quality. [1..100]",
       "accepted": "—",
       "kind": "cvar",
       "category": "Other"
@@ -21963,7 +21963,7 @@
       "name": "jpeg_screenshot",
       "flags": [],
       "default": "",
-      "description": "Take a jpeg screenshot: jpeg_screenshot \\[filename\\] \\[quality 1-100\\].",
+      "description": "Take a jpeg screenshot: jpeg_screenshot [filename] [quality 1-100].",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -22111,7 +22111,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Kills a player applying force. Usage: killvector &lt;player&gt; &lt;x value&gt; &lt;y value&gt; &lt;z value&gt;",
+      "description": "Kills a player applying force. Usage: killvector <player> <x value> <y value> <z value>",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -22900,7 +22900,7 @@
         "norecord"
       ],
       "default": "",
-      "description": "Usage: load \\[save file name\\]",
+      "description": "Usage: load [save file name]",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -22980,7 +22980,7 @@
         "release"
       ],
       "default": "",
-      "description": "Enables logging to file, console, and udp &lt; on \\ | off &gt;.",
+      "description": "Enables logging to file, console, and udp < on | off >.",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -23243,7 +23243,7 @@
         "release"
       ],
       "default": "",
-      "description": "map &lt;mapname&gt; :Load a new map.",
+      "description": "map <mapname> :Load a new map.",
       "accepted": "command",
       "kind": "command",
       "category": "Server / Match"
@@ -23374,7 +23374,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "markup_group_ent_bbox &lt;markup_group name&gt; -&gt; toggle ent_bbox for all members of the named markup group",
+      "description": "markup_group_ent_bbox <markup_group name> -> toggle ent_bbox for all members of the named markup group",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -23386,7 +23386,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "markup_group_ent_text &lt;markup_group name&gt; -&gt; toggle ent_text for all members of the named markup group",
+      "description": "markup_group_ent_text <markup_group name> -> toggle ent_text for all members of the named markup group",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -24098,7 +24098,7 @@
       "name": "mem_dump",
       "flags": [],
       "default": "",
-      "description": "Dump memory stats to text file or &lt;stdout&gt;.",
+      "description": "Dump memory stats to text file or <stdout>.",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -24326,7 +24326,7 @@
         "release"
       ],
       "default": "Comma",
-      "description": "delimited list of ip:port of servers used to search for dedicated servers instead of searching for public servers. Use syntax `publicip1:port\\ | privateip1:port,publicip2:port\\ | privateip2:port` if your server is behind NAT. If the server is behind NAT, you can specify `0.0.0.0\\ | privateip:port` and if server port is in the list of `mm_server_search_lan_ports` its public address should be automatically detected.",
+      "description": "delimited list of ip:port of servers used to search for dedicated servers instead of searching for public servers. Use syntax `publicip1:port | privateip1:port,publicip2:port | privateip2:port` if your server is behind NAT. If the server is behind NAT, you can specify `0.0.0.0 | privateip:port` and if server port is in the list of `mm_server_search_lan_ports` its public address should be automatically detected.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Network"
@@ -26301,7 +26301,7 @@
         "release"
       ],
       "default": "1",
-      "description": "Default is 1.0, slow down hostages by setting this to &lt; 1.0.",
+      "description": "Default is 1.0, slow down hostages by setting this to < 1.0.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -26596,7 +26596,7 @@
         "release"
       ],
       "default": "",
-      "description": "mp_modify_timeouts &lt;CT\\ | T&gt; &lt;N&gt;, e.g., mp_modify ct -1",
+      "description": "mp_modify_timeouts <CT | T> <N>, e.g., mp_modify ct -1",
       "accepted": "command",
       "kind": "command",
       "category": "Server / Match"
@@ -26968,8 +26968,8 @@
         "rep",
         "release"
       ],
-      "default": "1\\",
-      "description": "| 3;#GameUI_Retake_Card_4v3,0,0,secondary0\\ | 1;#GameUI_Retake_Card_FlashOut,0,0,secondary0,grenade2;#GameUI_Retake_Card_HideAndPeek,0,0,secondary0,grenade4 CT Loadouts for default pistol round when playing bomb site retake.",
+      "default": "1",
+      "description": "| 3;#GameUI_Retake_Card_4v3,0,0,secondary0 | 1;#GameUI_Retake_Card_FlashOut,0,0,secondary0,grenade2;#GameUI_Retake_Card_HideAndPeek,0,0,secondary0,grenade4 CT Loadouts for default pistol round when playing bomb site retake.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -26996,8 +26996,8 @@
         "rep",
         "release"
       ],
-      "default": "4\\",
-      "description": "| 2;#GameUI_Retake_Card_LightEmUp,1,1,rifle1,grenade2\\ | 2;#GameUI_Retake_Card_Kobe,1,1,rifle1,grenade3\\ | 1;#GameUI_Retake_Card_1g,1,1,rifle1,grenade0\\ | 1;#GameUI_Retake_Card_DisappearingAct,1,1,rifle1,grenade4\\ | 1;#GameUI_Retake_Card_EyesOnTarget,1,1,rifle3 CT Loadouts for full buy round when playing bomb site retake.",
+      "default": "4",
+      "description": "| 2;#GameUI_Retake_Card_LightEmUp,1,1,rifle1,grenade2 | 2;#GameUI_Retake_Card_Kobe,1,1,rifle1,grenade3 | 1;#GameUI_Retake_Card_1g,1,1,rifle1,grenade0 | 1;#GameUI_Retake_Card_DisappearingAct,1,1,rifle1,grenade4 | 1;#GameUI_Retake_Card_EyesOnTarget,1,1,rifle3 CT Loadouts for full buy round when playing bomb site retake.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -27010,8 +27010,8 @@
         "rep",
         "release"
       ],
-      "default": "3\\",
-      "description": "| 2;#GameUI_Retake_Card_UmpInSmoke,1,1,smg2,grenade4\\ | 2;#GameUI_Retake_Card_FunNGun,1,1,smg0,grenade3\\ | 2;#GameUI_Retake_Card_Sharpshooter,1,1,rifle2,grenade2\\ | 2;#GameUI_Retake_Card_BurstBullpup,1,1,rifle0 CT Loadouts for force buy round when playing bomb site retake.",
+      "default": "3",
+      "description": "| 2;#GameUI_Retake_Card_UmpInSmoke,1,1,smg2,grenade4 | 2;#GameUI_Retake_Card_FunNGun,1,1,smg0,grenade3 | 2;#GameUI_Retake_Card_Sharpshooter,1,1,rifle2,grenade2 | 2;#GameUI_Retake_Card_BurstBullpup,1,1,rifle0 CT Loadouts for force buy round when playing bomb site retake.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -27024,8 +27024,8 @@
         "rep",
         "release"
       ],
-      "default": "2\\",
-      "description": "| 2;#GameUI_Retake_Card_TakeFive,0,0,secondary3\\ | 2;#GameUI_Retake_Card_BlindFire,0,0,secondary2,grenade2\\ | 2;#GameUI_Retake_Card_OnlyTakesOne,0,0,secondary4\\ | 2;#GameUI_Retake_Card_SneakyBeakyLike,0,0,secondary2,grenade4 CT Loadouts for upgraded pistol round when playing bomb site retake.",
+      "default": "2",
+      "description": "| 2;#GameUI_Retake_Card_TakeFive,0,0,secondary3 | 2;#GameUI_Retake_Card_BlindFire,0,0,secondary2,grenade2 | 2;#GameUI_Retake_Card_OnlyTakesOne,0,0,secondary4 | 2;#GameUI_Retake_Card_SneakyBeakyLike,0,0,secondary2,grenade4 CT Loadouts for upgraded pistol round when playing bomb site retake.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -27094,8 +27094,8 @@
         "rep",
         "release"
       ],
-      "default": "0\\",
-      "description": "| 3;#GameUI_Retake_Card_4BadGuysLeft,0,0,secondary0\\ | 1;#GameUI_Retake_Card_LookAway,0,0,secondary0,grenade2;#GameUI_Retake_Card_WhenThereIsSmoke,0,0,secondary0,grenade4 T Loadouts for default pistol round when playing bomb site retake.",
+      "default": "0",
+      "description": "| 3;#GameUI_Retake_Card_4BadGuysLeft,0,0,secondary0 | 1;#GameUI_Retake_Card_LookAway,0,0,secondary0,grenade2;#GameUI_Retake_Card_WhenThereIsSmoke,0,0,secondary0,grenade4 T Loadouts for default pistol round when playing bomb site retake.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -27122,8 +27122,8 @@
         "rep",
         "release"
       ],
-      "default": "0\\",
-      "description": "| 2;#GameUI_Retake_Card_OlReliable,1,1,rifle1,grenade2\\ | 1;#GameUI_Retake_Card_SmokeShow,1,1,rifle1,grenade4\\ | 1;#GameUI_Retake_Card_HotShot,1,1,rifle1,grenade0\\ | 1;#GameUI_Retake_Card_EyeSpy,1,1,rifle3,grenade3 T Loadouts for full buy round when playing bomb site retake.",
+      "default": "0",
+      "description": "| 2;#GameUI_Retake_Card_OlReliable,1,1,rifle1,grenade2 | 1;#GameUI_Retake_Card_SmokeShow,1,1,rifle1,grenade4 | 1;#GameUI_Retake_Card_HotShot,1,1,rifle1,grenade0 | 1;#GameUI_Retake_Card_EyeSpy,1,1,rifle3,grenade3 T Loadouts for full buy round when playing bomb site retake.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -27136,8 +27136,8 @@
         "rep",
         "release"
       ],
-      "default": "0\\",
-      "description": "| 2;#GameUI_Retake_Card_BackInAFlash,1,1,smg2,grenade2\\ | 2;#GameUI_Retake_Card_AllIn,1,1,rifle0\\ | 1;#GameUI_Retake_Card_BoomBox,1,1,smg0,grenade3,grenade4\\ | 1;#GameUI_Retake_Card_SetThemFree,1,1,rifle2,grenade2 T Loadouts for force buy round when playing bomb site retake.",
+      "default": "0",
+      "description": "| 2;#GameUI_Retake_Card_BackInAFlash,1,1,smg2,grenade2 | 2;#GameUI_Retake_Card_AllIn,1,1,rifle0 | 1;#GameUI_Retake_Card_BoomBox,1,1,smg0,grenade3,grenade4 | 1;#GameUI_Retake_Card_SetThemFree,1,1,rifle2,grenade2 T Loadouts for force buy round when playing bomb site retake.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -27150,8 +27150,8 @@
         "rep",
         "release"
       ],
-      "default": "0\\",
-      "description": "| 2;#GameUI_Retake_Card_BlindFire,0,0,secondary2,grenade2\\ | 2;#GameUI_Retake_Card_QueOta,0,0,secondary4\\ | 1;#GameUI_Retake_Card_SmokeScreen,0,0,secondary2,grenade4\\ | 1;#GameUI_Retake_Card_TecTecBoom,0,0,secondary3,grenade3 T Loadouts for upgraded pistol round when playing bomb site retake.",
+      "default": "0",
+      "description": "| 2;#GameUI_Retake_Card_BlindFire,0,0,secondary2,grenade2 | 2;#GameUI_Retake_Card_QueOta,0,0,secondary4 | 1;#GameUI_Retake_Card_SmokeScreen,0,0,secondary2,grenade4 | 1;#GameUI_Retake_Card_TecTecBoom,0,0,secondary3,grenade3 T Loadouts for upgraded pistol round when playing bomb site retake.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -31896,7 +31896,7 @@
         "release"
       ],
       "default": "0",
-      "description": "0: Use connect method requested by GC. &gt;0: Always use SDR if possible. &lt;0: Always use direct UDP if possible",
+      "description": "0: Use connect method requested by GC. >0: Always use SDR if possible. <0: Always use direct UDP if possible",
       "accepted": "—",
       "kind": "cvar",
       "category": "Network"
@@ -32258,7 +32258,7 @@
       "name": "net_showmsg",
       "flags": [],
       "default": "0",
-      "description": "Show incoming message: &lt;0\\ | 1\\ | 2\\ | name&gt; where 1 == all and 2 == all except net_NOP",
+      "description": "Show incoming message: <0 | 1 | 2 | name> where 1 == all and 2 == all except net_NOP",
       "accepted": "—",
       "kind": "cvar",
       "category": "Network"
@@ -32276,7 +32276,7 @@
       "name": "net_showpeaks",
       "flags": [],
       "default": "0",
-      "description": "Show messages for large packets only: &lt;size&gt;",
+      "description": "Show messages for large packets only: <size>",
       "accepted": "—",
       "kind": "cvar",
       "category": "Network"
@@ -32383,7 +32383,7 @@
       "name": "net_why_field_excluded",
       "flags": [],
       "default": "",
-      "description": "&lt;classname&gt; &lt;fieldname&gt;: spew why field was excluded from networking for classname.",
+      "description": "<classname> <fieldname>: spew why field was excluded from networking for classname.",
       "accepted": "command",
       "kind": "command",
       "category": "Network"
@@ -32955,7 +32955,7 @@
         "cl"
       ],
       "default": "ABXY",
-      "description": "Daisy wheel input mode: RS \\ | ABXY",
+      "description": "Daisy wheel input mode: RS | ABXY",
       "accepted": "—",
       "kind": "cvar",
       "category": "Other"
@@ -33204,7 +33204,7 @@
       "name": "panorama_dump_symbols",
       "flags": [],
       "default": "",
-      "description": "&lt;ESymbolType&gt; Dump all of the symbols in the Panorama symbol table",
+      "description": "<ESymbolType> Dump all of the symbols in the Panorama symbol table",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -34500,7 +34500,7 @@
         "sv"
       ],
       "default": "",
-      "description": "List all physics component contents of every entity in the game; -stream \\[1\\ | 0\\] : initiate\\ | terminate streaming to physics debugger -allents: include non-physical entities -classes: print class names -sdk : Rubikon build -world : current state of the world -world -touch: list body pairs (bodies in contact) -world -save &lt;name&gt;: save world to a file -world -mem: memory dump -world -snapshots: Start/Stop dumping snapshots of the world into the current directory -world -profiletraces: ProfileRecordedTraces -world -agg: current aggregate data registry (loaded resources)",
+      "description": "List all physics component contents of every entity in the game; -stream [1 | 0] : initiate | terminate streaming to physics debugger -allents: include non-physical entities -classes: print class names -sdk : Rubikon build -world : current state of the world -world -touch: list body pairs (bodies in contact) -world -save <name>: save world to a file -world -mem: memory dump -world -snapshots: Start/Stop dumping snapshots of the world into the current directory -world -profiletraces: ProfileRecordedTraces -world -agg: current aggregate data registry (loaded resources)",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -35245,7 +35245,7 @@
       "name": "playsound",
       "flags": [],
       "default": "",
-      "description": "playsound &lt;soundname&gt;",
+      "description": "playsound <soundname>",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -35275,7 +35275,7 @@
       "name": "png_screenshot",
       "flags": [],
       "default": "",
-      "description": "Take a .png screenshot: png_screenshot \\[filename\\]",
+      "description": "Take a .png screenshot: png_screenshot [filename]",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -35670,7 +35670,7 @@
       "name": "pulse_debug_print",
       "flags": [],
       "default": "",
-      "description": "Usage: pulse_debug_print &lt;vpulse_resource&gt;",
+      "description": "Usage: pulse_debug_print <vpulse_resource>",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -35952,7 +35952,7 @@
         "cheat"
       ],
       "default": "3.1",
-      "description": "bloom mip up-sample filtering radius (using 3x3 tent filter, radius in mip level texels), 0.0 radius =&gt; box (2x2) filter with (fixed) 1.0 radius",
+      "description": "bloom mip up-sample filtering radius (using 3x3 tent filter, radius in mip level texels), 0.0 radius => box (2x2) filter with (fixed) 1.0 radius",
       "accepted": "—",
       "kind": "cvar",
       "category": "Graphics"
@@ -40713,7 +40713,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Remove a weapon held by the player. Arguments: &lt;weapon subclass name&gt;",
+      "description": "Remove a weapon held by the player. Arguments: <weapon subclass name>",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -40778,7 +40778,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Start GOTV replay: replay_start &lt;delay&gt; \\[&lt;player name or index&gt;\\]",
+      "description": "Start GOTV replay: replay_start <delay> [<player name or index>]",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -40887,7 +40887,7 @@
       "name": "resource_leaks",
       "flags": [],
       "default": "",
-      "description": "resource_leaks &lt;resource_name&gt;: Show resource leaks for the named resource",
+      "description": "resource_leaks <resource_name>: Show resource leaks for the named resource",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -40923,7 +40923,7 @@
       "name": "resource_repeated_reload",
       "flags": [],
       "default": "",
-      "description": "resource_repeated_reload &lt;count&gt; &lt;resource_name&gt; (&lt;resource name&gt; ...): Load and unload the specified resource(s)",
+      "description": "resource_repeated_reload <count> <resource_name> (<resource name> ...): Load and unload the specified resource(s)",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -41211,7 +41211,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "fire a response concept directly at a given character. USAGE: rr_forceconcept &lt;target name or index&gt; &lt;concept&gt; \"criteria1:value1,criteria2:value2,...\" criteria values are optional.",
+      "description": "fire a response concept directly at a given character. USAGE: rr_forceconcept <target name or index> <concept> \"criteria1:value1,criteria2:value2,...\" criteria values are optional.",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -41850,7 +41850,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Dump a list of the objects in a sceneworld (Usage: sc_dumpworld &lt;world_index&gt;)",
+      "description": "Dump a list of the objects in a sceneworld (Usage: sc_dumpworld <world_index>)",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -41861,7 +41861,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Dump the objects in a sceneworld into a 3d geoview buffer (Usage: sc_dumpworld3d &lt;world_index&gt;)",
+      "description": "Dump the objects in a sceneworld into a 3d geoview buffer (Usage: sc_dumpworld3d <world_index>)",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -42237,7 +42237,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Low level command to set the flags byte associated with an object class. sc_SetClassFlags &lt;classname&gt; &lt;value&gt;",
+      "description": "Low level command to set the flags byte associated with an object class. sc_SetClassFlags <classname> <value>",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -42475,7 +42475,7 @@
       "name": "schema_all_list_bindings",
       "flags": [],
       "default": "",
-      "description": "schema_all_list_bindings &lt;substring&gt; - List all scopes registered schema bindings (classes & enums). If no substring, list them all.",
+      "description": "schema_all_list_bindings <substring> - List all scopes registered schema bindings (classes & enums). If no substring, list them all.",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -42484,7 +42484,7 @@
       "name": "schema_detailed_class_layout",
       "flags": [],
       "default": "",
-      "description": "schema_detailed_class_layout &lt;class_name&gt; - Print a detailed memory layout of the class (including inline structs).",
+      "description": "schema_detailed_class_layout <class_name> - Print a detailed memory layout of the class (including inline structs).",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -42493,7 +42493,7 @@
       "name": "schema_dump_binding",
       "flags": [],
       "default": "",
-      "description": "schema_dump_binding &lt;class_or_enum_name&gt; - Print information about the named class or enum.",
+      "description": "schema_dump_binding <class_or_enum_name> - Print information about the named class or enum.",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -42502,7 +42502,7 @@
       "name": "schema_list_bindings",
       "flags": [],
       "default": "",
-      "description": "schema_list_bindings &lt;substring&gt; - List registered global-scope schema bindings (classes & enums). If no substring, list them all.",
+      "description": "schema_list_bindings <substring> - List registered global-scope schema bindings (classes & enums). If no substring, list them all.",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -42511,7 +42511,7 @@
       "name": "schema_meta_stats",
       "flags": [],
       "default": "",
-      "description": "schema_meta_stats \\[&lt;options&gt;\\]- Print a summary of schemasystem metadata statistics.",
+      "description": "schema_meta_stats [<options>]- Print a summary of schemasystem metadata statistics.",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -42551,7 +42551,7 @@
       "name": "screenshot",
       "flags": [],
       "default": "",
-      "description": "Take a screenshot: screenshot \\[filename\\]",
+      "description": "Take a screenshot: screenshot [filename]",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -42965,7 +42965,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Casts a ray and starts a sound event where the ray hits. The sound event will retrigger periodically. Usage: snd_cast &lt;eventname&gt; \\[&lt;retrigger time&gt;\\] \\[&lt;max distance&gt;\\]. Arguments that are specified will become defaults for the remainder of the session.",
+      "description": "Casts a ray and starts a sound event where the ray hits. The sound event will retrigger periodically. Usage: snd_cast <eventname> [<retrigger time>] [<max distance>]. Arguments that are specified will become defaults for the remainder of the session.",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -43011,7 +43011,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Snap player eyes to specified pitch yaw &lt;roll:optional&gt; (must have sv_cheats).",
+      "description": "Snap player eyes to specified pitch yaw <roll:optional> (must have sv_cheats).",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -43023,7 +43023,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Snap player eyes and orientation to specified pitch yaw &lt;roll:optional&gt; (must have sv_cheats).",
+      "description": "Snap player eyes and orientation to specified pitch yaw <roll:optional> (must have sv_cheats).",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -43979,7 +43979,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Casts a ray and starts a sound event where the ray hits. The sound event will retrigger periodically if cl_snd_cast_retrigger is set. The sound event will clear previous snd_cast events if cl_snd_cast_clear is set. Usage: snd_cast &lt;eventname&gt; \\[&lt;retrigger time&gt;\\] \\[&lt;max distance&gt;\\]. Arguments that are specified will become defaults for the remainder of the session.",
+      "description": "Casts a ray and starts a sound event where the ray hits. The sound event will retrigger periodically if cl_snd_cast_retrigger is set. The sound event will clear previous snd_cast events if cl_snd_cast_clear is set. Usage: snd_cast <eventname> [<retrigger time>] [<max distance>]. Arguments that are specified will become defaults for the remainder of the session.",
       "accepted": "command",
       "kind": "command",
       "category": "Audio"
@@ -45219,7 +45219,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Set physics surface properties for materials. Usage: &lt;heuristic #&gt; &lt;commit&gt;",
+      "description": "Set physics surface properties for materials. Usage: <heuristic #> <commit>",
       "accepted": "command",
       "kind": "command",
       "category": "Audio"
@@ -46824,7 +46824,7 @@
         "cheat"
       ],
       "default": "-1",
-      "description": "If set &gt; 0, overrides how long the decay time is on all mix graphs (in seconds).",
+      "description": "If set > 0, overrides how long the decay time is on all mix graphs (in seconds).",
       "accepted": "—",
       "kind": "cvar",
       "category": "Audio"
@@ -47611,7 +47611,7 @@
         "release"
       ],
       "default": "1.2",
-      "description": "Noisy player xray glow scaling (pop when noise is made). Make &gt;1 to add a 'spike' to noise-making players",
+      "description": "Noisy player xray glow scaling (pop when noise is made). Make >1 to add a 'spike' to noise-making players",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -47842,7 +47842,7 @@
         "release"
       ],
       "default": "false",
-      "description": "When &gt; 0, sets the mode whereas players see delayed replay, and are segregated into a domain of chat and voice separate from the alive players",
+      "description": "When > 0, sets the mode whereas players see delayed replay, and are segregated into a domain of chat and voice separate from the alive players",
       "accepted": "bool",
       "kind": "cvar",
       "category": "Server / Match"
@@ -48095,7 +48095,7 @@
       "name": "StackStats_Dump",
       "flags": [],
       "default": "",
-      "description": "Dump a named stackstats structure to disk. Usage: stackstats_dump \"structname\" \\[\"filename\"\\]",
+      "description": "Dump a named stackstats structure to disk. Usage: stackstats_dump \"structname\" [\"filename\"]",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -48173,7 +48173,7 @@
       "name": "stats_print_gpu",
       "flags": [],
       "default": "",
-      "description": "Prints out GPU perf statistics to the console. Requires stats_display &gt; 0, and stats_collect_gpu = true. Optional argument of CSV filename",
+      "description": "Prints out GPU perf statistics to the console. Requires stats_display > 0, and stats_collect_gpu = true. Optional argument of CSV filename",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -48322,7 +48322,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Changes the subclass of the given entity. Arguments: &lt;new_subclass&gt; {entity_name} / {class_name} / {entity_index} / {no argument = pick what player is looking at}",
+      "description": "Changes the subclass of the given entity. Arguments: <new_subclass> {entity_name} / {class_name} / {entity_index} / {no argument = pick what player is looking at}",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -48874,7 +48874,7 @@
         "release"
       ],
       "default": "0",
-      "description": "If &gt; 0, some # of bots will lower thier difficulty each time they win. The argument defines how many will lower their difficulty each time.",
+      "description": "If > 0, some # of bots will lower thier difficulty each time they win. The argument defines how many will lower their difficulty each time.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -48936,7 +48936,7 @@
         "sv"
       ],
       "default": "0.5",
-      "description": "Controls how much velocity is damped on the constraint. 0 = undamped wobbly spring, 1 = critically damped no wobble fast converge, &gt;1 = over damped",
+      "description": "Controls how much velocity is damped on the constraint. 0 = undamped wobbly spring, 1 = critically damped no wobble fast converge, >1 = over damped",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -49458,7 +49458,7 @@
       "name": "sv_dev_entitydeltapadding_min_size",
       "flags": [],
       "default": "0",
-      "description": "When encoding entity deltas, if the delta size is &lt; N bytes, then shove in N dummy bytes. This happens before sv_dev_entitydeltapadding_extra_min/sv_dev_entitydeltapadding_extra_max",
+      "description": "When encoding entity deltas, if the delta size is < N bytes, then shove in N dummy bytes. This happens before sv_dev_entitydeltapadding_extra_min/sv_dev_entitydeltapadding_extra_max",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -49469,7 +49469,7 @@
         "sv"
       ],
       "default": "",
-      "description": "&lt;state&gt; Turn on/off simulated GC communications failure (GC is down in a way that we know it is down)",
+      "description": "<state> Turn on/off simulated GC communications failure (GC is down in a way that we know it is down)",
       "accepted": "command",
       "kind": "command",
       "category": "Server / Match"
@@ -49483,7 +49483,7 @@
         "release"
       ],
       "default": "false",
-      "description": "If set, clients won't slam the player model render settings each frame for immunity \\[mod authors use this\\]",
+      "description": "If set, clients won't slam the player model render settings each frame for immunity [mod authors use this]",
       "accepted": "bool",
       "kind": "cvar",
       "category": "Server / Match"
@@ -50885,7 +50885,7 @@
         "sv",
         "release"
       ],
-      "default": "\\[1:5\\]\\[2:15\\]\\[3:20\\]\\[4:10\\]\\[5:10\\]\\[6:5\\]",
+      "default": "[1:5][2:15][3:20][4:10][5:10][6:5]",
       "description": "How many seconds each phase lasts",
       "accepted": "—",
       "kind": "cvar",
@@ -51214,7 +51214,7 @@
         "rep"
       ],
       "default": "0.7",
-      "description": "The maximum slope the player can overcome \\[-\\]",
+      "description": "The maximum slope the player can overcome [-]",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -51228,7 +51228,7 @@
         "rep"
       ],
       "default": "1",
-      "description": "The capsule pogo stick damping ratio \\[-\\]",
+      "description": "The capsule pogo stick damping ratio [-]",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -51242,7 +51242,7 @@
         "rep"
       ],
       "default": "10",
-      "description": "The capsule pogo stick frequency \\[hz\\].",
+      "description": "The capsule pogo stick frequency [hz].",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -52210,7 +52210,7 @@
         "release"
       ],
       "default": "A",
-      "description": "360x60 (&lt;16kb) image file in /csgo/ that will be displayed to spectators.",
+      "description": "360x60 (<16kb) image file in /csgo/ that will be displayed to spectators.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -52224,7 +52224,7 @@
         "release"
       ],
       "default": "A",
-      "description": "220x45 (&lt;16kb) image file in /csgo/ that will be displayed to spectators.",
+      "description": "220x45 (<16kb) image file in /csgo/ that will be displayed to spectators.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -52433,7 +52433,7 @@
         "sv"
       ],
       "default": "0",
-      "description": "If &gt; 0, show lag compensation hitboxes as they're recorded. Value is for how long.",
+      "description": "If > 0, show lag compensation hitboxes as they're recorded. Value is for how long.",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -53074,7 +53074,7 @@
         "release"
       ],
       "default": "0",
-      "description": "If &gt;0, server will override cl_teamid_overhead_maxdist",
+      "description": "If >0, server will override cl_teamid_overhead_maxdist",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -53088,7 +53088,7 @@
         "release"
       ],
       "default": "0",
-      "description": "If &gt;0, server will override cl_teamid_overhead_maxdist_spec",
+      "description": "If >0, server will override cl_teamid_overhead_maxdist_spec",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -54093,7 +54093,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Test a clientside dispatch effect. Usage: test_dispatcheffect &lt;effect name&gt; &lt;distance away&gt; &lt;flags&gt; &lt;magnitude&gt; &lt;scale&gt; Defaults are: &lt;distance 1024&gt; &lt;flags 0&gt; &lt;magnitude 0&gt; &lt;scale 0&gt;",
+      "description": "Test a clientside dispatch effect. Usage: test_dispatcheffect <effect name> <distance away> <flags> <magnitude> <scale> Defaults are: <distance 1024> <flags 0> <magnitude 0> <scale 0>",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -54128,7 +54128,7 @@
         "cheat"
       ],
       "default": "",
-      "description": "Test_ExitProcess &lt;exit code&gt; - immediately kill the process.",
+      "description": "Test_ExitProcess <exit code> - immediately kill the process.",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -54149,7 +54149,7 @@
       "name": "Test_Loop",
       "flags": [],
       "default": "",
-      "description": "Test_Loop &lt;loop name&gt; - loop back to the specified loop start point unconditionally.",
+      "description": "Test_Loop <loop name> - loop back to the specified loop start point unconditionally.",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -54158,7 +54158,7 @@
       "name": "Test_LoopCount",
       "flags": [],
       "default": "",
-      "description": "Test_LoopCount &lt;loop name&gt; &lt;count&gt; - loop back to the specified loop start point the specified # of times.",
+      "description": "Test_LoopCount <loop name> <count> - loop back to the specified loop start point the specified # of times.",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -54167,7 +54167,7 @@
       "name": "Test_LoopForNumSeconds",
       "flags": [],
       "default": "",
-      "description": "Test_LoopForNumSeconds &lt;loop name&gt; &lt;time&gt; - loop back to the specified start point for the specified # of seconds.",
+      "description": "Test_LoopForNumSeconds <loop name> <time> - loop back to the specified start point for the specified # of seconds.",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -54176,7 +54176,7 @@
       "name": "Test_RandomChance",
       "flags": [],
       "default": "",
-      "description": "Test_RandomChance &lt;percent chance, 0-100&gt; &lt;token1&gt; &lt;token2...&gt; - Roll the dice and maybe run the command following the percentage chance.",
+      "description": "Test_RandomChance <percent chance, 0-100> <token1> <token2...> - Roll the dice and maybe run the command following the percentage chance.",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -54210,7 +54210,7 @@
       "name": "Test_StartLoop",
       "flags": [],
       "default": "",
-      "description": "Test_StartLoop &lt;loop name&gt; - Denote the start of a loop. Really just defines a named point you can jump to.",
+      "description": "Test_StartLoop <loop name> - Denote the start of a loop. Really just defines a named point you can jump to.",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
@@ -54510,7 +54510,7 @@
         "release"
       ],
       "default": "-1",
-      "description": "When &gt;=0 restricts autorecording only to the specified TV index",
+      "description": "When >=0 restricts autorecording only to the specified TV index",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -54601,7 +54601,7 @@
         "release"
       ],
       "default": "false",
-      "description": "Automatically broadcasts all games as GOTV\\[1\\] demos through Steam.",
+      "description": "Automatically broadcasts all games as GOTV[1] demos through Steam.",
       "accepted": "bool",
       "kind": "cvar",
       "category": "Server / Match"
@@ -54821,7 +54821,7 @@
         "release"
       ],
       "default": "15",
-      "description": "SourceTV\\[instance 1\\] broadcast delay in seconds",
+      "description": "SourceTV[instance 1] broadcast delay in seconds",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -54888,7 +54888,7 @@
         "release"
       ],
       "default": "false",
-      "description": "Activates SourceTV\\[1\\] on server.",
+      "description": "Activates SourceTV[1] on server.",
       "accepted": "bool",
       "kind": "cvar",
       "category": "Server / Match"
@@ -55124,7 +55124,7 @@
         "release"
       ],
       "default": "SourceTV",
-      "description": "password for all clients of CSTV\\[0\\]",
+      "description": "password for all clients of CSTV[0]",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -55138,7 +55138,7 @@
         "release"
       ],
       "default": "SourceTV",
-      "description": "password for all clients of CSTV\\[1\\]. If empty, tv_password is used",
+      "description": "password for all clients of CSTV[1]. If empty, tv_password is used",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -55226,7 +55226,7 @@
         "release"
       ],
       "default": "27020",
-      "description": "Host SourceTV\\[0\\] port",
+      "description": "Host SourceTV[0] port",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -55237,7 +55237,7 @@
         "release"
       ],
       "default": "27021",
-      "description": "Host SourceTV\\[1\\] port",
+      "description": "Host SourceTV[1] port",
       "accepted": "—",
       "kind": "cvar",
       "category": "Server / Match"
@@ -56931,7 +56931,7 @@
       "name": "voice_containers_get_instance_args",
       "flags": [],
       "default": "",
-      "description": "Args: \\[Voice Container Path\\]",
+      "description": "Args: [Voice Container Path]",
       "accepted": "command",
       "kind": "command",
       "category": "Audio"
@@ -56940,7 +56940,7 @@
       "name": "voice_containers_get_instance_params",
       "flags": [],
       "default": "",
-      "description": "Args: \\[Voice Container Path\\]",
+      "description": "Args: [Voice Container Path]",
       "accepted": "command",
       "kind": "command",
       "category": "Audio"
@@ -57907,7 +57907,7 @@
         "sv"
       ],
       "default": "",
-      "description": "Use a particular weapon Arguments: &lt;weapon_name&gt;",
+      "description": "Use a particular weapon Arguments: <weapon_name>",
       "accepted": "command",
       "kind": "command",
       "category": "Other"
