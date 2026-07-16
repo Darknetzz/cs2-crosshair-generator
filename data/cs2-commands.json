@@ -1,12 +1,13 @@
 {
   "meta": {
-    "source": "https://raw.githubusercontent.com/ArmynC/ArminC-CS2-Cvars/main/cvars/cvarlist.md + https://raw.githubusercontent.com/Nihilnia/CounterStrike/main/Counter%20Strike%202/List%20of%20console%20commands%20and%20variables.md",
+    "source": "https://raw.githubusercontent.com/ArmynC/ArminC-CS2-Cvars/main/cvars/cvarlist.md + https://raw.githubusercontent.com/Nihilnia/CounterStrike/main/Counter%20Strike%202/List%20of%20console%20commands%20and%20variables.md + data/cvar-overrides.json",
     "sources": [
       "https://raw.githubusercontent.com/ArmynC/ArminC-CS2-Cvars/main/cvars/cvarlist.md",
-      "https://raw.githubusercontent.com/Nihilnia/CounterStrike/main/Counter%20Strike%202/List%20of%20console%20commands%20and%20variables.md"
+      "https://raw.githubusercontent.com/Nihilnia/CounterStrike/main/Counter%20Strike%202/List%20of%20console%20commands%20and%20variables.md",
+      "data/cvar-overrides.json"
     ],
-    "fetchedAt": "2026-07-16T06:00:01Z",
-    "count": 5197,
+    "fetchedAt": "2026-07-16T06:08:23Z",
+    "count": 5198,
     "enrichmentCount": 67,
     "categories": [
       "Audio",
@@ -27932,6 +27933,19 @@
       "description": "Scramble the teams and restart the game",
       "accepted": "command",
       "kind": "command",
+      "category": "Server / Match"
+    },
+    {
+      "name": "mp_shoot_dropped_grenades",
+      "flags": [
+        "sv",
+        "cheat",
+        "release"
+      ],
+      "default": "0",
+      "description": "When enabled (1), shooting a dropped grenade on the ground activates/detonates it. Requires sv_cheats 1. Disabled (0) by default.",
+      "accepted": "0 / 1",
+      "kind": "cvar",
       "category": "Server / Match"
     },
     {

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "mp_shoot_dropped_grenades",
+    "flags": ["sv", "cheat", "release"],
+    "default": "0",
+    "description": "When enabled (1), shooting a dropped grenade on the ground activates/detonates it. Requires sv_cheats 1. Disabled (0) by default.",
+    "accepted": "0 / 1",
+    "kind": "cvar"
+  }
+]

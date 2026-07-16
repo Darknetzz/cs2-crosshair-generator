@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `mp_shoot_dropped_grenades` in the Commands catalog (curated override; shoot dropped grenades to activate them, needs `sv_cheats 1`)
 - Icons on site nav links and config section tabs
 - Larger preview column and click-to-expand live preview modal (crosshair, viewmodel, radar)
 - GitHub repository link in the site header nav

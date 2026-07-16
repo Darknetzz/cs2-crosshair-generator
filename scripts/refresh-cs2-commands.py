@@ -29,6 +29,7 @@ ARMINC_URL = (
 )
 DEFAULT_URLS = (NIHILNIA_URL, ARMINC_URL)
 OUT_PATH = ROOT / "data" / "cs2-commands.json"
+OVERRIDES_PATH = ROOT / "data" / "cvar-overrides.json"
 SECTION_GLOBS = [
     ROOT / "js" / "crosshair-settings.js",
     *sorted((ROOT / "js" / "sections").glob("*.js")),
@@ -545,6 +546,45 @@ def merge_command_lists(*lists: list[dict]) -> list[dict]:
     return list(by_name.values())
 
 
+def load_overrides(path: Path) -> list[dict]:
+    """Curated cvars not yet in public dumps (or corrections)."""
+    if not path.is_file():
+        return []
+    raw = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(raw, list):
+        raise SystemExit(f"{path} must be a JSON array of command objects")
+    entries: list[dict] = []
+    for item in raw:
+        if not isinstance(item, dict) or "name" not in item:
+            continue
+        name = str(item["name"]).strip()
+        if not name:
+            continue
+        flags = item.get("flags") or []
+        if isinstance(flags, str):
+            flags = parse_flags(flags)
+        default = item.get("default")
+        if default is None:
+            default = ""
+        else:
+            default = str(default)
+        description = clean_help_text(str(item.get("description") or ""))
+        accepted = str(item.get("accepted") or "—")
+        kind = str(item.get("kind") or ("command" if accepted == "command" else "cvar"))
+        entries.append(
+            {
+                "name": name,
+                "flags": list(flags),
+                "default": default,
+                "description": description,
+                "accepted": accepted,
+                "kind": kind,
+                "category": item.get("category") or categorize_command(name),
+            }
+        )
+    return entries
+
+
 def build_catalog(
     command_lists: list[list[dict]],
     enrichments: dict[str, str],
@@ -555,6 +595,8 @@ def build_catalog(
         enriched = enrichments.get(entry["name"])
         if enriched:
             entry["accepted"] = enriched
+        # Ensure category always set
+        entry["category"] = entry.get("category") or categorize_command(entry["name"])
     commands.sort(key=lambda c: c["name"].lower())
     categories = sorted({c["category"] for c in commands}, key=str.lower)
     return {
@@ -619,6 +661,12 @@ def main() -> int:
             sources = [sources[1], sources[0]]
 
     enrichments = extract_section_enrichments(SECTION_GLOBS)
+    overrides = load_overrides(OVERRIDES_PATH)
+    if overrides:
+        print(f"Applying {len(overrides)} curated override(s) from {OVERRIDES_PATH}", file=sys.stderr)
+        command_lists.append(overrides)
+        sources.append(str(OVERRIDES_PATH.relative_to(ROOT)))
+
     catalog = build_catalog(command_lists, enrichments, sources)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(

@@ -118,7 +118,8 @@ The page defaults to **Auto**, which follows your system light/dark preference. 
 │   ├── maps/                  # Map background images (WebP)
 │   └── viewmodels/            # Viewmodel preview images (WebP)
 ├── data/
-│   └── cs2-commands.json      # Generated command catalog (Nihilnia + enrichments)
+│   ├── cs2-commands.json      # Generated command catalog (merged dumps + overrides)
+│   └── cvar-overrides.json    # Curated cvars / corrections applied on refresh
 ├── scripts/
 │   ├── refresh-cs2-commands.py  # Refresh data/cs2-commands.json
 │   └── release.sh               # Rotate CHANGELOG, commit, tag (no push)
@@ -136,7 +137,7 @@ Fetches and **merges** two public dumps by default:
 1. [ArminC-CS2-Cvars](https://github.com/ArmynC/ArminC-CS2-Cvars) — broader list (includes many hidden/dev cvars)
 2. [Nihilnia/CounterStrike](https://github.com/Nihilnia/CounterStrike) — fresher in-game-style dump (~1.41.x)
 
-Shared names keep the richer/newer fields; ArminC-only names are kept. Then accepted-value ranges from this app’s settings and prefix **categories** are applied.
+Shared names keep the richer/newer fields; ArminC-only names are kept. Curated entries in [`data/cvar-overrides.json`](data/cvar-overrides.json) are applied last. Then accepted-value ranges from this app’s settings and prefix **categories** are applied.
 
 ```bash
 # Single source only
