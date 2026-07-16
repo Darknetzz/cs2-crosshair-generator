@@ -1,23 +1,35 @@
 /**
- * Schematic CS2 radar / minimap preview.
- * Maps radar cvars to a drawable HUD widget over shared preview backgrounds.
- * Scoreboard / alternate-zoom toggles are display-only.
+ * CS2 radar / minimap preview from in-game screenshot plates (Ancient).
+ * Maps radar cvars to a HUD widget over shared preview backgrounds.
+ * Scoreboard / alternate-zoom toggles are preview-only.
  */
 const RadarRenderer = (() => {
   const PREVIEW_SIZE = 640;
   const ASPECT = 16 / 9;
+  const BASE = 'assets/radar';
 
-  /** World space for a stylized two-site layout. */
-  const MAP_BOUNDS = { minX: -1, maxX: 1, minY: -1, maxY: 1 };
+  const ASSETS = {
+    mapOpaque: `${BASE}/radar-map-ancient-on-black.png`,
+    mapAlpha: `${BASE}/radar-map-ancient.png`,
+  };
 
-  const PLAYER = { x: 0.05, y: 0.2, yaw: -0.55 };
+  /** Normalized map coordinates (0–1, origin top-left) on the Ancient plate. */
+  const PLAYER = { u: 0.13, v: 0.79, yaw: 0.42 };
   const TEAMMATES = [
-    { x: -0.25, y: 0.05, color: '#4aa3ff' },
-    { x: 0.28, y: -0.15, color: '#5ce08a' },
-    { x: -0.1, y: -0.35, color: '#f0c14a' },
+    { u: 0.24, v: 0.58, color: '#4aa3ff', label: '3' },
+    { u: 0.52, v: 0.34, color: '#5ce08a', label: '7' },
+    { u: 0.68, v: 0.48, color: '#f0c14a', label: '5' },
   ];
-  const ENEMY = { x: 0.35, y: 0.05 };
-  const BOMB = { x: 0.3, y: -0.35 };
+  const ENEMY = { u: 0.78, v: 0.62 };
+  const BOMB = { u: 0.46, v: 0.7 };
+
+  const BORDER_COLOR = 'rgba(148, 188, 208, 0.82)';
+  const ZONE_LABEL = 'CT Start';
+
+  const imageCache = new Map();
+  const loading = new Set();
+  let assetsReady = false;
+  let onAssetsReady = null;
 
   let scoreboardOpen = false;
   let useAlternateZoom = false;
@@ -28,7 +40,14 @@ const RadarRenderer = (() => {
   let getStateFn = null;
   let getBackgroundFn = null;
 
-  let mapCache = null;
+  const loadingEl = () => document.getElementById('radar-loading');
+
+  function setLoading(visible, message) {
+    const el = loadingEl();
+    if (!el) return;
+    el.hidden = !visible;
+    if (message) el.textContent = message;
+  }
 
   function setScoreboardOpen(value) {
     scoreboardOpen = Boolean(value);
@@ -65,108 +84,175 @@ const RadarRenderer = (() => {
     return Math.max(0.25, Math.min(1, zoom + pulse));
   }
 
-  /** Lower cl_radar_scale => more of the map visible. */
+  /** Lower cl_radar_scale => more of the map visible. Plate matches default 0.7. */
   function visibleHalfExtent(zoom) {
-    return 0.55 / Math.max(0.25, zoom);
+    return 0.7 / Math.max(0.25, zoom);
   }
 
-  function roundRectPath(ctx, x, y, w, h, r) {
-    const radius = Math.min(r, w / 2, h / 2);
+  function loadImage(url) {
+    if (!url) return Promise.resolve(null);
+    if (imageCache.has(url)) {
+      const cached = imageCache.get(url);
+      if (cached.complete && cached.naturalWidth) return Promise.resolve(cached);
+    }
+
+    return new Promise((resolve) => {
+      if (loading.has(url)) {
+        const poll = () => {
+          const img = imageCache.get(url);
+          if (img?.complete) resolve(img.naturalWidth ? img : null);
+          else requestAnimationFrame(poll);
+        };
+        poll();
+        return;
+      }
+
+      loading.add(url);
+      const img = new Image();
+      img.decoding = 'async';
+      img.onload = () => {
+        loading.delete(url);
+        resolve(img);
+      };
+      img.onerror = () => {
+        loading.delete(url);
+        imageCache.delete(url);
+        resolve(null);
+      };
+      img.src = url;
+      imageCache.set(url, img);
+    });
+  }
+
+  async function ensureAssets() {
+    if (assetsReady) return true;
+    setLoading(true, 'Loading radar…');
+    const [opaque, alpha] = await Promise.all([
+      loadImage(ASSETS.mapOpaque),
+      loadImage(ASSETS.mapAlpha),
+    ]);
+    assetsReady = Boolean(opaque || alpha);
+    setLoading(!assetsReady, assetsReady ? '' : 'Radar assets failed to load');
+    if (assetsReady && typeof onAssetsReady === 'function') {
+      const cb = onAssetsReady;
+      onAssetsReady = null;
+      cb();
+    }
+    return assetsReady;
+  }
+
+  function whenReady(callback) {
+    if (assetsReady) callback();
+    else onAssetsReady = callback;
+    ensureAssets();
+  }
+
+  function uvToPx(u, v, mapPx) {
+    return { x: u * mapPx, y: v * mapPx };
+  }
+
+  function clipWidget(ctx, cx, cy, radius, square) {
     ctx.beginPath();
-    ctx.moveTo(x + radius, y);
-    ctx.arcTo(x + w, y, x + w, y + h, radius);
-    ctx.arcTo(x + w, y + h, x, y + h, radius);
-    ctx.arcTo(x, y + h, x, y, radius);
-    ctx.arcTo(x, y, x + w, y, radius);
-    ctx.closePath();
+    if (square) {
+      ctx.rect(cx - radius, cy - radius, radius * 2, radius * 2);
+    } else {
+      ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+    }
+    ctx.clip();
   }
 
-  function paintMapGeometry(ctx, size) {
-    const s = size;
-    ctx.clearRect(0, 0, s, s);
-    ctx.fillStyle = 'rgba(120, 145, 110, 0.92)';
-    ctx.strokeStyle = 'rgba(30, 40, 28, 0.85)';
-    ctx.lineWidth = Math.max(1.5, s * 0.008);
-
-    roundRectPath(ctx, s * 0.08, s * 0.1, s * 0.84, s * 0.8, s * 0.04);
-    ctx.fill();
-    ctx.stroke();
-
-    ctx.fillStyle = 'rgba(95, 118, 88, 0.95)';
-    ctx.fillRect(s * 0.18, s * 0.42, s * 0.64, s * 0.14);
-    ctx.fillRect(s * 0.42, s * 0.18, s * 0.16, s * 0.64);
-
-    ctx.fillStyle = 'rgba(140, 160, 125, 0.95)';
-    roundRectPath(ctx, s * 0.52, s * 0.14, s * 0.32, s * 0.28, s * 0.03);
-    ctx.fill();
-    ctx.stroke();
-
-    roundRectPath(ctx, s * 0.14, s * 0.56, s * 0.3, s * 0.28, s * 0.03);
-    ctx.fill();
-    ctx.stroke();
-
-    ctx.fillStyle = 'rgba(110, 130, 100, 0.9)';
-    roundRectPath(ctx, s * 0.58, s * 0.58, s * 0.26, s * 0.24, s * 0.025);
-    ctx.fill();
-    ctx.stroke();
-    roundRectPath(ctx, s * 0.14, s * 0.14, s * 0.24, s * 0.22, s * 0.025);
-    ctx.fill();
-    ctx.stroke();
-
-    ctx.fillStyle = 'rgba(20, 28, 18, 0.55)';
-    ctx.font = `700 ${Math.round(s * 0.09)}px sans-serif`;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('A', s * 0.68, s * 0.28);
-    ctx.fillText('B', s * 0.29, s * 0.7);
-  }
-
-  function getMapTexture(mapPx) {
-    const size = Math.max(64, Math.min(512, Math.round(mapPx)));
-    if (mapCache && mapCache.size === size) return mapCache.canvas;
-    const canvas = document.createElement('canvas');
-    canvas.width = size;
-    canvas.height = size;
-    const ctx = canvas.getContext('2d');
-    if (ctx) paintMapGeometry(ctx, size);
-    mapCache = { size, canvas };
-    return canvas;
-  }
-
-  function worldToMapPx(x, y, mapPx) {
-    const { minX, maxX, minY, maxY } = MAP_BOUNDS;
-    const u = (x - minX) / (maxX - minX);
-    const v = (y - minY) / (maxY - minY);
-    return { x: u * mapPx, y: (1 - v) * mapPx };
-  }
-
-  function drawPlayerArrow(ctx, size, yaw, rotateRadar) {
-    const arrowLen = size * 0.55;
+  function drawWidgetChrome(ctx, cx, cy, radius, square) {
     ctx.save();
-    if (!rotateRadar) ctx.rotate(yaw);
-    ctx.fillStyle = '#f5f7fa';
-    ctx.strokeStyle = 'rgba(0, 0, 0, 0.65)';
-    ctx.lineWidth = Math.max(1, size * 0.08);
+    ctx.strokeStyle = BORDER_COLOR;
+    ctx.lineWidth = Math.max(1.5, radius * 0.018);
     ctx.beginPath();
-    ctx.moveTo(0, -arrowLen);
-    ctx.lineTo(arrowLen * 0.55, arrowLen * 0.55);
-    ctx.lineTo(0, arrowLen * 0.2);
-    ctx.lineTo(-arrowLen * 0.55, arrowLen * 0.55);
-    ctx.closePath();
-    ctx.fill();
+    if (square) {
+      ctx.rect(cx - radius, cy - radius, radius * 2, radius * 2);
+    } else {
+      ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+    }
     ctx.stroke();
     ctx.restore();
   }
 
-  function drawDot(ctx, size, color) {
+  function drawZoneLabel(ctx, cx, cy, radius) {
+    ctx.save();
+    ctx.fillStyle = 'rgba(210, 225, 235, 0.92)';
+    ctx.font = `600 ${Math.max(11, radius * 0.14)}px "Segoe UI", system-ui, sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText(ZONE_LABEL, cx, cy + radius + radius * 0.08);
+    ctx.restore();
+  }
+
+  function drawVisionCone(ctx, radius, yaw, rotateRadar) {
+    const spread = 0.62;
+    const length = radius * 3.8;
+    const angle = rotateRadar ? 0 : yaw;
+    ctx.save();
+    ctx.rotate(angle);
+    const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, length);
+    grad.addColorStop(0, 'rgba(255, 255, 255, 0.34)');
+    grad.addColorStop(0.45, 'rgba(255, 255, 255, 0.12)');
+    grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.arc(0, 0, length, -spread, spread);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function drawPlayerIcon(ctx, size, yaw, rotateRadar, label = 'B') {
+    const r = size * 0.46;
+    drawVisionCone(ctx, size, yaw, rotateRadar);
+
+    ctx.save();
+    ctx.fillStyle = '#4da8e8';
+    ctx.strokeStyle = 'rgba(0, 0, 0, 0.55)';
+    ctx.lineWidth = Math.max(1, size * 0.1);
+    ctx.beginPath();
+    ctx.arc(0, 0, r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    const pointerAngle = rotateRadar ? 0 : yaw;
+    const px = Math.sin(pointerAngle) * r * 1.05;
+    const py = -Math.cos(pointerAngle) * r * 1.05;
+    ctx.fillStyle = '#f5f7fa';
+    ctx.beginPath();
+    ctx.moveTo(px, py - size * 0.22);
+    ctx.lineTo(px + size * 0.16, py + size * 0.1);
+    ctx.lineTo(px - size * 0.16, py + size * 0.1);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = '#0d1117';
+    ctx.font = `700 ${Math.max(8, size * 0.52)}px "Segoe UI", system-ui, sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(label, 0, size * 0.04);
+    ctx.restore();
+  }
+
+  function drawTeammate(ctx, size, color, label) {
+    const r = size * 0.42;
     ctx.save();
     ctx.fillStyle = color;
     ctx.strokeStyle = 'rgba(0, 0, 0, 0.55)';
-    ctx.lineWidth = Math.max(1, size * 0.12);
+    ctx.lineWidth = Math.max(1, size * 0.1);
     ctx.beginPath();
-    ctx.arc(0, 0, size * 0.45, 0, Math.PI * 2);
+    ctx.arc(0, 0, r, 0, Math.PI * 2);
     ctx.fill();
     ctx.stroke();
+    if (label) {
+      ctx.fillStyle = '#0d1117';
+      ctx.font = `700 ${Math.max(7, size * 0.48)}px "Segoe UI", system-ui, sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(label, 0, 0);
+    }
     ctx.restore();
   }
 
@@ -175,7 +261,7 @@ const RadarRenderer = (() => {
     ctx.fillStyle = '#f2c94c';
     ctx.strokeStyle = 'rgba(0, 0, 0, 0.6)';
     ctx.lineWidth = Math.max(1, size * 0.1);
-    const r = size * 0.4;
+    const r = size * 0.38;
     ctx.beginPath();
     ctx.moveTo(0, -r);
     ctx.lineTo(r, 0);
@@ -191,8 +277,8 @@ const RadarRenderer = (() => {
     ctx.save();
     ctx.fillStyle = '#e85d5d';
     ctx.strokeStyle = 'rgba(0, 0, 0, 0.55)';
-    ctx.lineWidth = Math.max(1, size * 0.12);
-    const r = size * 0.42;
+    ctx.lineWidth = Math.max(1, size * 0.1);
+    const r = size * 0.4;
     ctx.beginPath();
     ctx.moveTo(0, -r);
     ctx.lineTo(r * 0.9, r * 0.75);
@@ -203,33 +289,9 @@ const RadarRenderer = (() => {
     ctx.restore();
   }
 
-  function clipWidget(ctx, cx, cy, radius, square) {
-    ctx.beginPath();
-    if (square) {
-      ctx.rect(cx - radius, cy - radius, radius * 2, radius * 2);
-    } else {
-      ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-    }
-    ctx.clip();
-  }
-
-  function drawWidgetChrome(ctx, cx, cy, radius, square) {
-    ctx.save();
-    ctx.strokeStyle = 'rgba(210, 220, 230, 0.55)';
-    ctx.lineWidth = Math.max(2, radius * 0.035);
-    ctx.beginPath();
-    if (square) {
-      ctx.rect(cx - radius, cy - radius, radius * 2, radius * 2);
-    } else {
-      ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-    }
-    ctx.stroke();
-    ctx.restore();
-  }
-
   function paintBlurredBackdrop(ctx, sourceCanvas, cx, cy, radius, square) {
-    const pad = Math.ceil(radius * 2 + 24);
     const off = document.createElement('canvas');
+    const pad = Math.ceil(radius * 2 + 24);
     off.width = pad;
     off.height = pad;
     const octx = off.getContext('2d');
@@ -250,8 +312,92 @@ const RadarRenderer = (() => {
     ctx.restore();
   }
 
-  function render(canvas, state, background = 'dark', timestamp) {
+  function withMapTransform(ctx, mapPx, playerPx, state, rotateRadar, drawFn) {
+    const centered = Number(state.cl_radar_always_centered) === 1;
+
+    let viewOffsetX = 0;
+    let viewOffsetY = 0;
+    if (!centered) {
+      if (rotateRadar) {
+        viewOffsetX = Math.sin(PLAYER.yaw) * mapPx * 0.08;
+        viewOffsetY = -Math.cos(PLAYER.yaw) * mapPx * 0.08;
+      } else {
+        viewOffsetY = mapPx * 0.06;
+      }
+    }
+
+    ctx.save();
+    ctx.translate(-playerPx.x + mapPx * 0.5 + viewOffsetX, -playerPx.y + mapPx * 0.5 + viewOffsetY);
+
+    if (rotateRadar) {
+      ctx.translate(playerPx.x, playerPx.y);
+      ctx.rotate(-PLAYER.yaw);
+      ctx.translate(-playerPx.x, -playerPx.y);
+    }
+
+    drawFn();
+    ctx.restore();
+  }
+
+  function drawMapLayer(ctx, mapImage, mapPx, state) {
+    const additive = Number(state.cl_hud_radar_map_additive) === 1;
+
+    if (additive) {
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.globalAlpha = 0.88;
+    }
+
+    ctx.drawImage(mapImage, 0, 0, mapPx, mapPx);
+
+    if (additive) {
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  function drawIcons(ctx, mapPx, rotateRadar, iconBase) {
+    for (const mate of TEAMMATES) {
+      const p = uvToPx(mate.u, mate.v, mapPx);
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      drawTeammate(ctx, iconBase * 0.82, mate.color, mate.label);
+      ctx.restore();
+    }
+
+    {
+      const p = uvToPx(ENEMY.u, ENEMY.v, mapPx);
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      drawEnemy(ctx, iconBase);
+      ctx.restore();
+    }
+
+    {
+      const p = uvToPx(BOMB.u, BOMB.v, mapPx);
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      drawBomb(ctx, iconBase * 0.92);
+      ctx.restore();
+    }
+
+    const playerPx = uvToPx(PLAYER.u, PLAYER.v, mapPx);
+    ctx.save();
+    ctx.translate(playerPx.x, playerPx.y);
+    drawPlayerIcon(ctx, iconBase * 1.1, PLAYER.yaw, rotateRadar, 'B');
+    ctx.restore();
+  }
+
+  async function render(canvas, state, background = 'dark', timestamp) {
     if (!canvas || !state) return;
+    const ready = await ensureAssets();
+    if (!ready) return;
+
+    const mapOpaque = imageCache.get(ASSETS.mapOpaque);
+    const mapAlpha = imageCache.get(ASSETS.mapAlpha);
+    const mapImage = Number(state.cl_hud_radar_map_additive) === 1
+      ? (mapAlpha || mapOpaque)
+      : (mapOpaque || mapAlpha);
+    if (!mapImage?.naturalWidth) return;
 
     const width = canvas.width || PREVIEW_SIZE;
     const height = canvas.height || Math.round(PREVIEW_SIZE / ASPECT);
@@ -267,16 +413,15 @@ const RadarRenderer = (() => {
     const cy = margin + radius;
     const square = isSquare(state);
     const rotateRadar = Number(state.cl_radar_rotate) === 1;
-    const centered = Number(state.cl_radar_always_centered) === 1;
     const alpha = Math.max(0, Math.min(1, Number(state.cl_hud_radar_background_alpha) || 0));
-    const additive = Number(state.cl_hud_radar_map_additive) === 1;
     const blurBg = Number(state.cl_hud_radar_blur_background) === 1;
     const iconScale = Number(state.cl_radar_icon_scale_min) || 0.6;
     const zoom = effectiveZoom(state, timestamp);
     const halfExtent = visibleHalfExtent(zoom);
     const pxPerWorld = radius / halfExtent;
-    const worldW = MAP_BOUNDS.maxX - MAP_BOUNDS.minX;
-    const mapPx = worldW * pxPerWorld;
+    const mapPx = pxPerWorld * 2;
+    const playerPx = uvToPx(PLAYER.u, PLAYER.v, mapPx);
+    const iconBase = Math.max(10, radius * 0.19) * (0.65 + iconScale * 0.85);
 
     if (blurBg) {
       paintBlurredBackdrop(ctx, canvas, cx, cy, radius, square);
@@ -284,7 +429,7 @@ const RadarRenderer = (() => {
 
     ctx.save();
     clipWidget(ctx, cx, cy, radius, square);
-    ctx.fillStyle = `rgba(8, 12, 10, ${alpha})`;
+    ctx.fillStyle = `rgba(0, 0, 0, ${alpha})`;
     if (square) {
       ctx.fillRect(cx - radius, cy - radius, radius * 2, radius * 2);
     } else {
@@ -294,79 +439,17 @@ const RadarRenderer = (() => {
     }
     ctx.restore();
 
-    const playerMap = worldToMapPx(PLAYER.x, PLAYER.y, mapPx);
-    let viewOffsetX = 0;
-    let viewOffsetY = 0;
-    if (!centered) {
-      if (rotateRadar) {
-        viewOffsetX = Math.sin(PLAYER.yaw) * radius * 0.35;
-        viewOffsetY = -Math.cos(PLAYER.yaw) * radius * 0.35;
-      } else {
-        viewOffsetY = radius * 0.28;
-      }
-    }
-
     ctx.save();
     clipWidget(ctx, cx, cy, radius, square);
-    ctx.translate(cx + viewOffsetX, cy + viewOffsetY);
-
-    if (rotateRadar) {
-      ctx.rotate(-PLAYER.yaw);
-    }
-
-    ctx.translate(-playerMap.x, -playerMap.y);
-
-    if (additive) {
-      ctx.globalCompositeOperation = 'lighter';
-      ctx.globalAlpha = 0.85;
-    }
-
-    const mapTexture = getMapTexture(mapPx);
-    ctx.drawImage(mapTexture, 0, 0, mapPx, mapPx);
-
-    if (additive) {
-      ctx.globalCompositeOperation = 'source-over';
-      ctx.globalAlpha = 1;
-    }
-
-    const iconBase = Math.max(10, radius * 0.2) * (0.65 + iconScale * 0.85);
-
-    for (const mate of TEAMMATES) {
-      const p = worldToMapPx(mate.x, mate.y, mapPx);
-      ctx.save();
-      ctx.translate(p.x, p.y);
-      if (rotateRadar) ctx.rotate(PLAYER.yaw);
-      drawDot(ctx, iconBase * 0.85, mate.color);
-      ctx.restore();
-    }
-
-    {
-      const p = worldToMapPx(ENEMY.x, ENEMY.y, mapPx);
-      ctx.save();
-      ctx.translate(p.x, p.y);
-      if (rotateRadar) ctx.rotate(PLAYER.yaw);
-      drawEnemy(ctx, iconBase);
-      ctx.restore();
-    }
-
-    {
-      const p = worldToMapPx(BOMB.x, BOMB.y, mapPx);
-      ctx.save();
-      ctx.translate(p.x, p.y);
-      if (rotateRadar) ctx.rotate(PLAYER.yaw);
-      drawBomb(ctx, iconBase * 0.95);
-      ctx.restore();
-    }
-
-    ctx.save();
-    ctx.translate(playerMap.x, playerMap.y);
-    if (rotateRadar) ctx.rotate(PLAYER.yaw);
-    drawPlayerArrow(ctx, iconBase * 1.15, PLAYER.yaw, rotateRadar);
-    ctx.restore();
-
+    ctx.translate(cx, cy);
+    withMapTransform(ctx, mapPx, playerPx, state, rotateRadar, () => {
+      drawMapLayer(ctx, mapImage, mapPx, state);
+      drawIcons(ctx, mapPx, rotateRadar, iconBase);
+    });
     ctx.restore();
 
     drawWidgetChrome(ctx, cx, cy, radius, square);
+    drawZoneLabel(ctx, cx, cy, radius);
   }
 
   function isAnimating() {
@@ -377,14 +460,12 @@ const RadarRenderer = (() => {
     if (!animCanvas || !getStateFn || !getBackgroundFn) return;
     const state = getStateFn();
     const background = getBackgroundFn();
-    if (Number(state.cl_radar_scale_dynamic) !== 1) {
-      stopAnimation();
-      render(animCanvas, state, background, timestamp);
-      if (animCanvasSecondary) render(animCanvasSecondary, state, background, timestamp);
-      return;
-    }
     render(animCanvas, state, background, timestamp);
     if (animCanvasSecondary) render(animCanvasSecondary, state, background, timestamp);
+    if (Number(state.cl_radar_scale_dynamic) !== 1) {
+      stopAnimation();
+      return;
+    }
     animFrameId = requestAnimationFrame(animationLoop);
   }
 
@@ -408,11 +489,18 @@ const RadarRenderer = (() => {
     getBackgroundFn = null;
   }
 
+  whenReady(() => {
+    if (typeof window !== 'undefined' && window.dispatchEvent) {
+      window.dispatchEvent(new CustomEvent('cs2-radar-assets-ready'));
+    }
+  });
+
   return {
     render,
     startAnimation,
     stopAnimation,
     isAnimating,
+    whenReady,
     setScoreboardOpen,
     isScoreboardOpen,
     setUseAlternateZoom,

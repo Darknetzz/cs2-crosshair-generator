@@ -12,7 +12,7 @@ A lightweight web app for building Counter-Strike 2 configs. Design your crossha
 - **Commands reference** — searchable/sortable list of all CS2 console commands and cvars, with prefix-based category filters ([commands.html](commands.html))
 - **Useful binds** — drop bomb, spinbot, mute team, scroll jump, practice helpers, and more — opt-in with editable keys (picker for mouse buttons and other CS2 keys); export labels each bind with a `//` comment
 - **Live crosshair preview** — true 1:1 size (64×64 px at 1080p) with dynamic style animation
-- **Live viewmodel & radar previews** — canvas previews for weapon position and schematic radar
+- **Live viewmodel & radar previews** — canvas previews for weapon position and in-game radar (Ancient minimap plate)
 - **Expand preview** — click a preview to open a live full-size modal (crosshair, viewmodel, or radar)
 - **Preview modes** — normal, grenade lineup reticle, and sniper scope overlay (crosshair)
 - **Background options** — solid colors and CS2 map screenshots with thumbnails
@@ -116,6 +116,7 @@ The page defaults to **Auto**, which follows your system light/dark preference. 
 │   └── presets.js             # Pro player crosshair presets
 ├── assets/
 │   ├── maps/                  # Map background images (WebP)
+│   ├── radar/                 # In-game radar preview plates (Ancient)
 │   └── viewmodels/            # Viewmodel preview images (WebP)
 ├── data/
 │   ├── cs2-commands.json      # Generated command catalog (merged dumps + overrides)

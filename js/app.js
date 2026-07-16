@@ -355,7 +355,7 @@
     }
   }
 
-  function manageRadarAnimation() {
+  async function manageRadarAnimation() {
     const state = getRadarState();
     const modalCanvas = getModalCanvasIf('radar');
     if (Number(state.cl_radar_scale_dynamic) === 1) {
@@ -368,9 +368,9 @@
       return;
     }
     RadarRenderer.stopAnimation();
-    RadarRenderer.render(els.radarCanvas, state, previewBackground);
+    await RadarRenderer.render(els.radarCanvas, state, previewBackground);
     if (modalCanvas) {
-      RadarRenderer.render(modalCanvas, state, previewBackground);
+      await RadarRenderer.render(modalCanvas, state, previewBackground);
     }
   }
 
@@ -2161,6 +2161,9 @@
       updateViewmodelPreview();
     });
     ViewmodelRenderer.preload?.(updateViewmodelPreview);
+    RadarRenderer.whenReady(() => {
+      if (activeSectionId === 'radar') updateRadarPreview();
+    });
   }
 
   document.addEventListener('DOMContentLoaded', init);
