@@ -1,15 +1,17 @@
 # CS2 Config Generator
 
-A lightweight web app for building Counter-Strike 2 configs. Design your crosshair with a live preview, tweak viewmodel / HUD / radar / FPS settings, pick useful binds, then copy console commands or download modular and combined `.cfg` files.
+A lightweight web app for building Counter-Strike 2 configs. Design your crosshair with a live preview, tweak viewmodel / HUD / radar / FPS settings with live viewmodel and radar previews, pick useful binds, then copy console commands or download modular and combined `.cfg` files.
 
 ![CS2 Config Generator screenshot](docs/screenshot.png)
 
 ## Features
 
 - **Multi-section config** — Crosshair, Viewmodel, HUD, Radar, FPS, and Binds panels from one UI
+- **Commands reference** — searchable/sortable list of all CS2 console commands and cvars ([commands.html](commands.html))
 - **Useful binds** — drop bomb, spinbot, mute team, scroll jump, practice helpers, and more — opt-in with editable keys
 - **Live crosshair preview** — true 1:1 size (64×64 px at 1080p) with dynamic style animation
-- **Preview modes** — normal, grenade lineup reticle, and sniper scope overlay
+- **Live viewmodel & radar previews** — canvas previews for weapon position and schematic radar
+- **Preview modes** — normal, grenade lineup reticle, and sniper scope overlay (crosshair)
 - **Background options** — solid colors and CS2 map screenshots with thumbnails
 - **Zoom** — scale the crosshair preview from 50% to 300%
 - **Pro presets** — one-click crosshairs from donk, ZywOo, s1mple, NiKo, m0NESY, ropz, dev1ce, EliGE, XANTARES, and kyousuke
@@ -29,6 +31,8 @@ python3 -m http.server 8080
 ```
 
 Then visit `http://localhost:8080`.
+
+Open **Commands** in the header (or `/commands.html` on your host) for the full console command browser. That page loads `data/cs2-commands.json` via `fetch`, so it must be served over HTTP (Apache, nginx, `python3 -m http.server`, etc.) — not opened as `file://`.
 
 1. Pick a section tab (Crosshair, Viewmodel, HUD, Radar, FPS, Binds)
 2. Adjust settings, or click a **Pro preset** on the Crosshair tab
@@ -78,6 +82,8 @@ The page defaults to **Auto**, which follows your system light/dark preference. 
 
 ```
 ├── index.html
+├── commands.html              # Full CS2 command / cvar browser
+├── AGENTS.md                  # Guidance for coding agents
 ├── css/style.css
 ├── js/
 │   ├── app.js                 # UI, state, persistence
@@ -92,14 +98,31 @@ The page defaults to **Auto**, which follows your system light/dark preference. 
 │   │   └── binds.js           # Bind catalog + export helpers
 │   ├── backgrounds.js         # Preview background definitions
 │   ├── commands.js            # Console / .cfg serialization & import
-│   ├── crosshair-renderer.js  # Canvas preview renderer
+│   ├── commands-page.js       # Commands reference UI
+│   ├── crosshair-renderer.js  # Crosshair canvas preview
+│   ├── viewmodel-renderer.js  # Viewmodel canvas preview
+│   ├── radar-renderer.js      # Radar canvas preview
 │   ├── custom-presets.js      # User-saved crosshair presets
 │   ├── preview-mode.js        # Normal / lineup / sniper preview modes
 │   ├── preview-zoom.js        # Display zoom (50%–300%)
 │   └── presets.js             # Pro player crosshair presets
-├── assets/maps/               # Map background images (WebP)
+├── assets/
+│   ├── maps/                  # Map background images (WebP)
+│   └── viewmodels/            # Viewmodel preview images (WebP)
+├── data/
+│   └── cs2-commands.json      # Generated command catalog (ArminC + enrichments)
+├── scripts/
+│   └── refresh-cs2-commands.py  # Refresh data/cs2-commands.json
 └── docs/screenshot.png
 ```
+
+### Refreshing CS2 command data
+
+```bash
+python3 scripts/refresh-cs2-commands.py
+```
+
+Fetches the public [ArminC CS2 cvar list](https://github.com/ArmynC/ArminC-CS2-Cvars), merges accepted-value ranges from this app’s settings, and writes `data/cs2-commands.json`. Use `--input path/to/cvarlist.md` to parse a local dump instead of downloading.
 
 ## Map backgrounds
 

@@ -4,9 +4,9 @@ Agent guidance for the CS2 Config Generator — a static vanilla JS web app (no 
 
 ## Project overview
 
-Users build Counter-Strike 2 configs (crosshair, viewmodel, HUD, radar, FPS, binds), preview live canvases, then copy console commands or download `.cfg` files.
+Users build Counter-Strike 2 configs (crosshair, viewmodel, HUD, radar, FPS, binds), preview live canvases, then copy console commands or download `.cfg` files. A separate `commands.html` page browses the full CS2 cvar/command dump.
 
-Stack: plain `index.html`, `css/style.css`, and classic `<script>` globals (no ES modules, no bundler).
+Stack: plain `index.html` / `commands.html`, `css/style.css`, and classic `<script>` globals (no ES modules, no bundler).
 
 ## Run locally
 
@@ -14,7 +14,13 @@ Stack: plain `index.html`, `css/style.css`, and classic `<script>` globals (no E
 python3 -m http.server 8080
 ```
 
-Open `http://localhost:8080`. Opening `index.html` via `file://` also works for most features.
+Open `http://localhost:8080` (or your Apache/nginx URL). Opening `index.html` via `file://` also works for most generator features; **`commands.html` requires HTTP** (any static host) because it fetches `data/cs2-commands.json`.
+
+Refresh the command catalog after CS2 patches:
+
+```bash
+python3 scripts/refresh-cs2-commands.py
+```
 
 There is no lint, format, or test command. Verify changes in the browser.
 
@@ -27,11 +33,14 @@ There is no lint, format, or test command. Verify changes in the browser.
 | `js/sections/*.js` | Other sections (`ViewmodelSection`, `HudSection`, …) |
 | `js/sections/index.js` | `ConfigSections` registry — order and lookup |
 | `js/commands.js` | Serialize/import console commands and `.cfg` text |
+| `js/commands-page.js` | Commands reference UI (search/sort/paginate) |
+| `data/cs2-commands.json` | Generated full cvar/command catalog |
+| `scripts/refresh-cs2-commands.py` | Rebuild catalog from ArminC dump + section enrichments |
 | `js/*-renderer.js` | Canvas previews (crosshair, viewmodel, radar) |
 | `js/app.js` | UI, state, persistence (`localStorage`), share URLs |
 | `js/presets.js` / `custom-presets.js` | Pro + user crosshair presets |
 
-**Script load order in `index.html` is load-bearing.** New scripts must be inserted so dependencies exist before consumers (`settings-module` → section files → `sections/index.js` → helpers/renderers → `commands.js` → `app.js`).
+**Script load order in `index.html` is load-bearing.** New scripts must be inserted so dependencies exist before consumers (`settings-module` → section files → `sections/index.js` → helpers/renderers → `commands.js` → `app.js`). `commands.html` only loads `js/commands-page.js`.
 
 ## Adding or changing settings
 
@@ -65,6 +74,7 @@ Cvar names and value ranges should match real CS2 console commands.
 - Reuse `createSettingsModule` for new cvar panels.
 - Update both UI metadata and command serialization when changing a setting.
 - Manually check section tabs, preview, copy/download, import, and share after UI/state changes.
+- **Keep `README.md` up to date** whenever you change user-facing features, usage, project structure, scripts, or assets. Update it in the same change set — do not leave docs stale.
 
 **Don’t**
 

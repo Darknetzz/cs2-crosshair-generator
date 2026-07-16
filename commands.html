@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CS2 Commands — Config Generator</title>
+  <meta name="description" content="Searchable, sortable list of Counter-Strike 2 console commands and cvars with defaults and accepted values.">
+  <meta name="theme-color" content="#0d1117">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230d1117'/%3E%3Crect x='14' y='4' width='4' height='24' fill='%23f97316'/%3E%3Crect x='4' y='14' width='24' height='4' fill='%23f97316'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/style.css">
+  <script>
+    (function () {
+      try {
+        const keys = ['cs2-config-state', 'cs2-crosshair-state'];
+        for (const key of keys) {
+          const raw = localStorage.getItem(key);
+          if (!raw) continue;
+          const parsed = JSON.parse(raw);
+          if (parsed.theme === 'light' || parsed.theme === 'dark') {
+            document.documentElement.dataset.theme = parsed.theme;
+            break;
+          }
+        }
+      } catch {
+        // ignore invalid storage
+      }
+    })();
+  </script>
+</head>
+<body class="commands-page">
+  <a class="skip-link" href="#commands-main">Skip to commands</a>
+
+  <header class="site-header">
+    <div class="site-header-inner">
+      <div class="site-header-text">
+        <nav class="site-nav" aria-label="Site">
+          <a href="index.html">Config Generator</a>
+          <a href="commands.html" aria-current="page">Commands</a>
+        </nav>
+        <h1>CS2 Commands</h1>
+        <p class="subtitle">Search and sort the full Counter-Strike 2 console command and cvar list.</p>
+      </div>
+      <div id="theme-toggle" class="theme-toggle" role="group" aria-label="Color theme">
+        <button type="button" class="theme-btn" data-theme="system" aria-pressed="true">Auto</button>
+        <button type="button" class="theme-btn" data-theme="dark" aria-pressed="false">Dark</button>
+        <button type="button" class="theme-btn" data-theme="light" aria-pressed="false">Light</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="commands-main" class="commands-browser">
+    <div class="commands-toolbar">
+      <label class="commands-search-label" for="commands-search">
+        <span class="sr-only">Search commands</span>
+        <input
+          type="search"
+          id="commands-search"
+          class="commands-search"
+          placeholder="Search by name, description, or flags…"
+          autocomplete="off"
+          spellcheck="false"
+          aria-label="Search commands"
+        >
+      </label>
+      <p id="commands-meta" class="commands-meta" aria-live="polite">Loading commands…</p>
+    </div>
+
+    <div id="commands-error" class="commands-error" hidden role="alert"></div>
+
+    <div class="commands-table-wrap">
+      <table class="commands-table" id="commands-table">
+        <thead>
+          <tr>
+            <th scope="col" aria-sort="ascending">
+              <button type="button" class="sort-btn" data-sort="name">Command</button>
+            </th>
+            <th scope="col" aria-sort="none">
+              <button type="button" class="sort-btn" data-sort="default">Default</button>
+            </th>
+            <th scope="col" aria-sort="none">
+              <button type="button" class="sort-btn" data-sort="accepted">Accepted</button>
+            </th>
+            <th scope="col" aria-sort="none">
+              <button type="button" class="sort-btn" data-sort="description">Description</button>
+            </th>
+          </tr>
+        </thead>
+        <tbody id="commands-tbody"></tbody>
+      </table>
+    </div>
+
+    <div class="commands-pagination" id="commands-pagination" hidden>
+      <button type="button" class="btn btn-ghost btn-compact" id="commands-prev" disabled>Previous</button>
+      <span id="commands-page-label" class="commands-page-label" aria-live="polite"></span>
+      <button type="button" class="btn btn-ghost btn-compact" id="commands-next" disabled>Next</button>
+    </div>
+  </main>
+
+  <script src="js/commands-page.js"></script>
+</body>
+</html>
