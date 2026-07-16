@@ -31,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Viewmodel (and radar) preview no longer grows scrollbars / resizes in a loop; canvases fill the wrap at device-pixel resolution so the preview stays sharp
 - Crosshair Gap slider updates the preview for classic static style 4 (and other styles that use `cl_crosshairgap`)
 - Strip markdown backslashes and HTML entities from command descriptions in the catalog
 

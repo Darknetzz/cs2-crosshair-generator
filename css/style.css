@@ -725,6 +725,12 @@ body {
 .radar-canvas-wrap {
   position: relative;
   aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+
+.radar-canvas-wrap #radar-canvas {
+  width: 100%;
+  height: 100%;
 }
 
 .viewmodel-preview {
@@ -742,7 +748,14 @@ body {
 
 .viewmodel-canvas-wrap {
   position: relative;
-  aspect-ratio: 3440 / 1440;
+  aspect-ratio: 1920 / 804;
+  /* Avoid scrollbar ↔ ResizeObserver feedback (borders shrink the content box). */
+  overflow: hidden;
+}
+
+.viewmodel-canvas-wrap #viewmodel-canvas {
+  width: 100%;
+  height: 100%;
 }
 
 .viewmodel-aim {

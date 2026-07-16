@@ -170,6 +170,20 @@
     return Math.min(width, maxSize);
   }
 
+  /** CSS pixel size of an aspect-ratio wrap; falls back when hidden (0×0). */
+  function getAspectWrapDisplaySize(wrap, aspect, fallbackWidth) {
+    const width = Math.round(wrap?.clientWidth || 0);
+    const height = Math.round(wrap?.clientHeight || 0);
+    if (width >= 1 && height >= 1) {
+      return { width, height };
+    }
+    const w = Math.max(1, Math.round(fallbackWidth));
+    return {
+      width: w,
+      height: Math.max(1, Math.round(w / (aspect || (16 / 9)))),
+    };
+  }
+
   function getCrosshairDisplaySize() {
     return Math.max(
       1,
@@ -178,21 +192,19 @@
   }
 
   function getViewmodelDisplaySize() {
-    const width = Math.max(
-      1,
-      Math.round(getCanvasBaseSize(els.viewmodelCanvasWrap, ViewmodelRenderer.PREVIEW_SIZE)),
+    return getAspectWrapDisplaySize(
+      els.viewmodelCanvasWrap,
+      ViewmodelRenderer.ASPECT,
+      ViewmodelRenderer.PREVIEW_SIZE,
     );
-    const height = Math.max(1, Math.round(width / (ViewmodelRenderer.ASPECT || (16 / 9))));
-    return { width, height };
   }
 
   function getRadarDisplaySize() {
-    const width = Math.max(
-      1,
-      Math.round(getCanvasBaseSize(els.radarCanvasWrap, RadarRenderer.PREVIEW_SIZE)),
+    return getAspectWrapDisplaySize(
+      els.radarCanvasWrap,
+      RadarRenderer.ASPECT,
+      RadarRenderer.PREVIEW_SIZE,
     );
-    const height = Math.max(1, Math.round(width / (RadarRenderer.ASPECT || (16 / 9))));
-    return { width, height };
   }
 
   function fitAspectSize(aspect, maxW, maxH) {
@@ -239,26 +251,42 @@
     return changed;
   }
 
-  function syncCanvasSize(canvas, size) {
+  /**
+   * Sync canvas backing store to CSS size.
+   * Aspect previews (width/height object) use devicePixelRatio for sharpness;
+   * crosshair (numeric size) keeps 1 CSS px = 1 buffer px for true 1:1 / pixelated.
+   * @param {{ fill?: boolean }} [options] fill: size via CSS 100% (aspect wraps); else explicit px.
+   */
+  function syncCanvasSize(canvas, size, options = {}) {
     if (!canvas) return false;
 
-    const width = typeof size === 'number' ? size : size.width;
-    const height = typeof size === 'number' ? size : size.height;
+    const cssWidth = typeof size === 'number' ? size : size.width;
+    const cssHeight = typeof size === 'number' ? size : size.height;
+    const dpr = typeof size === 'number'
+      ? 1
+      : Math.max(1, Math.min(window.devicePixelRatio || 1, 3));
+    const width = Math.max(1, Math.round(cssWidth * dpr));
+    const height = Math.max(1, Math.round(cssHeight * dpr));
     const changed = canvas.width !== width || canvas.height !== height;
     if (changed) {
       canvas.width = width;
       canvas.height = height;
     }
 
-    canvas.style.width = `${width}px`;
-    canvas.style.height = `${height}px`;
+    if (options.fill) {
+      canvas.style.width = '100%';
+      canvas.style.height = '100%';
+    } else {
+      canvas.style.width = `${cssWidth}px`;
+      canvas.style.height = `${cssHeight}px`;
+    }
     return changed;
   }
 
   function syncCanvasDimensions() {
     const crosshairChanged = syncCanvasSize(els.previewCanvas, getCrosshairDisplaySize());
-    const viewmodelChanged = syncCanvasSize(els.viewmodelCanvas, getViewmodelDisplaySize());
-    const radarChanged = syncCanvasSize(els.radarCanvas, getRadarDisplaySize());
+    const viewmodelChanged = syncCanvasSize(els.viewmodelCanvas, getViewmodelDisplaySize(), { fill: true });
+    const radarChanged = syncCanvasSize(els.radarCanvas, getRadarDisplaySize(), { fill: true });
     if (crosshairChanged || viewmodelChanged || radarChanged) {
       CrosshairRenderer.invalidateBgCache();
     }

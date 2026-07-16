@@ -3,8 +3,10 @@
  * Blends FOV / offset extremes and snaps to Desktop / Classic preset shots.
  */
 const ViewmodelRenderer = (() => {
+  /** Fallback CSS width when the wrap is hidden / unmeasured. */
   const PREVIEW_SIZE = 640;
-  const ASPECT = 3440 / 1440;
+  /** Matches capture plates (1920×804 ≈ 3440×1440 ultrawide). */
+  const ASPECT = 1920 / 804;
   const BASE = 'assets/viewmodels';
 
   const FOV = { min: 60, max: 68 };
@@ -261,6 +263,8 @@ const ViewmodelRenderer = (() => {
     if (!ctx) return;
 
     CrosshairRenderer.paintBackground(ctx, width, height, background);
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
 
     const weapon = WEAPONS[weaponId] || WEAPONS.ak;
     const plates = await resolvePlates(weapon);
